@@ -28,6 +28,8 @@ Suggests:
     rmarkdown
 Depends: R (>= 3.5)
 License: GPL-3
+URL: http://github.com/edwardlavender/WeStCOMSExploreR
+BugReports: http://github.com/edwardlavender/WeStCOMSExploreR/issues
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
