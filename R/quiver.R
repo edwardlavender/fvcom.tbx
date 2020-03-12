@@ -3,8 +3,8 @@
 #'
 #' @param x A numeric value specifying the x coordinate(s) of the start point of the arrow(s).
 #' @param y A numeric value specifying the x coordinate(s) of the start point of the arrow(s).
-#' @param u The u (Easting) component vector.
-#' @param v The v (Northing) component vector.
+#' @param u The u (easting) component vector.
+#' @param v The v (northing) component vector.
 #' @param scale A numeric value which scales the length of the arrow shaft.
 #' @param length A numeric value which adjusts the length of the arrow head.
 #' @param angle A numeric value which defines the angle (degrees) between the two sides of the arrow head.
@@ -20,7 +20,7 @@
 ################################################
 #### quiver
 
-# This function is copied from pracma quiver but I've adjusted angle = 10
+# This function is copied from pracma::quiver but I've adjusted angle = 10
 # ... to angle = angle in the body of the function.
 
 quiver <-

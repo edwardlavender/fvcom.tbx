@@ -1,4 +1,4 @@
-#' @title Convert a WeStCOMS array to a dataframe for plot2dfield
+#' @title Convert a WeStCOMS array to a dataframe for \code{plot2dfield}
 #' @description This function converts a WeStCOMS array to a dataframe that, for a snapshot in time, contains the values of the cell at each specified ID; i.e, a 2d field that can be plotted using \code{plot2dfield}.
 #'
 #' @param data A 2 or 3d array outputted by WeStCOMS for an environmental variable.

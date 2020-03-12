@@ -34,25 +34,25 @@ install.packages("WeStCOMSExploreR")
 
 ``` r
 #### Or, install the development version from github
-# ... 
+devtools::install_github("edwardlavender/WeStCOMSExploreR")
 ```
 
 ## Prerequisites
 
 WeStCOMS files are MATLAB® files. To use these in R, some pre-processing
-outside of R is required (see the vignette).
+outside of R is required. This is described in the vignette.
 
 ## Processing WeStCOMS outputs
 
 Some functions are designed to facilitate processing WeStCOMS outputs.
-This includes the following:
+These include:
 
   - `date.name()` - flick between dates and WeStCOMS file names;
   - `define.dir()` - create folders in which to store WeStCOMS outputs;
   - `define.dates2load()` - define a sequence of dates for which to load
     WeStCOMS files, accounting for corrupt files;
   - `define.new2dfield()` - define new 2 dimensional hydrodynamic fields
-    from WeStCOMS outputs (namely, themormocline stength, wind speed,
+    from WeStCOMS outputs (namely, thermocline strength, wind speed,
     wind direction, current speed, current direction and sun angle);
   - `sun.angle.across.mesh()` - compute sun angle as a WeStCOMS field;
   - `WeStCOMSarray2df()` - convert a WeStCOMS array to a dataframe for
@@ -61,7 +61,7 @@ This includes the following:
 ## Unstructured mesh(es)
 
 `build.mesh()` builds an unstructured mesh (around nodes or elements)
-from node coordinates and connections as a SpatialPolygonsDataFrame in
+from node coordinates and connections as a `SpatialPolygonsDataFrame` in
 R.
 
 ## Explore environmental conditions
@@ -71,7 +71,7 @@ conditions through space and/or time. These include the following:
 
   - `summarise2dfield()` - compute statistical summaries of
     environmental conditions across a WeStCOMS layer (through time for a
-    given WeStCOMS file if applicable);
+    given WeStCOMS file, if applicable);
   - `plot2dfield()` - visualise environmental conditions across a
     WeStCOMS layer through space at a specified point in time;
   - `explore.WeStCOMS()` - implement `summarise2dfield()` and
@@ -83,6 +83,8 @@ conditions through space and/or time. These include the following:
 Future plans for `WeStCOMSExploreR` include developing the following
 functionality:
 
+  - Validation of WeStCOMS predictions using (benthic) animal movement
+    (passive acoustic telemetry and depth timeseries) data;
   - Creating interactive bathymetry plots;
   - Exploring temperature profiles through space and time;
   - Exploring spatiotemporal variation in environmental conditions in
