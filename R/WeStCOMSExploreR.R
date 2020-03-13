@@ -1,0 +1,20 @@
+#' @title WeStCOMSExploreR: Explore Unstructured, Prism-Based Hydrodynamic Model Outputs (namely, WeStCOMS)
+#' @author Edward Lavender
+#'
+#' @description WeStCOMSExploreR is an R package which provides tools for the exploration of unstructured, prism-based hydrodynamic model outputs (i.e. from the Finite Coastal Ocean Volume Model, FVCOM) in R. The package has been designed specifically for the West Coast of Scotland Coastal Modelling System (WeStCOMS), which implements FVCOM. Package development has been motivated by the requirements of ecological research, and the need to link hydrodynamic model outputs with ecological analyses implemented in R. The package includes functions which facilitate processing WeStCOMS outputs, building the WeStCOMS mesh, exploring environmental conditions through space and time and validating model predictions.
+#'
+#' @section Processing WeStCOMS outputs
+#' Some functions facilitate WeStCOMS output processing. This includes defining WeStCOMS file names,  directories to save/load files for multiple variables and new 2d fields from WeStCOMS outputs (such as thermocline strength) or R functions (e.g. sun angle).
+#'
+#' @section Unstructured mesh(es)
+#' \code{build.mesh()} builds the unstructured model mesh(es) around nodes or elements.
+#'
+#' @section Explore environmental conditions
+#' Some functions facilitate the summarisation and exploration of environmental conditions through space and time.
+#'
+#' @section Hydrodynamic model validation
+#' Some functions facilitate the validate WeStCOMS predictions with observations.
+#'
+#' @docType package
+#' @name WeStCOMSExploreR
+NULL
