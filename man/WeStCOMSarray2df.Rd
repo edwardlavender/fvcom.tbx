@@ -2,7 +2,7 @@
 % Please edit documentation in R/WeStCOMSarray2df.R
 \name{WeStCOMSarray2df}
 \alias{WeStCOMSarray2df}
-\title{Convert a WeStCOMS array to a dataframe for plot2dfield}
+\title{Convert a WeStCOMS array to a dataframe for \code{plot2dfield}}
 \usage{
 WeStCOMSarray2df(data, hour, layer = NULL, ID)
 }

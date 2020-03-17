@@ -14,9 +14,9 @@ quiver(x, y, u, v, scale = 0.05, angle = 10, length = 0.1, ...)
 
 \item{y}{A numeric value specifying the x coordinate(s) of the start point of the arrow(s).}
 
-\item{u}{The u (Easting) component vector.}
+\item{u}{The u (easting) component vector.}
 
-\item{v}{The v (Northing) component vector.}
+\item{v}{The v (northing) component vector.}
 
 \item{scale}{A numeric value which scales the length of the arrow shaft.}
 

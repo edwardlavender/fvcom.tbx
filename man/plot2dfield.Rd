@@ -50,7 +50,7 @@ plot2dfield(
 
 \item{vector_field}{A logical object defining whether the data to be plotted across the mesh are a scalar field (e.g. temperature), in which case \code{vector_field = FALSE} or a vector field (e.g. wind speed), in which case \code{vector_field = TRUE}.}
 
-\item{data}{The data to be plotted across the mesh ID. For scalar fields, i.e., \code{vector_field = FALSE}, this is a single dataframe with two columns: ID, a numeric/factor/character column specifying the ID of each mesh cell, i.e., a unique reference to each element or node that matches that in \code{"mesh"}; and fvcom, a numeric column specifying the value asigned to that cell by the hydrodynamic model. For vector fields, this should be a list with two elements: one called "udata" and one called "vdata"; each element in the list should contain a dataframe, as described above, that contain the u and v vector components resolved at each element respectively.}
+\item{data}{The data to be plotted across the mesh ID. For scalar fields, i.e., \code{vector_field = FALSE}, this is a single dataframe with two columns: ID, a numeric/factor/character column specifying the ID of each mesh cell, i.e., a unique reference to each element or node that matches that in \code{"mesh"}; and fvcom, a numeric column specifying the value assigned to that cell by the hydrodynamic model. For vector fields, this should be a list with two elements: one called "udata" and one called "vdata"; each element in the list should contain a dataframe, as described above, that contain the u and v vector components resolved at each element respectively.}
 
 \item{xlim}{A numeric pair of numbers which define the lower and upper x limits of the study region respectively. These should be on the same scale as the coordinate system used for the coastline and mesh.}
 
@@ -80,7 +80,7 @@ plot2dfield(
 
 \item{colour_bar_y}{A pair of numeric values defining the lower and upper y coordinates of the colour bar respectively. ylim is the default.}
 
-\item{element_xy}{(optional) For vector fields only, element_xy is matrix containing the coordinates of each element in the mesh. If this is not supplied, then these are obtained from the mesh object. However, if you are applying this function in a custom iterative proceedure, supplying this matrix will improve computational performance (especially for large meshes) because it does not have to be recalculated every time.}
+\item{element_xy}{(optional) For vector fields only, element_xy is matrix containing the coordinates of each element in the mesh. If this is not supplied, then these are obtained from the mesh object. However, if you are applying this function in a custom iterative procedure, supplying this matrix will improve computational performance (especially for large meshes) because it does not have to be recalculated every time.}
 
 \item{arrow_angle}{For vector fields only, a numeric value specifying the angle between the two sides of the arrow head in degrees (see \code{\link[graphics]{arrows}}).}
 
