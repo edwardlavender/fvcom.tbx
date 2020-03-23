@@ -25,7 +25,7 @@ date.name <-
     #### If the user has selected to define date_name from a date...
     if(define == "date_name"){
       #### Check they have inputted a Date or POSIXct object:
-      if(!(class(x) %in% c("Date", "POSIXct"))){
+      if(!(class(x)[1] %in% c("Date", "POSIXct"))){
         stop("Please enter a Date or POSIXct object")
       }
 
