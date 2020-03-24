@@ -3,6 +3,7 @@
 #### Prepare_WeStCOMS_Data
 
 #### Read in data:
+setwd("/Users/el72/Documents/PhD/Academic_PhD_Work/FVCOM/WeStCOMS R code/R Package/WeStCOMSExplorer/WeStCOMSExploreR/data-raw/")
 # mesh dfs
 dat_trinodes <- readRDS("dat_trinodes.rda")
 dat_nodexy <- readRDS("dat_nodexy.rda")
@@ -17,6 +18,21 @@ dat_temp <- readRDS("dat_temp.rda")
 dat_tidal_elevation <- readRDS("dat_tidal_elevation.rda")
 dat_uwind_speed <- readRDS("dat_uwind_speed.rda")
 dat_vwind_speed <- readRDS("dat_vwind_speed.rda")
+# data to compute sigma layer depths
+dat_siglev <- data.frame(layer = 1:11,
+                         siglev = c(0.00000000,
+                                    -0.02196982,
+                                    -0.06761890,
+                                    -0.15559244,
+                                    -0.30293667,
+                                    -0.50000000,
+                                    -0.69706333,
+                                    -0.84440756,
+                                    -0.93238109,
+                                    -0.97803020,
+                                    -1.00000000)
+                         )
+dat_h <- readRDS("dat_h.rda")
 
 #### Checks
 # mesh dfs
@@ -49,7 +65,9 @@ usethis::use_data(dat_temp, overwrite = TRUE)
 usethis::use_data(dat_tidal_elevation, overwrite = TRUE)
 usethis::use_data(dat_uwind_speed, overwrite = TRUE)
 usethis::use_data(dat_vwind_speed, overwrite = TRUE)
-
+# data to compute sigma layer depths
+usethis::use_data(dat_h, overwrite = TRUE)
+usethis::use_data(dat_siglev, overwrite = TRUE)
 
 #### End of code.
 ##############################################
