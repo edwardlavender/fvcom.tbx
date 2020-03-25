@@ -14,7 +14,7 @@
 #' @examples
 #'
 #' #### (1) Compute sun angle across a sample of WeStCOMS nodes
-#' sun_angle <- sun.angle.across.mesh(nodexy = WeStCOMSExploreR::dat_nodexy,
+#' sun_angle <- compute_sun_angle_field(nodexy = WeStCOMSExploreR::dat_nodexy,
 #' date = as.character("2016-01-01"),
 #' date_name = 160101,
 #' tz = "UTC",
@@ -32,9 +32,9 @@
 
 ################################################
 ################################################
-#### sun.angle.across.mesh
+#### compute_sun_angle_field
 
-sun.angle.across.mesh <-
+compute_sun_angle_field <-
   function(nodexy,
            date,
            date_name = NULL,
@@ -101,7 +101,7 @@ sun.angle.across.mesh <-
     if(!is.null(dir2save)){
       # If the user hasn't provided a date name, then we'll define this:
       if(is.null(date_name)){
-        date.name(date, define = "date_name")
+        date_name(date, define = "date_name")
       }
       # Define a path/filename to save based on datename:
       sun_angle_file_name <- paste0(dir2save, date_name, ".RData")

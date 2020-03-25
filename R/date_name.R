@@ -8,13 +8,13 @@
 #'
 #' @examples
 #' # 1) Extract the WeStCOMS file name as a numeric object from some dates:
-#' date.name(x = as.Date(c("2016-03-01", "2016-03-02")), define = "date_name")
+#' date_name(x = as.Date(c("2016-03-01", "2016-03-02")), define = "date_name")
 #'
 #' # 2) Define a sequence of dates from WeStCOMS file names:
-#' date.name(x = c(160101, 170101), define = "date")
+#' date_name(x = c(160101, 170101), define = "date")
 #' @export
 
-date.name <-
+date_name <-
   function(x, define = "date_name"){
 
     #### Check that the input to define is allowed:

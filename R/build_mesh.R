@@ -17,14 +17,14 @@
 #' # ...'In sp::Polygon(coords, hole) : less than 4 coordinates in polygon'.
 #' # This can be safely ignored. This is because each polygon is a prism;
 #' # ... i.e., only comprised of three coordinates.
-#' mesh_around_elements <- build.mesh(nodexy = dat_nodexy,
+#' mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
 #'                                    trinodes = dat_trinodes,
 #'                                    mesh_type = "node",
 #'                                    cl = NULL,
 #'                                    pass2varlist = list(NULL))
 #'
 #' # 2) Build a mesh around nodes (based on elements) on a single processor
-#' mesh_around_nodes <- build.mesh(nodexy = dat_nodexy,
+#' mesh_around_nodes <- build_mesh(nodexy = dat_nodexy,
 #'                                 trinodes = dat_trinodes,
 #'                                 mesh_type = "element",
 #'                                 cl = NULL,
@@ -33,8 +33,8 @@
 #' # 3) Build a mesh around elements (based on nodes) using parallel processing
 #' # Define cluster object:
 #' cl <- parallel::makeCluster(2L)
-#' # Run the build.mesh algorithm in parallel by supplying a cluster:
-#' mesh_around_elements <- build.mesh(nodexy = dat_nodexy,
+#' # Run the build_mesh algorithm in parallel by supplying a cluster:
+#' mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
 #'                                    trinodes = dat_trinodes,
 #'                                    mesh_type = "node",
 #'                                    cl = cl,
@@ -55,10 +55,10 @@
 
 ###################################################
 ###################################################
-#### build.mesh
+#### build_mesh
 
-# build.mesh
-build.mesh <-
+# build_mesh
+build_mesh <-
   function(
     nodexy,
     trinodes,
@@ -246,7 +246,7 @@ build.mesh <-
 
   return(mesh_spdf)
 
-} # close build.mesh function
+} # close build_mesh function
 
 
 

@@ -8,7 +8,7 @@
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
 #' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This is required if you specify some function arguments via objects, rather than directly. (See the use of \code{path} and \code{vars1} in the examples.) These objects must be located in the global environment.
 #'
-#'@details Thermocline strength is approximated as the difference in temperature between the surface and the bottom, which is much computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Note that this means that the thermocline_strength option cannot be applied to the data supplied with this package, which is a small subset of the temperature data that does not include the full 10 layers. Speeds and directions are given in m/s and degrees respectively. Direction is the direction of mass flow. Sun angle is calculated using \code{\link[WeStCOMSExploreR]{sun.angle.across.mesh}}.
+#'@details Thermocline strength is approximated as the difference in temperature between the surface and the bottom, which is much computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Note that this means that the thermocline_strength option cannot be applied to the data supplied with this package, which is a small subset of the temperature data that does not include the full 10 layers. Speeds and directions are given in m/s and degrees respectively. Direction is the direction of mass flow. Sun angle is calculated using \code{\link[WeStCOMSExploreR]{compute_sun_angle_field}}.
 #'
 #' @examples
 #' #### (1) Implement function on a single processor
@@ -20,10 +20,10 @@
 #' # ... from which the necessary data can be loaded
 #' # Examine of path:
 #' list.files(path)
-#' # Use define.dir to create empty folders for these new variables:
-#' define.dir(dir = path, vars = vars1)
+#' # Use create_wcdirs() to create empty folders for these new variables:
+#' create_wcdirs(dir = path, vars = vars1)
 #' # Define new fields
-#' define.new2dfield(vars = vars1,
+#' compute_new2dfield(vars = vars1,
 #'                   nodexy = WeStCOMSExploreR::dat_nodexy,
 #'                   dir = path,
 #'                   date_name = c("160301", "160302")
@@ -35,7 +35,7 @@
 #' # (This is most beneficial for a long vector of date_name),
 #' # but, for demonstration purposes...:
 #' cl <- parallel::makeCluster(2L)
-#' define.new2dfield(vars = vars1,
+#' compute_new2dfield(vars = vars1,
 #'                   nodexy = WeStCOMSExploreR::dat_nodexy,
 #'                   dir = path,
 #'                   date_name = c("160301", "160302"),
@@ -50,9 +50,9 @@
 
 ################################################
 ################################################
-#### define.new2dfield
+#### compute_new2dfield
 
-define.new2dfield <-
+compute_new2dfield <-
   function(
     vars,
     nodexy,
@@ -113,7 +113,7 @@ define.new2dfield <-
     # If a cluster has been supplied, then
     # ... the following objects need to be exported:
     if(!is.null(cl)){
-      varlist_internal <- list("sun.angle.across.mesh")
+      varlist_internal <- list("compute_sun_angle_field")
       varlist <- append(varlist_internal, pass2varlist)
       parallel::clusterExport(cl = cl, varlist = varlist)
       }
@@ -252,8 +252,8 @@ define.new2dfield <-
 
         #### Calculate sun_angle
         sun_angles_across_mesh <-
-          sun.angle.across.mesh(nodexy = nodexy,
-                                date = date.name(dn, define = "date"),
+          compute_sun_angle_field(nodexy = nodexy,
+                                date = date_name(dn, define = "date"),
                                 date_name = dn,
                                 tz = "UTC",
                                 hours = 1:24,
@@ -271,7 +271,7 @@ define.new2dfield <-
       parallel::stopCluster(cl)
     }
 
-  } # close function define.new2dfield
+  } # close function compute_new2dfield
 
 
 #### End of code.

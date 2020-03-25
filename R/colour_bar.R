@@ -15,9 +15,9 @@
 
 
 ################################################
-#### colour.bar
+#### colour_bar
 
-colour.bar <-
+colour_bar <-
   function(
     uniform_values,
     colour_palette_fn,

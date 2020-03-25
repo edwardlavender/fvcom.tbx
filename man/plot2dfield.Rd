@@ -46,7 +46,7 @@ plot2dfield(
 \arguments{
 \item{coastline}{A spatial object, such as a shapefile (i.e. SpatialPolygonsDataFrame), that delineates the coastline in the study area. This is assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below).}
 
-\item{mesh}{A SpatialPolygonsDataFrame, created by \code{\link[WeStCOMSExploreR]{build.mesh}}, that defines the unstructured mesh in the study area across which environmental conditions have been resolved. This is also assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below). For conditions resolved at the nodes of an unstructured grid, a mesh around nodes (i.e. based on elements) is required. In contrast, for conditions resolved at the elements of an unstructured grid, a mesh around elements (i.e. based on nodes) is required.}
+\item{mesh}{A SpatialPolygonsDataFrame, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that defines the unstructured mesh in the study area across which environmental conditions have been resolved. This is also assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below). For conditions resolved at the nodes of an unstructured grid, a mesh around nodes (i.e. based on elements) is required. In contrast, for conditions resolved at the elements of an unstructured grid, a mesh around elements (i.e. based on nodes) is required.}
 
 \item{vector_field}{A logical object defining whether the data to be plotted across the mesh are a scalar field (e.g. temperature), in which case \code{vector_field = FALSE} or a vector field (e.g. wind speed), in which case \code{vector_field = TRUE}.}
 

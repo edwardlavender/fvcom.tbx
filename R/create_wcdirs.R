@@ -10,7 +10,7 @@
 #'
 #'\dontrun{
 #' # Define folders for several variables in the working directory:
-#' define.dir(dir = getwd(), vars = c("temp", "salinity", "tidal_elevation", "short_wave"))
+#' create_wcdirs(dir = getwd(), vars = c("temp", "salinity", "tidal_elevation", "short_wave"))
 #'}
 #'
 #' @export
@@ -19,7 +19,7 @@
 ################################################
 #### Define function:
 
-define.dir <-
+create_wcdirs <-
   function(
     dir = getwd(),
     vars = "temp"){

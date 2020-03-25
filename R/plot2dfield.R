@@ -2,7 +2,7 @@
 #' @description This function creates a 2 dimensional map of the environmental conditions over space, as resolved across the nodes or elements of an unstructured grid, for a given depth/altitude, and time. Scalar fields are shown as a coloured surface, with the colour of a grid cell corresponding to the value of that cell. Vector fields are shown as coloured arrows ontop of the unstructured grid which point in the direction of mass flow and whose colour corresponds to the total magnitude of the vector, derived from the two (u and v) vector components
 #'
 #' @param coastline A spatial object, such as a shapefile (i.e. SpatialPolygonsDataFrame), that delineates the coastline in the study area. This is assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below).
-#' @param mesh A SpatialPolygonsDataFrame, created by \code{\link[WeStCOMSExploreR]{build.mesh}}, that defines the unstructured mesh in the study area across which environmental conditions have been resolved. This is also assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below). For conditions resolved at the nodes of an unstructured grid, a mesh around nodes (i.e. based on elements) is required. In contrast, for conditions resolved at the elements of an unstructured grid, a mesh around elements (i.e. based on nodes) is required.
+#' @param mesh A SpatialPolygonsDataFrame, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that defines the unstructured mesh in the study area across which environmental conditions have been resolved. This is also assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below). For conditions resolved at the nodes of an unstructured grid, a mesh around nodes (i.e. based on elements) is required. In contrast, for conditions resolved at the elements of an unstructured grid, a mesh around elements (i.e. based on nodes) is required.
 #' @param vector_field A logical object defining whether the data to be plotted across the mesh are a scalar field (e.g. temperature), in which case \code{vector_field = FALSE} or a vector field (e.g. wind speed), in which case \code{vector_field = TRUE}.
 #' @param data The data to be plotted across the mesh ID. For scalar fields, i.e., \code{vector_field = FALSE}, this is a single dataframe with two columns: ID, a numeric/factor/character column specifying the ID of each mesh cell, i.e., a unique reference to each element or node that matches that in \code{"mesh"}; and fvcom, a numeric column specifying the value assigned to that cell by the hydrodynamic model. For vector fields, this should be a list with two elements: one called "udata" and one called "vdata"; each element in the list should contain a dataframe, as described above, that contain the u and v vector components resolved at each element respectively.
 #' @param xlim A numeric pair of numbers which define the lower and upper x limits of the study region respectively. These should be on the same scale as the coordinate system used for the coastline and mesh.
@@ -325,11 +325,11 @@ plot2dfield <-
 
       #### Add a colour bar, if specified:
       if(colour_bar_add){
-        # Add the colour bar at user defined positions, using the colour.bar() function
+        # Add the colour bar at user defined positions, using the colour_bar() function
         Hmisc::subplot(x = colour_bar_x,
                        y = colour_bar_y,
                        fun =
-                         colour.bar(
+                         colour_bar(
                            uniform_values = pretty_vals,
                            cols = cols,
                            legend_labels = pretty(range(pretty_vals), 10),

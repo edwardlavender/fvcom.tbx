@@ -47,20 +47,22 @@ outside of R is required. This is described in the vignette.
 Some functions are designed to facilitate processing WeStCOMS outputs.
 These include:
 
-  - `date.name()` - flick between dates and WeStCOMS file names;
-  - `define.dir()` - create folders in which to store WeStCOMS outputs;
-  - `define.dates2load()` - define a sequence of dates for which to load
+  - `date_name()` - flick between dates and WeStCOMS file names;
+  - `create_wcdirs()` - create folders in which to store WeStCOMS
+    outputs;
+  - `define_dates2load()` - define a sequence of dates for which to load
     WeStCOMS files, accounting for corrupt files;
-  - `define.new2dfield()` - define new 2 dimensional hydrodynamic fields
-    from WeStCOMS outputs (namely, thermocline strength, wind speed,
-    wind direction, current speed, current direction and sun angle);
-  - `sun.angle.across.mesh()` - compute sun angle as a WeStCOMS field;
+  - `compute_new2dfield()` - define new 2 dimensional hydrodynamic
+    fields from WeStCOMS outputs (namely, thermocline strength, wind
+    speed, wind direction, current speed, current direction and sun
+    angle);
+  - `compute_sun_angle_field()` - compute sun angle as a WeStCOMS field;
   - `WeStCOMSarray2df()` - convert a WeStCOMS array to a dataframe for
     plotting (see later);
 
 ## Unstructured mesh(es)
 
-`build.mesh()` builds an unstructured mesh (around nodes or elements)
+`build_mesh()` builds an unstructured mesh (around nodes or elements)
 from node coordinates and connections as a `SpatialPolygonsDataFrame` in
 R.
 
@@ -74,17 +76,20 @@ conditions through space and/or time. These include the following:
     given WeStCOMS file, if applicable);
   - `plot2dfield()` - visualise environmental conditions across a
     WeStCOMS layer through space at a specified point in time;
-  - `explore.WeStCOMS()` - implement `summarise2dfield()` and
-    `explore.WeStCOMS()` across multiple timepoints and/or WeStCOMS
-    files;
+  - `explore()` - implement `summarise2dfield()` and `plot2dfield()`
+    across multiple timepoints and/or WeStCOMS files;
+
+## Model validation
+
+`validate()` facilitates the comparison of observed conditions
+(including those from animal movement datasets) with predicted
+conditions to evaluate WeStCOMS skill.
 
 ## Future functionality
 
 Future plans for `WeStCOMSExploreR` include developing the following
 functionality:
 
-  - Validation of WeStCOMS predictions using (benthic) animal movement
-    (passive acoustic telemetry and depth timeseries) data;
   - Creating interactive bathymetry plots;
   - Exploring temperature profiles through space and time;
   - Exploring spatiotemporal variation in environmental conditions in

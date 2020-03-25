@@ -66,10 +66,10 @@ This R package attempts to minimise the MATLAB® code required by the user to ex
 3. A dataframe that contains the depth of each node below mean sea level. This is defined in the 'FVCOM1.h' object in a MATLAB® file (the depth below mean sea level is constant irrespective of date).  
 4. A set of folders, one for each environmental variable of interest, each one containing a MATLAB® file which contains an array defining the values of that variable for each hour on that day, at each layer (if relevant) at at each node.  
 
-To do this, the package includes several of R functions to streamline this process for users unfamiliar with MATLAB®. The first step is to define a dataframe, comprising a sequence of dates for which the user has MATLAB® files, that can be imported into the supplementary MATLAB® script A provided in the appendix of this document. This script attempts to loads in each MATLAB® file, to check that it is not corrupt: WeStCOMS outputs are so large, it is relatively easy for some files not to copy onto a user's local drive correctly; if so, it is better to identify these dates sooner rather than later. This sequence of dates can be defined using the `WeStCOMSExploreR::define.dates2load()` function. In this function, the user can either specify a start date and and end date, if they have access to WeStCOMS outputs for each date between these dates, or a custom vector of dates otherwise. The function returns a dataframe comprising `date` (a Date object), `year` (a 2-digit numeric object) and `date_name` (a 6 digit numeric object which reflects the WeStCOMS file name code corresponding to each date). Here, let's assume we have access to all the FVCOM files between 2016-03-01 and 2016-03-05: 
+To do this, the package includes several of R functions to streamline this process for users unfamiliar with MATLAB®. The first step is to define a dataframe, comprising a sequence of dates for which the user has MATLAB® files, that can be imported into the supplementary MATLAB® script A provided in the appendix of this document. This script attempts to loads in each MATLAB® file, to check that it is not corrupt: WeStCOMS outputs are so large, it is relatively easy for some files not to copy onto a user's local drive correctly; if so, it is better to identify these dates sooner rather than later. This sequence of dates can be defined using the `WeStCOMSExploreR::define_dates2load()` function. In this function, the user can either specify a start date and and end date, if they have access to WeStCOMS outputs for each date between these dates, or a custom vector of dates otherwise. The function returns a dataframe comprising `date` (a Date object), `year` (a 2-digit numeric object) and `date_name` (a 6 digit numeric object which reflects the WeStCOMS file name code corresponding to each date). Here, let's assume we have access to all the FVCOM files between 2016-03-01 and 2016-03-05: 
 ```{r}
-# Use define.dates2load function to define an initial series of dates to check whether all WeStCOMS outputs are functional 
-dates2load <- WeStCOMSExploreR::define.dates2load(start_date = as.Date("2016-03-01"), 
+# Use define_dates2load function to define an initial series of dates to check whether all WeStCOMS outputs are functional 
+dates2load <- WeStCOMSExploreR::define_dates2load(start_date = as.Date("2016-03-01"), 
                                                   end_date = as.Date("2016-03-05"), 
                                                   corrupt_dates = NULL)
 
@@ -79,19 +79,19 @@ dates2load
 # This dataframe should now be saved as a .csv file that can be imported into Appendix Script A. 
 ```
 
-Under the hood, this function uses `WeStCOMSExploreR::date.name()` function to convert dates to date names that match WeStCOMS files. For example: 
+Under the hood, this function uses `WeStCOMSExploreR::date_name()` function to convert dates to date names that match WeStCOMS files. For example: 
 ```{r}
-WeStCOMSExploreR::date.name(x = as.Date("2016-03-01"), define = "date_name")
+WeStCOMSExploreR::date_name(x = as.Date("2016-03-01"), define = "date_name")
 ```
 It is also useful be able to reverse the process:
 ```{r}
-WeStCOMSExploreR::date.name(x = 160301, define = "date")
+WeStCOMSExploreR::date_name(x = 160301, define = "date")
 ```
 
 Load this dataframe into the Appendix A script (or an improved version!) and identify any corrupt files. Having determined whether or not there are any corrupt files, the same function can be used again - this time excluding any dates for which there are corrupt files as necessary - to define a sequence of dates to be loaded into Appendix Script B, which will export arrays for each environmental variable for each day inputted. Let's say the WeStCOMS file for 2016-03-02 is corrupt, then: 
 ```{r}
 # Define a dataframe for Appendix Script B that excludes any corrupt dates: 
-dates2load <- WeStCOMSExploreR::define.dates2load(start_date = as.Date("2016-03-01"), 
+dates2load <- WeStCOMSExploreR::define_dates2load(start_date = as.Date("2016-03-01"), 
                                                   end_date = as.Date("2016-03-05"), 
                                                   corrupt_dates = as.Date("2016-03-02"))
 
@@ -101,7 +101,7 @@ dates2load
 # Save dataframe.
 ```
 
-Before loading this dataframe into Appendix Script B, we need to define a sequence of folders which will contain all the environmental data for each variable of interest. This can be done manually or using the `define.dir` function:
+Before loading this dataframe into Appendix Script B, we need to define a sequence of folders which will contain all the environmental data for each variable of interest. This can be done manually or using the `create_wcdirs` function:
 ```{r, warning = FALSE}
 # Define a vector of environmental variables for which to create folders in which to store MATLAB® files;
 # The functions in this package assume that, given a particular variable, these folders exist. 
@@ -109,7 +109,7 @@ vars <- c("temp", "uvelocity", "velocity", "salinity", "tidal_elevation", "uwind
 # Create a folder for each environmental variable in a a specified directory (dir), here the working directory, 
 # ... making sure not to overwrite any existing folders (overwrite = FALSE):
 WeStCOMSpath <- system.file("WeStCOMS_files/", package = "WeStCOMSExploreR", mustWork = TRUE)
-WeStCOMSExploreR::define.dir(dir = WeStCOMSpath, 
+WeStCOMSExploreR::create_wcdirs(dir = WeStCOMSpath, 
                              vars = vars
                              )
 # Check that we have successfully created new folders in the specified path for each variable:
@@ -120,7 +120,7 @@ You are now in a position to run Appendix Script B. This script loads in the WeS
 
 # Processing model outputs 
 
-Before you proceed to build the WeStCOMS' mesh(es) and explore spatiotemporal variation in environmental conditions in the Firth of Lorn, you may wish to use the outputs you created above to define other environmental variables of interest. For example, you may wish to simplify the $u$ and $v$ components of wind velocity into wind speed; or you may wish to use the 3d temperature outputs to define a 2d representation of thermocline parameters (e.g. thermocline strength) so that you can examine how these parameters change over space. You might also want to calculate other variables, such as sun angle, which are not resolved by WeStCOMS, but quickly calculated in R, so that spatiotemporal variation in all environmental variables of interest can be expressed over the same area in the same way. This process is facilitated by the `WeStCOMSExploreR::define.new2dfield()` function. Before applying this function, add the necessary folders to your directory for storing new outputs: 
+Before you proceed to build the WeStCOMS' mesh(es) and explore spatiotemporal variation in environmental conditions in the Firth of Lorn, you may wish to use the outputs you created above to define other environmental variables of interest. For example, you may wish to simplify the $u$ and $v$ components of wind velocity into wind speed; or you may wish to use the 3d temperature outputs to define a 2d representation of thermocline parameters (e.g. thermocline strength) so that you can examine how these parameters change over space. You might also want to calculate other variables, such as sun angle, which are not resolved by WeStCOMS, but quickly calculated in R, so that spatiotemporal variation in all environmental variables of interest can be expressed over the same area in the same way. This process is facilitated by the `WeStCOMSExploreR::compute_new2dfield()` function. Before applying this function, add the necessary folders to your directory for storing new outputs: 
 ```{r, warning = FALSE}
 # Define a vector of variables to derive from MATLAB outputs.
 # current_speed and current_direction are also supported, but relevant sample data are not included
@@ -131,25 +131,25 @@ new_vars <- c("wind_speed",
               "sun_angle")
 
 # Define a new folder for each of these variables: 
-WeStCOMSExploreR::define.dir(dir = WeStCOMSpath, 
+WeStCOMSExploreR::create_wcdirs(dir = WeStCOMSpath, 
                              vars = new_vars)
 
 # Check
 new_vars %in% list.files(WeStCOMSpath)
 ```
 
-Then, the `WeStCOMSExploreR::define.new2dfield()` function can be used to create files of interest. To do this, you need to specify the dates for which you want to calculate new fields. If you want to produce files for all dates between two dates, then you need to specify a `start_date` and an end `end_date`; otherwise, you can supply a custom sequence of dates via the `dates` argument. Then, you need to define the directory from which the MATLAB® files required to calculate new fields and corresponding to each of these dates can be loaded (i.e. the directory containing the folders of model outputs for different environmental variables). (The directory new files are saved is forced to be the same directory.) save new files (by default, this is assumed to be the same. The new fields to be calculated from existing data are inputted in `vars`. Currently supported options are as follows:
+Then, the `WeStCOMSExploreR::compute_new2dfield()` function can be used to create files of interest. To do this, you need to specify the dates for which you want to calculate new fields. If you want to produce files for all dates between two dates, then you need to specify a `start_date` and an end `end_date`; otherwise, you can supply a custom sequence of dates via the `dates` argument. Then, you need to define the directory from which the MATLAB® files required to calculate new fields and corresponding to each of these dates can be loaded (i.e. the directory containing the folders of model outputs for different environmental variables). (The directory new files are saved is forced to be the same directory.) save new files (by default, this is assumed to be the same. The new fields to be calculated from existing data are inputted in `vars`. Currently supported options are as follows:
 
 1. `thermocline_strength`. For each day, for each hour and in each node, the strength of the thermocline is calculated as the difference between the temperature resolved at layer 1 and layer 10 (the bottom layer at which temperatures are resolved). This metric is used instead of other metrics (e.g. the standard deviation of a temperature profile, which has been show to be reasonable metric of thermocline strength [@fiedler2010]), because a difference is so much quicker to calculate. Note that `thermocline_strength` cannot be calculated with the sample data included in this package, which only contain temperature outputs for the $1^{st}$ and $2^{nd}$ layers (to minimise package size).
 3. `wind_speed` ($ms^{-1}$). For each day, for each hour and in each node, the $u$ and $v$ components of wind velocity are used to calculate wind speed.
 4. `wind_direction` ($^\circ$). As above, but for wind direction. This is the cardinal direction of mass flow (i.e. the direction in (not from) which the wind is blowing). 
 5. `current speed` ($ms^{-1}$). For each date, for each hour, for each node, for each layer, current speed is calculated from the $u$ and $v$ vectors.
 6. `current direction` ($^\circ$). As above, but for current direction. This is the cardinal direction of mass flow (i.e. the direction in which currents are flowing).
-7. `sun angle` ($^\circ$). This is the angle of the sun relative to the horizon. It is calculated by the `WeStCOMSExploreR::sun.angle.across.mesh()` function. The calculation of sun angle uses suncalc [@thieurmel2019]. 
+7. `sun angle` ($^\circ$). This is the angle of the sun relative to the horizon. It is calculated by the `WeStCOMSExploreR::compute_sun_angle_field()` function. The calculation of sun angle uses suncalc [@thieurmel2019]. 
 
 For each date specified, for each environmental variable, the function will save a new .RData file in the appropriate folder in the supplied directory (`dir`). (.RData files are the like the R equivalent of .mat files; they are used by WeStCOMSExploreR to maximise storage space efficiency and ensure file consistency.) For larger sequences of dates, this function can be implemented in parallel, but this is not necessary here. Note that, to calculate `sun_angle`, its necessary to include a mesh object (see below).
 ```{r}
-WeStCOMSExploreR::define.new2dfield(vars = new_vars,
+WeStCOMSExploreR::compute_new2dfield(vars = new_vars,
                                     nodexy = WeStCOMSExploreR::dat_nodexy,
                                     dir = WeStCOMSpath,
                                     date_name = c("160301", "160302"), 
@@ -180,19 +180,19 @@ Using these objects, we can build the unstructured mesh:
 # Define coordinate system (WGS84)
 proj <- sp::CRS("+init=epsg:4326")
 
-# Note that with the full mesh, you might choose to run the build.mesh algorithm in parallel. 
+# Note that with the full mesh, you might choose to run the build_mesh algorithm in parallel. 
 # This code below demonstrates how to do this; however, because we are only working with a 
 # ... subset of the mesh here, this is not necessary, so I'll set cl to NULL (the default):
 cl <- NULL
-# If you want to define a cluster to run build.mesh algorithm in parallel (for speed): :
+# If you want to define a cluster to run build_mesh algorithm in parallel (for speed): :
 # cl <- parallel::makeCluster(12L)
 
-# Use build.mesh to define a mesh based on elements (i.e. around nodes):
+# Use build_mesh to define a mesh based on elements (i.e. around nodes):
 # This returns a SpatialPolygonsDataFrame. 
 # The user is recommended to build the whole mesh and crop this to 
 # ... their study domain, rather than using a subset of nodexy/trinodes to construct 
 # ... the mesh (even though this can be quicker). 
-dat_mesh_around_nodes <- WeStCOMSExploreR::build.mesh(nodexy = dat_nodexy, 
+dat_mesh_around_nodes <- WeStCOMSExploreR::build_mesh(nodexy = dat_nodexy, 
                                                   trinodes = dat_trinodes,
                                                   mesh_type = "element", 
                                                   proj4string = proj, 
@@ -233,8 +233,8 @@ raster::lines(dat_mesh_around_nodes)
 
 In the same way, we can build and plot the mesh around elements. This should be slightly quicker. Note that, normally, you will receive a warning when you build the mesh based on nodes for every mesh element (i.e. prism): "In sp::Polygon(coords, hole) : less than 4 coordinates in polygon". This warning is flagging up that our mesh is based on triangles, which are defined by three coordinates, and can be safely ignored. For this vignette, I've hidden the warning. 
 ```{r, warning = FALSE, fig.cap = "A sample of the WeStCOMS mesh around elements.", fig.height = 8, fig.width = 8}
-# Use build.mesh to define a mesh around elements (i.e. based on nodes): 
-dat_mesh_around_elements <- WeStCOMSExploreR::build.mesh(nodexy = dat_nodexy, 
+# Use build_mesh to define a mesh around elements (i.e. based on nodes): 
+dat_mesh_around_elements <- WeStCOMSExploreR::build_mesh(nodexy = dat_nodexy, 
                                                      trinodes = dat_trinodes,
                                                      mesh_type = "node",
                                                      proj4string = proj, 
@@ -255,7 +255,7 @@ raster::lines(dat_mesh_around_elements)
 
 ## Sample data
 
-We are now in a position to explore spatiotemporal variation in environmental conditions. For each variable, environmental conditions are stored in a 2 or 3d array in a .mat file or a .RData file (if you've built these yourself using `WeStCOMSExplorer::define.new2dfield`). For example, for tidal elevation ($m$) and other 2d variables, the model outputs in the .mat files are contain a 2d array of hours (1:24) x nodes/elements. In contrast, for temperature and other 3d variables, model outputs are stored in a 3d array of hours x layers x nodes/elements. In this package, I have included two sample .mat files for each of the following variables: 
+We are now in a position to explore spatiotemporal variation in environmental conditions. For each variable, environmental conditions are stored in a 2 or 3d array in a .mat file or a .RData file (if you've built these yourself using `WeStCOMSExplorer::compute_new2dfield`). For example, for tidal elevation ($m$) and other 2d variables, the model outputs in the .mat files are contain a 2d array of hours (1:24) x nodes/elements. In contrast, for temperature and other 3d variables, model outputs are stored in a 3d array of hours x layers x nodes/elements. In this package, I have included two sample .mat files for each of the following variables: 
 
 * uwind_speed (defined at layer = 1 and mesh elements)  
 * vwind_speed (defined at layer = 1 and mesh elements)  
@@ -264,7 +264,7 @@ We are now in a position to explore spatiotemporal variation in environmental co
 
 To reduce data volume, I have only included two hours (1, 2), two layers (1,  2, if applicable) and the subset of nodes/elements enclosed in the area defined around Oban above. For the 2d or 3d variables, this means that columns or sheets $1, 2,...n$, do not correspond to nodes/elements $1, 2,...,n$, but to nodes `dat_mesh_around_nodes$ID[1:n]` or elements `dat_mesh_around_elements$ID[1:n]`. For example, the first three columns/sheets correspond to nodes `r dat_mesh_around_nodes$ID[1:3]`, for variables resolved at nodes, or elements `r dat_mesh_around_elements$ID[1:3]`, for variables resolved at elements. Otherwise, these outputs are identical to the outputs extracted from WeStCOMS. 
 
-To explore spatiotemporal conditions, we are going to begin by calculating summary statistics across the area at a given point in time by using `WeStCOMSExploreR::summarise2dfield()`. To apply this function, the user needs to load the WeStCOMS outputs into R, select the subset of information required and pass this reduced array to `WeStCOMSExploreR::summarise2dfield()`. We will then proceed to map the environmental conditions over space for a single point in time using the `WeStCOMSExploreR::plot2dfield()` function. `WeStCOMSExploreR::explore.WeStCOMS()` is a broader function which can produce these plots and/or calculate summary statistics over space at multiple time points. This function requires the directory of the WeStCOMS outputs which are loaded in sequence to create plots and/or calculate summary statistics. Sequentially loading, processing and replacing files is necessary given the size of WeStCOMS files. 
+To explore spatiotemporal conditions, we are going to begin by calculating summary statistics across the area at a given point in time by using `WeStCOMSExploreR::summarise2dfield()`. To apply this function, the user needs to load the WeStCOMS outputs into R, select the subset of information required and pass this reduced array to `WeStCOMSExploreR::summarise2dfield()`. We will then proceed to map the environmental conditions over space for a single point in time using the `WeStCOMSExploreR::plot2dfield()` function. `WeStCOMSExploreR::explore()` is a broader function which can produce these plots and/or calculate summary statistics over space at multiple time points. This function requires the directory of the WeStCOMS outputs which are loaded in sequence to create plots and/or calculate summary statistics. Sequentially loading, processing and replacing files is necessary given the size of WeStCOMS files. 
 
 ## Summarising environmental conditions at a single plot in time: `summarise2dfield`
 
@@ -416,13 +416,13 @@ WeStCOMSExploreR::plot2dfield(coastline = dat_coast_around_oban,
                               )
 ```
 
-## Exploring environmental conditions over space and through time: `explore.WeStCOMS`
+## Exploring environmental conditions over space and through time: `explore()`
 
-It is often desirable to move beyond snapshots of spatial variation at particular moments in time to consider the extent to which spatial variation changes through time. To this end, the `WeStCOMSExploreR::explore.WeStCOMS()` function provides a mechanism to move over multiple variables and/or timesteps (days and hours) to calculate summary statistics and/or create plots. After this, timeseries of summary statistics can then be plotted to examine the relative scale of spatial and temporal variation, and multiple plots can be linked into animations which map how spatial variation in environmental conditions changes through time. 
+It is often desirable to move beyond snapshots of spatial variation at particular moments in time to consider the extent to which spatial variation changes through time. To this end, the `WeStCOMSExploreR::explore()` function provides a mechanism to move over multiple variables and/or timesteps (days and hours) to calculate summary statistics and/or create plots. After this, timeseries of summary statistics can then be plotted to examine the relative scale of spatial and temporal variation, and multiple plots can be linked into animations which map how spatial variation in environmental conditions changes through time. 
 
-To implement `WeStCOMSExploreR::explore.WeStCOMS()`, it is necessary to define `fields2d`, a dataframe which contains the environmental variables and their associated properties for which to calculate summary statistics and/or make plots. The user also needs to specify the directory from which files can be loaded, and the dates which should be loaded. If `sun_angle` has not already been calculated, this can also be achieved by defining a list of parameters to be passed to `WeStCOMSExploreR::sun.angle.across.mesh()`. To calculate summary statistics, a list of essential arguments, passed to `WeStCOMSExploreR::summarise2dfield()`, needs to supplied via the `summary_stats_param` argument . Similarly, to make plots, a list of essential parameters needs to be supplied via the `plot_param` argument, but additional customisation arguments can be supplied outside of this list that are passed to `WeStCOMSExploreR::plot2dfield()`. The function can be parallelised over environmental variables or dates by specifying inputs for the `parallelise`, `cl` and `pass2varlist` arguments. If the user opts to create plots in parallel, these need to be saved to file (they will not be displayed). 
+To implement `WeStCOMSExploreR::explore()`, it is necessary to define `fields2d`, a dataframe which contains the environmental variables and their associated properties for which to calculate summary statistics and/or make plots. The user also needs to specify the directory from which files can be loaded, and the dates which should be loaded. If `sun_angle` has not already been calculated, this can also be achieved by defining a list of parameters to be passed to `WeStCOMSExploreR::compute_sun_angle_field()`. To calculate summary statistics, a list of essential arguments, passed to `WeStCOMSExploreR::summarise2dfield()`, needs to supplied via the `summary_stats_param` argument . Similarly, to make plots, a list of essential parameters needs to be supplied via the `plot_param` argument, but additional customisation arguments can be supplied outside of this list that are passed to `WeStCOMSExploreR::plot2dfield()`. The function can be parallelised over environmental variables or dates by specifying inputs for the `parallelise`, `cl` and `pass2varlist` arguments. If the user opts to create plots in parallel, these need to be saved to file (they will not be displayed). 
 
-```{r, fig.cap = "Maps of spatial variation in environmental conditions around Oban at multiple time points (WeStCOMSExploreR::explore.WeStCOMS() examples).", fig.height = 10, fig.width = 10}
+```{r, fig.cap = "Maps of spatial variation in environmental conditions around Oban at multiple time points (WeStCOMSExploreR::explore() examples).", fig.height = 10, fig.width = 10}
 # Define 2d covariates; associated layers; mesh_type
 field2d <- data.frame(cov2d = c("temp",
                                  "tidal_elevation",
@@ -439,11 +439,11 @@ field2d <- data.frame(cov2d = c("temp",
 # Define directory from which model outputs can be loaded:
 dir2load <- system.file("WeStCOMS_files/", package = "WeStCOMSExploreR", mustWork = TRUE)
 
-# Use WeStCOMSExploreR::explore.WeStCOMS to move over multiple variables and time points
+# Use WeStCOMSExploreR::explore() to move over multiple variables and time points
 # ... and to create plots and/or calculated summary statistics for each one. Here, 
 # ... we'll save summary outputs to a list and display plots: 
 summaries_ls <- 
-WeStCOMSExploreR::explore.WeStCOMS(
+WeStCOMSExploreR::explore(
   # Define arguments relating to data input... 
     field2d = field2d,
     mesh_around_nodes = WeStCOMSExploreR::dat_mesh_around_nodes,
@@ -501,7 +501,7 @@ cex1 <- 1.5
 l <- lapply(summaries_ls, function(sdf){
   # For each summary dataframe...
   # Define timestamps using dates and hour 
-  sdf$date <- WeStCOMSExploreR::date.name(sdf$date_name, define = "date")
+  sdf$date <- WeStCOMSExploreR::date_name(sdf$date_name, define = "date")
   sdf$timestamp <- as.POSIXct(sdf$date, tz = "UTC") + (sdf$hour * 60 * 60)
   # Define y limits:
   sdf_ylims <- c(floor(min(sdf$min)), ceiling(max(sdf$max)))
@@ -557,7 +557,7 @@ clear;
 % the latter two directories are where WeStCOMS files are stored for 2016 and 2017 respectively. 
 
 %%% Load dataframe that contains the dates to check
-% ... e.g. created by WeStCOMSExploreR::define.dates2load()
+% ... e.g. created by WeStCOMSExploreR::define_dates2load()
 targ = readtable([mhome 'FVCOM_filecheck.csv']);
 
 %%% Loop over every file... 

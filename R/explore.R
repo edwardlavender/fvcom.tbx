@@ -1,15 +1,15 @@
 #' @title Explore WeStCOMS model outputs in 2d
 #' @description This function computes summary statistics and/or maps environmental conditions for multiple environmental variables and/or timepoints. The user passes the function a dataframe specifying the variables to be included and their properties, the directory of the WeStCOMS files from which they can be loaded. For each variable, the function loads in the WeStCOMS files for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of WeStCOMS files.
 #'
-#' @param field2d A dataframe that defines the variables and their properties for which the outputs will be explored. This must contain the following columns: \code{cov2d}, a character vector of variable names which correspond to the names of the folders in which the model outputs are located (see \code{dir2load}, below); \code{dim}, a character vector of "3d" or "2d" that defines whether or not that variable is resolved across WeStCOMS layers; \code{cov2dlayer}, a numeric vector that defines the layer for which outputs are of interest;   \code{resolved_at}, a character vector of "node" or "element" which defines whether or not that variable is resolved at the nodes or elements of an unstructured grid; \code{mesh_type}, a character vector of the corresponding mesh type ("element" or "node" across which that variable is structured); \code{extension}, a character vector of the extension of the model outputs (usually ".mat" but ".RData" for outputs created by \code{\link[WeStCOMSExploreR]{define.new2dfield}}); \code{vector_field}, a logical vector defining whether or not that variable is a scalar (FALSE) or vector field (TRUE). For vector fields, the letters "wind" or "current" must be within the variable name in order for the algorithm to determine whether data should be loaded from the "uwind_speed" and "vwind_speed" or "uvelocity" and "vvelocity" folders in \code{dir2load} (see below).
-#' @param mesh_around_nodes A mesh, created by \code{\link[WeStCOMSExploreR]{build.mesh}}, that surrounds nodes. This is required for variables that are resolved at nodes.
+#' @param field2d A dataframe that defines the variables and their properties for which the outputs will be explored. This must contain the following columns: \code{cov2d}, a character vector of variable names which correspond to the names of the folders in which the model outputs are located (see \code{dir2load}, below); \code{dim}, a character vector of "3d" or "2d" that defines whether or not that variable is resolved across WeStCOMS layers; \code{cov2dlayer}, a numeric vector that defines the layer for which outputs are of interest;   \code{resolved_at}, a character vector of "node" or "element" which defines whether or not that variable is resolved at the nodes or elements of an unstructured grid; \code{mesh_type}, a character vector of the corresponding mesh type ("element" or "node" across which that variable is structured); \code{extension}, a character vector of the extension of the model outputs (usually ".mat" but ".RData" for outputs created by \code{\link[WeStCOMSExploreR]{compute_new2dfield}}); \code{vector_field}, a logical vector defining whether or not that variable is a scalar (FALSE) or vector field (TRUE). For vector fields, the letters "wind" or "current" must be within the variable name in order for the algorithm to determine whether data should be loaded from the "uwind_speed" and "vwind_speed" or "uvelocity" and "vvelocity" folders in \code{dir2load} (see below).
+#' @param mesh_around_nodes A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that surrounds nodes. This is required for variables that are resolved at nodes.
 #' @param dataID_node A vector of node IDs which specifies the IDs of nodes within \code{mesh_around_nodes} for which there are model outputs. This provides a link between the array data loaded into the environment and the mesh. This is necessary because WeStCOMS arrays have a column 1,..., n for each node at which the variable is resolved. For full arrays, the column numbers correspond exactly to the IDs of mesh nodes. However, for subsetted arrays, column number x may not correspond to mesh ID x. Supplying dataID_node maintains the link between array column numbers and mesh cell IDs.
-#' @param mesh_around_elements A mesh, created by \code{\link[WeStCOMSExploreR]{build.mesh}}, that surrounds elements. This is required for variables that are resolved at elements.
+#' @param mesh_around_elements A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that surrounds elements. This is required for variables that are resolved at elements.
 #' @param dataID_element A vector of element IDs which specifies the IDs of nodes within \code{mesh_around_elements} for which there are model outputs (see above).
 #' @param dir2load A string defining the directory which contains folders, corresponding to the variables named in \code{field2d$cov2d} from which model outputs can be loaded. For all scalar fields, the variable supplied in \code{field2d$cov2d} must also be the name of the folder within \code{dir2save} from which data are loaded. For velocity fields (i.e. wind velocity or current velocity), the \code{field2d$cov2d} element must contain the letters "wind" or "current". U and V vector components are then loaded from the "uwind_speed" and "vwind_speed" or "uvelocity" and "vvelocity" folders respectively
 #' @param date_name A vector of date names for which environmental outputs will be examined for each variable.
 #' @param compute_sun_angle A logical input defining whether or not to compute sun angle.
-#' @param sun_angle_param A list containing some essential parameters that are passed to \code{\link[WeStCOMSExploreR]{sun.angle.across.mesh}} if sun angle is computed. This list should contain elements with the names: nodexy; tz; hours; degrees; dir2save; and verbose. These are described in \code{\link[WeStCOMSExploreR]{sun.angle.across.mesh}}. All other parameters are for calculating sun angle are fixed or computed internally.
+#' @param sun_angle_param A list containing some essential parameters that are passed to \code{\link[WeStCOMSExploreR]{compute_sun_angle_field}} if sun angle is computed. This list should contain elements with the names: nodexy; tz; hours; degrees; dir2save; and verbose. These are described in \code{\link[WeStCOMSExploreR]{compute_sun_angle_field}}. All other parameters are for calculating sun angle are fixed or computed internally.
 #' @param makeplot A logical input defining whether or not to make plots.
 #' @param plot_param A list of parameters required to make plots. These parameters either wrap around, or are passed as arguments, to \code{\link[WeStCOMSExploreR]{plot2dfield}}. The list needs to contain elements with the names: hours4plots, par_op, coastline, zlab, zlab_line, vector_scale, dir2save. hours4plots is a numeric vector of all the hours for which to create plots on a given day. par_op is an output from \code{graphics::par}. coastline is an object used to plot coastline (see \code{\link[WeStCOMSExploreR]{plot2dfield}}); and zlab, zlab_line and vector_scale are vectors that define the labels on the z axis, their distance from the z axis and the scale of the arrows used to plot vectors; for each inputted variable. Other graphical parameters are not variable specific and passed as additional arguments outside of this list (see below).
 #' @param compute_summary_stats A logical input defining whether or not summary statistics should be calculated.
@@ -21,7 +21,7 @@
 #'
 #' @return If \code{makeplot = TRUE}, the function will produce plots, either saved to file or displayed (the latter is only possible if \code{cl = NULL}). If \code{compute_summary_stats = TRUE}, the function will also return a list of dataframes, with one element for each environmental variable. Each dataframe the following columns: a date, hour and a column for each summary statistic specified.
 #'
-#' @seealso \code{\link[WeStCOMSExploreR]{build.mesh}}, \code{\link[WeStCOMSExploreR]{summarise2dfield}}, \code{\link[WeStCOMSExploreR]{plot2dfield}}
+#' @seealso \code{\link[WeStCOMSExploreR]{build_mesh}}, \code{\link[WeStCOMSExploreR]{summarise2dfield}}, \code{\link[WeStCOMSExploreR]{plot2dfield}}
 #'
 #' @examples
 #'
@@ -43,10 +43,10 @@
 #' # Define directory to save plots
 #' dir2save <- paste0(dir2load, "pngs/")
 #' dir.create(dir2save) # create png folder
-#' define.dir(dir2save, paste0(field2d$cov2d, "/")) # add folder within this for each variable
+#' create_wcdirs(dir2save, paste0(field2d$cov2d, "/")) # add folder within this for each variable
 #'
 #' # Use dataframe to examine outputs over space and time:
-#' WeStCOMSExploreR::explore.WeStCOMS(
+#' WeStCOMSExploreR::explore(
 #'   # Define arguments relating to data input...
 #'     field2d = field2d,
 #'     mesh_around_nodes = WeStCOMSExploreR::dat_mesh_around_nodes,
@@ -99,9 +99,9 @@
 
 ################################################
 ################################################
-#### explore.WeStCOMS
+#### explore
 
-explore.WeStCOMS <-
+explore <-
   function(
     field2d,
     mesh_around_nodes,
@@ -131,7 +131,7 @@ explore.WeStCOMS <-
     #### Set up
 
     #### Define date
-    date <- date.name(date_name, define = "date")
+    date <- date_name(date_name, define = "date")
     dndf <- data.frame(date = date, date_name = date_name)
 
     #### Define unique mesh IDs for which we have data and in the mesh
@@ -196,7 +196,7 @@ explore.WeStCOMS <-
     #####
     if(!is.null(cl1) | !is.null(cl2)){
       varlist_fns <- list("summarise2dfield",
-                          "sun.angle.across.mesh",
+                          "compute_sun_angle_field",
                           "plot2dfield")
       varlist <- append(varlist_fns, pass2varlist)
 
@@ -294,11 +294,11 @@ explore.WeStCOMS <-
                     }
 
                     # Else, if we're dealing with sun_angle and this needs to be computed,
-                    # Then we'll compute this using sun.angle.across.mesh():
+                    # Then we'll compute this using compute_sun_angle_field():
                   } else if(ev == "sun_angle" & compute_sun_angle){
                     # Define matrix
                     sun_angle_mat2save <-
-                      sun.angle.across.mesh(nodexy = sun_angle_param$nodexy,
+                      compute_sun_angle_field(nodexy = sun_angle_param$nodexy,
                                             date = date_current,
                                             date_name = date_name_current,
                                             tz = sun_angle_param$tz,

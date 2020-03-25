@@ -13,18 +13,18 @@
 #' @examples
 #'
 #' # 1) Define a dataframe for a regular sequence of dates between a start and end date:
-#' define.dates2load(start_date = as.Date("2016-03-01"),
+#' define_dates2load(start_date = as.Date("2016-03-01"),
 #'                   end_date = as.Date("2016-03-05"),
 #'                   corrupt_dates = NULL)
 #'
 #' # 2) Define a dataframe as above, but removing some corrupt dates:
-#' define.dates2load(start_date = as.Date("2016-03-01"),
+#' define_dates2load(start_date = as.Date("2016-03-01"),
 #'                   end_date = as.Date("2016-03-05"),
 #'                   corrupt_dates = as.Date(c("2016-03-02", "2016-03-03"))
 #'                   )
 #'
 #' # 3) Define a dataframe for a custom series of dates:
-#' define.dates2load(custom_dates = as.Date(c("2016-03-02", "2016-03-03", "2017-01-01")))
+#' define_dates2load(custom_dates = as.Date(c("2016-03-02", "2016-03-03", "2017-01-01")))
 #'
 #' @export
 #'
@@ -32,7 +32,7 @@
 ################################################
 #### Define function:
 
-define.dates2load <-
+define_dates2load <-
   function(start_date,
            end_date,
            custom_dates = NULL,
@@ -62,7 +62,7 @@ define.dates2load <-
     # add year
     fvcom$year <- as.numeric(substr(lubridate::year(fvcom$date), 3, 4))
     # define date_name
-    fvcom$date_name <- date.name(x = fvcom$date, define = "date_name")
+    fvcom$date_name <- date_name(x = fvcom$date, define = "date_name")
 
     #### Filter out corrupt dates:
     if(!is.null(corrupt_dates)){

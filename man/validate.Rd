@@ -27,7 +27,7 @@ validate(
 
 \item{threshold_match_gap}{A numeric input which defines the gap between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.}
 
-\item{mesh}{A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build.mesh}}.}
+\item{mesh}{A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build_mesh}}.}
 
 \item{match_hour}{A dataframe with two columns named 'hour' and 'index' which defines thew index in WeStCOMS files (i.e. the row) which corresponds to each hour. The default dataframe is usually appropriate, if WeStCOMS files have not been subsetted. However, if WeStCOMS files have been subsetted (e.g. selecting rows corresponding to hours 12 and 13), then rows 1 and 2 in WeStCOMS files now represent hours 12 and 13, not hours 0 and 1. \code{match_hour} provides this link (see Examples). All WeStCOMS files are assumed to have the same structure.}
 
@@ -35,7 +35,7 @@ validate(
 
 \item{match_mesh}{(optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheetts for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of WeStCOMS files: in this sitation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in WeStCOMS files. Hence, \code{match_mesh} provides this link (see Examples). All WeStCOMS files are assumed to have the same structure.}
 
-\item{dir2load}{A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date.name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.}
+\item{dir2load}{A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.}
 
 \item{extension}{A string which defines the extension of the WeStCOMS files. The default is \code{".mat"}.}
 
