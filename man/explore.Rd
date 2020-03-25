@@ -51,7 +51,7 @@ explore(
 
 \item{summary_stats_param}{A list of parameters necessary to calculate summary statistics. This list should contain elements with the following names: hours4stats, row_specific and funs. See \code{\link[WeStCOMSExploreR]{summarise2dfield}}.}
 
-\item{parallelise}{A character specifying whether or not to parallise over variables \code{"vars"} or dates, \code{"date_name"}. This is only applicable if a cluster is supplied (see below).}
+\item{parallelise}{A character specifying whether or not to parallel over variables \code{"vars"} or dates, \code{"date_name"}. This is only applicable if a cluster is supplied (see below).}
 
 \item{cl}{(optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.}
 

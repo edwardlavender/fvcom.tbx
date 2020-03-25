@@ -27,7 +27,7 @@ build_mesh(
 \item{pass2varlist}{A list containing a character vector of names of objects to export, to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This is required if \code{cl} is supplied and you specify some function arguments via objects, rather than directly. (See the use of \code{WeStCOMSExploreR::dat_nodexy} and \code{WeStCOMSExploreR::dat_trinodes} in the examples.) These objects must be located in the global environment.}
 }
 \value{
-An SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}). Each polygon has an ID corresponding to the ID of the node or element which is surrounds, as suppplied by the nodexy or trinodes dataframe respectively.
+An SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}). Each polygon has an ID corresponding to the ID of the node or element which is surrounds, as supplied by the nodexy or trinodes dataframe respectively.
 }
 \description{
 This function is used to build an unstructured mesh (around nodes or elements) from node coordinates and connections as a SpatialPolygonsDataFrame in R. This function was designed with the WeStCOMS unstructured mesh in mind.

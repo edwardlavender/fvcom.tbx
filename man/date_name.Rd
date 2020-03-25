@@ -9,7 +9,7 @@ date_name(x, define = "date_name")
 \arguments{
 \item{x}{A vector of dates or date names to be converted.}
 
-\item{define}{A character that specifes whether 'x' is to be converted from a date to a date_name (define = "date_name") or from a date_name to a date ("date").}
+\item{define}{A character that specifies whether 'x' is to be converted from a date to a date_name (define = "date_name") or from a date_name to a date ("date").}
 }
 \description{
 This function converts a date to the 6 digit code that relates that date to a WeStCOMS file name (or vice versa).

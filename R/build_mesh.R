@@ -8,7 +8,7 @@
 #' @param cl A cluster object created by \code{\link[parallel]{makeCluster}}. This is required if you want to run the algorithm in parallel, which can improve computation time (especially for large meshes). The default is NULL (i.e. the algorithm is run on a single processor: see examples). If supplied, the connection to the cluster is stopped within the function.
 #' @param pass2varlist A list containing a character vector of names of objects to export, to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This is required if \code{cl} is supplied and you specify some function arguments via objects, rather than directly. (See the use of \code{WeStCOMSExploreR::dat_nodexy} and \code{WeStCOMSExploreR::dat_trinodes} in the examples.) These objects must be located in the global environment.
 #'
-#' @return An SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}). Each polygon has an ID corresponding to the ID of the node or element which is surrounds, as suppplied by the nodexy or trinodes dataframe respectively.
+#' @return An SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}). Each polygon has an ID corresponding to the ID of the node or element which is surrounds, as supplied by the nodexy or trinodes dataframe respectively.
 #'
 #' @examples
 #'

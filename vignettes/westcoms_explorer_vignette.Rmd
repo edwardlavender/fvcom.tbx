@@ -62,7 +62,7 @@ WeStCOMS outputs are saved as MATLAB® (.mat) files. The outputs for every day a
 This R package attempts to minimise the MATLAB® code required by the user to explore initially the outputs of these files, preferring to offer alternatives in the form of R functions. However, prior to the use of the package to explore these outputs, it is necessary for the user to extract the following information from MATLAB® files:  
 
 1. A dataframe that defines the nodes surrounding each element (i.e. which nodes are connected to which other nodes). This is defined in the 'mesh.trinodes' object in MATLAB®. A sample dataframe, `dat_trinodes`, is available in this package. 
-2. A dataframe that contains the coordinates (longitude, latitude) for every node. This is defined in the 'mesh.nodesxy' object. A sample dataframe `dat_nodexy` is available in this package. 
+2. A dataframe that contains the coordinates (longitude, latitude) for every node. This is defined in the 'mesh.nodexy' object. A sample dataframe `dat_nodexy` is available in this package. 
 3. A dataframe that contains the depth of each node below mean sea level. This is defined in the 'FVCOM1.h' object in a MATLAB® file (the depth below mean sea level is constant irrespective of date).  
 4. A set of folders, one for each environmental variable of interest, each one containing a MATLAB® file which contains an array defining the values of that variable for each hour on that day, at each layer (if relevant) at at each node.  
 
