@@ -1,5 +1,5 @@
 #' @title Find the coordinates of specified mesh cells
-#' @description This function finds the coordinates of specified mesh cells. For nodes, these can be extracted from the \code{nodexy} dataframe or from the mesh. The latter method is not quite as accurate and is slower; this difference may become noticable for large meshes. However, for elements, the extraction of coordinates from the mesh is the only implemented method.
+#' @description This function finds the coordinates of specified mesh cells. For nodes, these can be extracted from the \code{nodexy} dataframe or from the mesh. The latter method is not quite as accurate and is slower; this difference may become noticeable for large meshes. However, for elements, the extraction of coordinates from the mesh is the only implemented method.
 #'
 #' @param mesh_ID A vector of integers which define mesh IDs for which coordinates are designed.
 #' @param mesh A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, around nodes or elements.

@@ -3,7 +3,7 @@
 #'
 #' @param start_date A date object specifying the earliest date for which you have a WeStCOMS file.
 #' @param end_date A date object specifying the latest date for which you have a WeStCOMS file. Specifying \code{start_date} and \code{end_date} is appropriate if you want to load all dates between a start and end date. If not, see \code{custom_dates}.
-#' @param custom_dates A vector of dates, for which to create the dataframe. This is an alternative to specifing \code{start_date} and \code{end_date} (see above).
+#' @param custom_dates A vector of dates, for which to create the dataframe. This is an alternative to specifying \code{start_date} and \code{end_date} (see above).
 #' @param corrupt_dates A vector of dates for which WeStCOMS files are corrupt and should not be included in the dataframe.
 #'
 #' @return A dataframe with three columns: date (Date object), year (2 digits, a numeric object) and date_name (6 digits, a numeric object).
