@@ -19,8 +19,13 @@ includes functions which facilitate the following operations:
 
   - Processing WeStCOMS outputs, including the definition of new fields;
   - Building the WeStCOMS unstructured mesh(es) as spatial objects;
+  - Working with WeStCOMS outputs, including extracting predictions,
+    locating cells and coordinates, computing layer depths and
+    interpolating predictions;
   - Exploring environmental conditions through space and time, with
     statistical summaries and maps;
+  - Validating WeStCOMS predictions with observations, including from
+    diverse animal movement datasets;
 
 ## Installation
 
@@ -52,7 +57,7 @@ These include:
     outputs;
   - `define_dates2load()` - define a sequence of dates for which to load
     WeStCOMS files, accounting for corrupt files;
-  - `compute_new2dfield()` - define new 2 dimensional hydrodynamic
+  - `compute_new2dfield()` - compute new 2 dimensional hydrodynamic
     fields from WeStCOMS outputs (namely, thermocline strength, wind
     speed, wind direction, current speed, current direction and sun
     angle);
@@ -65,6 +70,25 @@ These include:
 `build_mesh()` builds an unstructured mesh (around nodes or elements)
 from node coordinates and connections as a `SpatialPolygonsDataFrame` in
 R.
+
+## Work with WeStCOMS files
+
+Some functions are designed to facilitate working with WeStCOMS files.
+These include the following:
+
+  - `find_cells()` - find the mesh cells (for nodes or elements) which
+    enclose inputted coordinates;
+  - `find_xy()` - find the coordinates of mesh cells (for nodes or
+    elements);
+  - `extract()` - extract WeStCOMS predictions for multiple
+    dates/hours/layers/mesh cells;
+  - `calc_layer_depth()` - calculate the depths of Sigma layers when
+    parameters are known;
+  - `compute_layer_depth()` - compute the depths of Sigma layers,
+    extracting parameters from WeStCOMS outputs as necessary;
+  - `interp_layer()`, `interp_btw_hours()` and `interp_btw_depths()` -
+    interpolate fractional layer numbers and predictions between hours
+    or layers;
 
 ## Explore environmental conditions
 
@@ -90,9 +114,9 @@ conditions to evaluate WeStCOMS skill.
 Future plans for `WeStCOMSExploreR` include developing the following
 functionality:
 
-  - Creating interactive bathymetry plots;
+  - Creating interactive bathymetry plots (incuding via R Shiny);
   - Exploring temperature profiles through space and time;
   - Exploring spatiotemporal variation in environmental conditions in
     3d;
   - Defining bottom velocity from vertical profiles;
-  - Flexibility to define new environmental fields more easily;
+  - Improved flexibility to define new environmental fields;
