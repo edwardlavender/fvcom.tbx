@@ -16,7 +16,7 @@ define_dates2load(
 
 \item{end_date}{A date object specifying the latest date for which you have a WeStCOMS file. Specifying \code{start_date} and \code{end_date} is appropriate if you want to load all dates between a start and end date. If not, see \code{custom_dates}.}
 
-\item{custom_dates}{A vector of dates, for which to create the dataframe. This is an alternative to specifing \code{start_date} and \code{end_date} (see above).}
+\item{custom_dates}{A vector of dates, for which to create the dataframe. This is an alternative to specifying \code{start_date} and \code{end_date} (see above).}
 
 \item{corrupt_dates}{A vector of dates for which WeStCOMS files are corrupt and should not be included in the dataframe.}
 }
