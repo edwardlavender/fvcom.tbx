@@ -17,6 +17,11 @@ Some functions facilitate WeStCOMS output processing. This includes defining WeS
 \code{build.mesh()} builds the unstructured model mesh(es) around nodes or elements.
 }
 
+\section{Work with WeStCOMS files}{
+
+Some functions faciliate working with WeStCOMS files, including the extraction of predictions.
+}
+
 \section{Explore environmental conditions}{
 
 Some functions facilitate the summarisation and exploration of environmental conditions through space and time.
