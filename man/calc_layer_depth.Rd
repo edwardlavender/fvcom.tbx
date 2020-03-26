@@ -17,7 +17,7 @@ calc_layer_depth(siglev, h, el)
 The function returns a number/numeric vector of Sigma layer depths calculated from user inputs.
 }
 \description{
-The depth of WeStCOMS layers can be computed from the depth of the seabed below mean sea level (in a given location), the tidal elevation (at a given time and in a given location) and a vector of constants which adjusts for the relative position of each layer. If these values are known, \code{calc_layer_depth()} can be implemented to calculate the depth of Sigma layers. If these values are unknown, the function \code{compute_layer_depth} should be used instead: this function first computes the appropriate values for specified times/locations and then uses these values to calculate depths.
+The depth of WeStCOMS layers can be computed from the depth of the seabed below mean sea level (in a given location), the tidal elevation (at a given time and in a given location) and a vector of constants which adjusts for the relative position of each layer. If these values are known, \code{calc_layer_depth()} can be implemented to calculate the depth of Sigma layers. If these values are unknown, the function \code{\link[WeStCOMSExploreR]{compute_layer_depth}} should be used instead: this function first computes the appropriate values for specified times/locations and then uses these values to calculate depths.
 }
 \examples{
 
