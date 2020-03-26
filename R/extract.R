@@ -117,7 +117,7 @@ extract <-
 
 
     ########################################
-    #### Implement required to load FVCOM files
+    #### Implements required to load FVCOM files
 
     if(verbose) cat("Step 2: Getting ready to load in FVCOM files...\n")
 
