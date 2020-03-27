@@ -80,6 +80,11 @@ These include the following:
     enclose inputted coordinates;
   - `find_xy()` - find the coordinates of mesh cells (for nodes or
     elements);
+  - `hour_dbl()` and `hour_nearest()` define the hour of day as a double
+    or as the nearest integer hour (e.g. for extracting nearest
+    neighbour predictions);
+  - `exclude_corrupt()` and `exclude_unavailable()` exclude corrupt and
+    unavailable files from vectors of WeStCOMS file names
   - `extract()` - extract WeStCOMS predictions for multiple
     dates/hours/layers/mesh cells;
   - `calc_layer_depth()` - calculate the depths of Sigma layers when
