@@ -1,7 +1,7 @@
 #' @title Compute the depth of WeStCOMS layers at specified location(s) and time(s)
 #' @description In WeStCOMS, three-dimensional hydrodynamic conditions are predicted for each node (or element) at 11 Sigma layers (or between these layers) for every hour of every day. The approximate depth of each layer depends on the of the seabed below mean sea level (in a given location), the tidal elevation (in a given location and at a given time) and a constant which adjusts this depth for each layer, according to the equation \eqn{s_l \times (h_n + el_{n, t})} where \eqn{s} is a constant multiplier for layer \eqn{l}, \code{h} is the depth of node \code{n} below mean sea level and el us the tidal elevation{n, t} predicted at that node at hour \code{t}. If values for \eqn{h_n} and \eqn{el_{n, t}} are already known, \code{\link[WeStCOMSExploreR]{calc_layer_depth}} calculates the depths of the layers accordingly. Otherwise, \code{compute_depth_layer()} first extracts necessary parameters for these variables and then uses these to calculate the depths of all layers specified in \code{siglev} at specified times and locations. To implement \code{compute_depth_layer()}, the user must supply a dataframe which contains the times (dates and hours) for which depths should be calculated, as well as a vector of constants (\code{siglev}) which are used to calculate the depths of corresponding layers. If requested, the function can use the computed depths of each layer to assign user-supplied depths Sigma layers IDs using nearest neighbour interpolation or fractional layer IDs using linear interpolation.
 
-#' @param dat 	A dataframe which defines the WeStCOMS file date names, hours, and mesh (node) IDs for which layer depths should be calculated. Columns should be named 'date_name', 'hour' and 'mesh_ID' respectively. The dataframe may contain column named 'depth', containing (absolute depths, m), if you want to assign layers IDs to depth observations (see Description). The dataframe should be arranged by 'date_name'.
+#' @param dat 	A dataframe which defines the WeStCOMS file date names, hours, and mesh (node) IDs for which layer depths should be calculated. Columns should be named 'date_name', 'hour' and 'mesh_ID' respectively. The dataframe may contain column named 'depth', containing (absolute depths, m), if you want to assign layers IDs to depth observations (see Description). The dataframe may also contain a column named 'layer' if you want to compute the depths of a particular layer at each row in \code{dat}, rather than all layers in \code{siglev} (see below). The dataframe should be arranged by 'date_name'.
 #' @param h A dataframe which, for each mesh ID, defines the (absolute) depth of the seabed in that cell below mean sea level. Columns should be named 'ID' and 'h' respectively.
 #' @param siglev A dataframe which, for each Sigma layer, defines the (absolute value of) siglev constant. Columns should be named 'layer' and 'siglev' respectively.
 #' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour. The default dataframe is usually appropriate, if WeStCOMS files have not been subsetted. However, if WeStCOMS files have been subsetted (e.g. by selecting rows corresponding to hours 12 and 13), then rows 1 and 2 in WeStCOMS files now represent hours 12 and 13, not hours 0 and 1. \code{match_hour} provides the link which ensures that data for specified hours (e.g. hours 12 and 13) are correctly extracted from a WeStCOMS array (see Examples). All WeStCOMS files are assumed to have the same structure.
@@ -11,6 +11,7 @@
 #' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files. These will not be loaded.
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
 #' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}.
+#' @param depth_of_specified A logical input that defines whether or not to calculate the depths of all layers in \code{siglev} for each row in \code{dat} (\code{depth_of_specified = FALSE}), or just the depths of specified layers, specified via \code{dat$layer} (\code{depth_of_specified = TRUE}).
 #' @param assign_layer A logical input that defines whether or not layer IDs should be assigned to observed depths, based on the computed depths of Sigma layers. This method requires a column named 'depth' in \code{dat}.
 #' @param assign_layer_method A character hich defines the method by which layer IDs should be assigned to observed depths, if \code{assign_layer = TRUE}. Implemented options are \code{"nearest"} or \code{"fractional"}. If \code{assign_layer_method = "nearest"}, then each depth observation is assigned the layer ID of the nearest node. If \code{assign_layer_method = "fractional"}, a fractional layer ID is computed based on the depths of the two nodes which surround the observed depth.
 #' @param warning_threshold A number which defines the number of metres beyond the approximate depth of the seabed below mean sea level (i.e., \code{h$h}, see above) after which the function will warn the user if there are any deeper depth observations. This may be due to inaccuracies in recorded depths or locations. However, note that in areas of complex bathymetry, there may well be areas in each mesh cell that are much deeper than the depth of the WeStCOMS layer at the seabed. This is why a \code{warning_threshold} is provided.
@@ -18,7 +19,7 @@
 #'
 #' @details The function currently only supports nearest neighbour interpolation, extracting tidal predictions for specified integer hours. To calculate layer depths for non integer hours, a custom approach is necessary.
 #'
-#' @return The function returns a dataframe, as inputted but with the following columns added: 'index_hour', the row in the WeStCOMS files which corresponds to the inputted hour; 'index_mesh', the column in the WeStCOMS files which corresponds to the inputted mesh_ID; 'h', the depth (m) of the seabed in that cell below mean sea level; el, the tidal elevation on the inputted hour and for the inputted mesh cell, columns 'l1',... 'ln' where 'n' is the deepest layer in the inputted \code{siglev} dataframe, containing the depths (m) of each layer at the specified location(s) and time(s). If \code{assign_layer = TRUE}, a column, 'layer_ID', is also returned; this is the ID of the layer assigned to each inputted depth observation. This column has one or more attributes: "method" is "nearest" or "fractional" and, if \code{assign_layer_method = "fractional"}, then the column also has the "computational_details" attribute which returns the information required to compute fractional layer IDs, such as the IDs of the surrounding layers, their depths and the weights applied to each of these to compute the fractional layer ID (see Examples).
+#' @return The function returns a dataframe, as inputted but with the following columns added: 'index_hour', the row in the WeStCOMS files which corresponds to the inputted hour; 'index_mesh', the column in the WeStCOMS files which corresponds to the inputted mesh_ID; 'h', the depth (m) of the seabed in that cell below mean sea level; and el, the tidal elevation on the inputted hour and for the inputted mesh cell. If \code{depth_of_specified = TRUE} and \code{dat$depth} is supplied, then the dataframe also contains 'siglev', the siglev value for the specified layers and 'depth_layer', the depth of each inputted layer. Otherwise, the depth of every layer specified in \code{siglev} are provided in columns named 'l1',... 'ln' where 'n' is the deepest layer in the inputted \code{siglev} dataframe. If \code{assign_layer = TRUE}, a column, 'layer_ID', is also returned; this is the ID of the layer assigned to each inputted depth observation. This column has one or more attributes: "method" is "nearest" or "fractional" and, if \code{assign_layer_method = "fractional"}, then the column also has the "computational_details" attribute which returns the information required to compute fractional layer IDs, such as the IDs of the surrounding layers, their depths and the weights applied to each of these to compute the fractional layer ID (see Examples).
 #'
 #' @examples
 #'
@@ -141,6 +142,38 @@
 #' head(dol5)
 #' }
 #'
+#' #### Example 6) Compute the depths of specified layers with depth_of_specified = TRUE,
+#' # ... rather than all layers in siglev.
+#' set.seed(1)
+#' dat$layer <- sample(1:10, nrow(dat), replace = TRUE)
+#' dol6 <- compute_layer_depth(dat = dat,
+#'                             h = h,
+#'                             siglev = dat_siglev,
+#'                             match_hour = data.frame(hour = 0:23, index = 1:24),
+#'                             match_mesh = match_mesh,
+#'                             dir2load = dir2load,
+#'                             depth_of_specified = TRUE
+#' )
+#' utils::head(dol6, 3)
+#'
+#' #### Example (7) Compute the depths of specified layers and assign layer_IDs to 'observed' depths
+#' dat$depth <- 1
+#' set.seed(1)
+#' dat$layer <- sample(1:10, nrow(dat), replace = TRUE)
+#' dol7 <- compute_layer_depth(dat = dat,
+#'                             h = h,
+#'                             siglev = dat_siglev,
+#'                             match_hour = data.frame(hour = 0:23, index = 1:24),
+#'                             match_mesh = match_mesh,
+#'                             dir2load = dir2load,
+#'                             depth_of_specified = TRUE,
+#'                             assign_layer = TRUE,
+#'                             assign_layer_method = "fractional"
+#' )
+#' utils::head(dol7, 3)
+#' # dat$depth_layer is the depth of dat$layer
+#' # dat$layer_ID is the layer ID assigned to the 'observed' depth (dat$depth)
+#'
 #' @author Edward Lavender
 #' @export
 #'
@@ -160,6 +193,7 @@ compute_layer_depth <-
            corrupt = NULL,
            cl = NULL,
            pass2varlist = NULL,
+           depth_of_specified = FALSE,
            assign_layer = FALSE,
            assign_layer_method = "nearest",
            warning_threshold = 0,
@@ -281,6 +315,21 @@ compute_layer_depth <-
     # ... at specified times and in specified locations
     # ... We'll generate a list, with one element for each layer
     if(verbose) cat("Step 4: Computing depths...\n")
+
+    #### If the user has requested depth for inputted layers,
+    # we'll define these, add them to the dataframe and return.
+    if(depth_of_specified){
+      stopifnot(!is.null(dat$layer))
+      dat$siglev <- siglev$siglev[match(dat$layer, siglev$layer)]
+      if("depth_layer" %in% colnames(dat)){
+        warning("dat$depth_layer column overwritten. \n")
+      }
+      dat$depth_layer <- dat$siglev * (dat$h + dat$el)
+    }
+
+    #### Continue to define the depths of all layers
+    # either because depth_of_specified is false
+    # or depth_of_specified is TRUE and assign_layer is TRUE
     siglev_ls <- split(siglev, f = siglev$layer)
     depth_layers_ls <- pbapply::pblapply(siglev_ls, function(sig){
       x <- sig$siglev * (dat$h + dat$el)
@@ -319,7 +368,6 @@ compute_layer_depth <-
         colnames(dat)[which(colnames(dat) %in% "layer_nearest")] <- "layer_ID"
         attr(dat$layer_ID, "method") <- "nearest"
       }
-
 
       #### Define fractional layer number
       # (This is useful if observatiouns lie between layers, which will usually be the case).
@@ -383,14 +431,19 @@ compute_layer_depth <-
         dat[, c(cols2attr)] <- NULL
       }
 
-    }
-
-    #### Warn the user if there are observations deeper than the depth of the seabed below mean sea level (+ a warning threshold)
-    if(!is.null(warning_threshold)){
+      #### Warn the user if there are observations deeper than the depth of the seabed below mean sea level (+ a warning threshold)
+      if(!is.null(warning_threshold)){
         pos2warn <- which(dat$depth > (dat$h + warning_threshold))
         if(length(pos2warn) > 0) {
           warning(paste(length(pos2warn), "depth observations deeper than the depth of the seabed below mean sea level (+ the warning threshold, warning_threshold)."))
         }
+      }
+
+    }
+
+    #### Exclude excess columns if depth_of_specified
+    if(depth_of_specified){
+      dat[, colnames(depth_cols)] <- NULL
     }
 
     #### End time
