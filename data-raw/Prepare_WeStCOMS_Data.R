@@ -33,6 +33,8 @@ dat_siglev <- data.frame(layer = 1:11,
                                     -1.00000000)
                          )
 dat_h <- readRDS("dat_h.rda")
+# GEBCO bathymetry data
+dat_gebco <- readRDS("dat_gebco.rda")
 
 #### Checks
 # mesh dfs
@@ -49,6 +51,8 @@ head(dat_temp)
 head(dat_tidal_elevation)
 head(dat_uwind_speed)
 head(dat_vwind_speed)
+# bathymetry
+raster::plot(dat_gebco)
 
 #### use usethis::use_data() to add the data to the package appropriately
 # mesh dfs
@@ -68,6 +72,8 @@ usethis::use_data(dat_vwind_speed, overwrite = TRUE)
 # data to compute sigma layer depths
 usethis::use_data(dat_h, overwrite = TRUE)
 usethis::use_data(dat_siglev, overwrite = TRUE)
+# bathymetry
+usethis::use_data(dat_gebco, overwrite = TRUE)
 
 #### End of code.
 ##############################################
