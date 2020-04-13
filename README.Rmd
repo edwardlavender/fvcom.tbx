@@ -79,6 +79,7 @@ Some functions are designed to facilitate exploration of environmental condition
 * `summarise2dfield()` - compute statistical summaries of environmental conditions across a WeStCOMS layer (through time for a given WeStCOMS file, if applicable); 
 * `plot2dfield()` - visualise environmental conditions across a WeStCOMS layer through space at a specified point in time; 
 * `explore()` - implement `summarise2dfield()` and `plot2dfield()` across multiple timepoints and/or WeStCOMS files; 
+* `plot3dscape()` and `vis3dscape()` produce interactive, 3-dimensional visualisations of landscapes/seascapes and/or environmental conditions;
 
 ## Model validation
 

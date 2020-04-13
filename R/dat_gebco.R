@@ -1,7 +1,7 @@
 #' @title The bathymetry around oban
 #' @description A dataset of the bathymetry (m) around Oban, provided by the General Bathymetric Chart of the Oceans (GEBCO).
 #'
-#'#' @format A \code{\link{raster}{raster}} with 36 rows, 36 columns and 1296 cells, with the following properties:
+#' @format A \code{\link[raster]{raster}} with 36 rows, 36 columns and 1296 cells, with the following properties:
 #' \describe{
 #'   \item{dimensions}{36, 36, 1296  (nrow, ncol, ncell)}
 #'   \item{resolution}{0.004166667, 0.004166667  (x, y)}

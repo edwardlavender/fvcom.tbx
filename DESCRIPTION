@@ -6,12 +6,14 @@ Author: Edward Lavender
 Maintainer: Edward Lavender <el72@st.andrews.ac.uk>
 Description: WeStCOMSExploreR is an R package which provides functions to explore the outputs from the West Coast of Scotland Coastal Modelling System (WeStCOMS). This is a numerical, hydrostatic, hydrodynamic modelling system which can be used to resolve environmental conditions off the West Coast of Scotland, developed at the Scottish Association for Marine Sciences by Dmitry Aleynik. The outputs from this modelling system are MatLab files. This package provides a gateway to researchers with experience in R to explore these outputs. Although the package is designed specifically to explore WeStCOMS outputs, some functions have wider applicability (for example, many hydrodynamic models, including those based on the Finite-Volume primitive equation Community Ocean Model (FVCOM), work with unstructured, prism-shaped meshes). 
 Imports:
-    plyr, dplyr, tidyr, lubridate,
-    raster, sp, mapview, rgeos, suncalc, 
-    pbapply, parallel, 
-    Hmisc, methods, stringr,
-    R.matlab, 
-    viridis, scales, 
+    magrittr, plyr, dplyr, tidyr, lubridate,
+    raster, sp, mapview, rgeos,
+    suncalc,
+    pbapply, parallel,
+    methods, Hmisc, stringr,
+    R.matlab,
+    plot.pretty, plotly, viridis, scales, 
+    shiny, shinyWidgets,
     utils.add
 Suggests:
     microbenchmark, 

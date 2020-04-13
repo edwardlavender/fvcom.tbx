@@ -11,9 +11,9 @@
 #' @param coastline_border The colour of the coastline border. "black" is the default.
 #' @param coastline_lwd The thickness of the coastline border. 1 is the default.
 #' @param coastline_lty The line type of the coastline border. 1 is the default.
-#' @param mesh_border The colour of the unstructured mesh gridlines. "lightgrey" is the default.
-#' @param mesh_lwd The thickness of the mesh gridlines. 1 is the default.
-#' @param mesh_lty The line type of the mesh gridlines. 1 is the default.
+#' @param mesh_border The colour of the unstructured mesh grid lines. "lightgrey" is the default.
+#' @param mesh_lwd The thickness of the mesh grid lines. 1 is the default.
+#' @param mesh_lty The line type of the mesh grid lines. 1 is the default.
 #' @param ncols The number of colours used to define the spectrum of colours that are used to colour either mesh cells (for scalar fields) or arrows (for vector fields) according to the value of the environmental variable resolved in that cell. Larger numbers result in smoother scales, which look as if they are continuous, which is desirable, but processing takes longer. 50000 is the default.
 #' @param col.fn A function used to created colours. \code{\link[viridis]{viridis}} is the default colour scheme.
 #' @param colour_bar_add A logical input defining whether or not to add a colour bar to the map. TRUE is the default.

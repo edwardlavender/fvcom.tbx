@@ -270,7 +270,7 @@ To explore spatiotemporal conditions, we are going to begin by calculating summa
 
 ### Loading raw WeStCOMS outputs into R
 
-To summarise the the environmental conditions over space at a single point in time, `WeStCOMSExploreR::summarise2dfield()` needs to be suppplied with a 2d dimensional array. The first step is to load some WeStCOMS' outputs into R. In this example, we'll load in temperature outputs: 
+To summarise the the environmental conditions over space at a single point in time, `WeStCOMSExploreR::summarise2dfield()` needs to be supplied with a 2d dimensional array. The first step is to load some WeStCOMS' outputs into R. In this example, we'll load in temperature outputs: 
 ```{r}
 # Define directory of the folder containing temperatures:
 path <- system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE)

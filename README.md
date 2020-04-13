@@ -107,6 +107,9 @@ conditions through space and/or time. These include the following:
     WeStCOMS layer through space at a specified point in time;
   - `explore()` - implement `summarise2dfield()` and `plot2dfield()`
     across multiple timepoints and/or WeStCOMS files;
+  - `plot3dscape()` and `vis3dscape()` produce interactive,
+    3-dimensional visualisations of landscapes/seascapes and/or
+    environmental conditions;
 
 ## Model validation
 
