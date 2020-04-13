@@ -122,7 +122,6 @@ conditions to evaluate WeStCOMS skill.
 Future plans for `WeStCOMSExploreR` include developing the following
 functionality:
 
-  - Creating interactive bathymetry plots (including via R Shiny);
   - Exploring temperature profiles through space and time;
   - Exploring spatiotemporal variation in environmental conditions in
     3d;
