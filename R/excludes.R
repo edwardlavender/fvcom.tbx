@@ -22,14 +22,19 @@
 #' @export
 #'
 
-exclude_corrupt <- function(dat, corrupt){
-  stopifnot("date_name" %in% colnames(dat))
-  pos_corrupt <- which(dat$date_name %in% corrupt)
-  if(length(pos_corrupt) > 0){
-    warning(paste(length(pos_corrupt), "observation(s) associated with corrupt file(s) excluded. \n"))
-    dat <- dat[-c(pos_corrupt), , drop = FALSE]
+exclude_corrupt <- function(dat, corrupt = NULL){
+  if(is.null(corrupt)){
+    return(dat)
+  } else{
+    stopifnot("date_name" %in% colnames(dat))
+    pos_corrupt <- which(dat$date_name %in% corrupt)
+    if(length(pos_corrupt) > 0){
+      warning(paste(length(pos_corrupt), "observation(s) associated with corrupt file(s) excluded. \n"))
+      dat <- dat[-c(pos_corrupt), , drop = FALSE]
+    }
+    stopifnot(nrow(dat) > 0)
+    return(dat)
   }
-  return(dat)
 }
 
 
@@ -71,6 +76,7 @@ exclude_unavailable <- function(dat, dir2load,...){
     warning(paste(length(pos_unavailable), "observation(s) associated with unavailable predictions excluded. \n"))
     dat <- dat[-c(pos_unavailable), , drop = FALSE]
   }
+  stopifnot(nrow(dat) > 0)
   return(dat)
 }
 

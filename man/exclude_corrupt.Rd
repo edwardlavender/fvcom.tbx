@@ -4,7 +4,7 @@
 \alias{exclude_corrupt}
 \title{Exclude any rows in a dataframe associated with corrupt WeStCOMS files}
 \usage{
-exclude_corrupt(dat, corrupt)
+exclude_corrupt(dat, corrupt = NULL)
 }
 \arguments{
 \item{dat}{A dataframe (e.g. containing information necessary to extract WeStCOMS outputs). The only requirement is an integer column named 'date_name' which contains the 6 digit code of WeStCOMS file names (see \code{\link[WeStCOMSExploreR]{date_name}}).}
