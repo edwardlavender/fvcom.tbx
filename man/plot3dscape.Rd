@@ -31,17 +31,17 @@ plot3dscape(
 \arguments{
 \item{r}{A \code{\link[raster]{raster}} to be plotted. The raster should be less than, approximately, 1800 x 1800 cells (otherwise, \code{\link[plotly]{plot_ly}} will not show the plot). Raster aggregation can be implemented within the function (see \code{aggregate}, below), although this may be slow for large rasters. Interactive plots of lower resolution rasters are more responsive.}
 
-\item{aggregate}{(optional) A named list of arguments that is passed to \code{\link[raster]{aggregate}} to aggregate raster cells (see Examples). If provided, the raster, \code{r}, is aggregated within the function prior to plotting. For large rasters, this is necessary to reduce raster dimension to a size which can be handled by \code{\link[plotly]{plot_ly}}, which creates the underlying plot. The raster can also be reduced in size by zooming around points provided (see \code{buffer}).}
+\item{aggregate}{(optional) A named list of arguments that is passed to \code{\link[raster]{aggregate}} to aggregate raster cells. If provided, the raster, \code{r}, is aggregated within the function prior to plotting. For large rasters, this is necessary to reduce raster dimension to a size which can be handled by \code{\link[plotly]{plot_ly}}, which creates the underlying plot. The raster can also be reduced in size by zooming around points provided (see \code{buffer}).}
 
 \item{add_surface}{(optional) A named list of arguments that is passed to \code{\link[plotly]{add_surface}} to customise the raster surface added to the plot.}
 
 \item{add_markers}{(optional) A named list of arguments that is passed to \code{\link[plotly]{add_markers}} to add points to the plot.}
 
-\item{buffer}{(optional) A named list of arguments that is passed to \code{\link[rgeos]{gBuffer}} to add a buffer around inputted points, \code{add_markers}, below (e.g. \code{buffer = list(width = 1)}). If provided, only the raster cells which fall into this/these buffer(s) are shown.}
+\item{buffer}{(optional) A named list of arguments that is passed to \code{\link[rgeos]{gBuffer}} to add a buffer around inputted points,  provided via \code{add_markers}, below (e.g. \code{buffer = list(width = 1)}). If provided, only the raster cells which fall into this/these buffer(s) are shown.}
 
 \item{add_paths}{(optional) A named list of arguments that is passed to \code{\link[plotly]{add_paths}} to add lines to the plot.}
 
-\item{coastline}{(optional) A \code{\link[sp]{SpatialPointsDataFrame-class}} which defines the coastline (if applicable).}
+\item{coastline}{(optional) A \code{\link[sp]{SpatialPointsDataFrame-class}} object which defines the coastline (if applicable).}
 
 \item{coastline_paths}{A named list of arguments that is passed to \code{\link[plotly]{add_paths}} to add the coastline as lines to the plot.}
 
@@ -63,9 +63,9 @@ plot3dscape(
 
 \item{ztitle}{(optional) A character string which defines the label for the z axis.}
 
-\item{stretch}{(optional) A number which is used to vertically stetch the height of a landscape. This can be useful if \code{aspectmode = "data"} but the horizontal versus vertical scale of the plot are very different.}
+\item{stretch}{(optional) A number which is used to vertically stretch the height of a landscape. This can be useful if \code{aspectmode = "data"} but the magnitude of change horizontally versus vertically is very different.}
 
-\item{aspectmode}{A character which defines the shape of the plot: \code{"cube"} produces a cube; \code{"data"} provides a plot whether the size of the x, y and z axes is to scale.}
+\item{aspectmode}{A character which defines the shape of the plot: \code{"cube"} produces a cube; \code{"data"} provides a plot whether the size of the x, y and z axes is scaled according to the data.}
 
 \item{eye}{(optional) A named list of arguments that control the camera perspective (see \code{\link[plotly]{layout}}).}
 
@@ -94,7 +94,7 @@ plot3dscape(r = r,
                 xlim = c(-5.5, -5.3),
                 font = list("Times"))
 
-#### Example 3: Change the aspectmode to "data:
+#### Example 3: Change the aspectmode to "data":
 # The x, y and z values should be in the same units.
 # Here, depth is in m, so we'll project the raster to UTM coordinates:
 r <- raster::projectRaster(r, crs = sp::CRS("+proj=utm +zone=29 ellps=WGS84"))

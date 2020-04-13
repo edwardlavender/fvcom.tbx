@@ -64,11 +64,11 @@ plot2dfield(
 
 \item{coastline_lty}{The line type of the coastline border. 1 is the default.}
 
-\item{mesh_border}{The colour of the unstructured mesh gridlines. "lightgrey" is the default.}
+\item{mesh_border}{The colour of the unstructured mesh grid lines. "lightgrey" is the default.}
 
-\item{mesh_lwd}{The thickness of the mesh gridlines. 1 is the default.}
+\item{mesh_lwd}{The thickness of the mesh grid lines. 1 is the default.}
 
-\item{mesh_lty}{The line type of the mesh gridlines. 1 is the default.}
+\item{mesh_lty}{The line type of the mesh grid lines. 1 is the default.}
 
 \item{ncols}{The number of colours used to define the spectrum of colours that are used to colour either mesh cells (for scalar fields) or arrows (for vector fields) according to the value of the environmental variable resolved in that cell. Larger numbers result in smoother scales, which look as if they are continuous, which is desirable, but processing takes longer. 50000 is the default.}
 

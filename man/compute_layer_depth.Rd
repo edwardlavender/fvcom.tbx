@@ -47,7 +47,7 @@ compute_layer_depth(
 
 \item{assign_layer}{A logical input that defines whether or not layer IDs should be assigned to observed depths, based on the computed depths of Sigma layers. This method requires a column named 'depth' in \code{dat}.}
 
-\item{assign_layer_method}{A character hich defines the method by which layer IDs should be assigned to observed depths, if \code{assign_layer = TRUE}. Implemented options are \code{"nearest"} or \code{"fractional"}. If \code{assign_layer_method = "nearest"}, then each depth observation is assigned the layer ID of the nearest node. If \code{assign_layer_method = "fractional"}, a fractional layer ID is computed based on the depths of the two nodes which surround the observed depth.}
+\item{assign_layer_method}{A character which defines the method by which layer IDs should be assigned to observed depths, if \code{assign_layer = TRUE}. Implemented options are \code{"nearest"} or \code{"fractional"}. If \code{assign_layer_method = "nearest"}, then each depth observation is assigned the layer ID of the nearest node. If \code{assign_layer_method = "fractional"}, a fractional layer ID is computed based on the depths of the two nodes which surround the observed depth.}
 
 \item{warning_threshold}{A number which defines the number of metres beyond the approximate depth of the seabed below mean sea level (i.e., \code{h$h}, see above) after which the function will warn the user if there are any deeper depth observations. This may be due to inaccuracies in recorded depths or locations. However, note that in areas of complex bathymetry, there may well be areas in each mesh cell that are much deeper than the depth of the WeStCOMS layer at the seabed. This is why a \code{warning_threshold} is provided.}
 
