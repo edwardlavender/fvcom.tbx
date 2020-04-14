@@ -6,6 +6,7 @@
 #' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer. This is only necessary if you are working with 3d fields and if you are working with subsetted of WeStCOMS files: if WeStCOMS files have been subsetted (e.g. by selecting layers corresponding to columns 2 and 3), then columns 1 and 2 in WeStCOMS files now represent layers 2 and 3, not hours 1 and 2. \code{match_layer} provides this link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.
 #' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of WeStCOMS files: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in WeStCOMS files. \code{match_mesh} provides the link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.
 #' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files. These will not be loaded.
+#' @param read_fvcom A function which is used to load files. The function should take a single single argument, the file connection, as input, and load the file. The default is \code{\link{R.matlab}{readMat}} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).
 #' @param dir2load A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.
 #' @param extension A string which defines the extension of the WeStCOMS files. The default is \code{".mat"}.
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
@@ -78,6 +79,7 @@ extract <-
            match_layer = NULL,
            match_mesh = NULL,
            corrupt = NULL,
+           read_fvcom = function(con){ R.matlab::readMat(con) },
            dir2load,
            extension = ".mat",
            cl = NULL,
@@ -90,30 +92,19 @@ extract <-
 
     #### Algorithm start
     t1 <- Sys.time()
-    if(verbose) cat("Step 1: Initial checks/processing of dat...\n")
+    if(verbose){
+      cat("WeStCOMSExploreR::extract() called...\n")
+      cat("Step 1: Initial checks/processing of dat...\n")
+    }
 
     #### Check dat has been provided correctly
     stopifnot(all(c("date_name", "hour", "mesh_ID") %in% colnames(dat)))
 
     #### Exclude corrupt files
-    pos_corrupt <- which(dat$date_name %in% corrupt)
-    if(length(pos_corrupt) > 0){
-      warning(paste(length(pos_corrupt), "observations associated with corrupt files excluded. \n"))
-      dat <- dat[-c(pos_corrupt), ]
-    }
+    dat <- exclude_corrupt(dat, corrupt)
 
     #### Exclude any dates without associated files
-    files <- list.files(dir2load, pattern = paste0("*", extension))
-    stopifnot(length(files) > 0)
-    file_codes <- as.numeric(substr(files, 1, 6))
-    pos_unavailable <- which(!(dat$date_name %in% file_codes))
-    if(length(pos_unavailable) > 0){
-      warning(paste(length(pos_unavailable), "observations with unavailable predictions excluded. \n"))
-      dat <- dat[-c(pos_unavailable), ]
-    }
-
-    #### Check that observations remain in dat
-    stopifnot(nrow(dat) > 0)
+    dat <- exclude_unavailable(dat, dir2load, pattern = paste0("*", extension))
 
 
     ########################################
@@ -163,7 +154,7 @@ extract <-
       #### Define connection and load file
       con <- paste0(dir2load, df$date_name[1], extension)
       if(verbose) cat(paste0("\n Loading file ", df$date_name[1], extension, "...\n"))
-      wc <- R.matlab::readMat(con)
+      wc <- read_fvcom(con)
       wc <- wc$data
 
       #### Extract values from fvcom depending on whether or not the inputted variable is 2d or 3d
@@ -188,7 +179,7 @@ extract <-
     #### End time
     t2 <- Sys.time()
     tdiff <- round(difftime(t2, t1))
-    if(verbose) cat(paste0("Algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+    if(verbose) cat(paste0("extract() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
 
     #### Return dataframe
     return(dat)

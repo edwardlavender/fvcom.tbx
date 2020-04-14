@@ -10,6 +10,7 @@ extract(
   match_layer = NULL,
   match_mesh = NULL,
   corrupt = NULL,
+  read_fvcom = function(con) {     R.matlab::readMat(con) },
   dir2load,
   extension = ".mat",
   cl = NULL,
@@ -27,6 +28,8 @@ extract(
 \item{match_mesh}{(optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of WeStCOMS files: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in WeStCOMS files. \code{match_mesh} provides the link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.}
 
 \item{corrupt}{A vector of numbers, representing WeStCOMS date names, which define corrupt files. These will not be loaded.}
+
+\item{read_fvcom}{A function which is used to load files. The function should take a single single argument, the file connection, as input, and load the file. The default is \code{\link{R.matlab}{readMat}} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).}
 
 \item{dir2load}{A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.}
 
