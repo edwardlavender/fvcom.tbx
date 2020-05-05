@@ -172,7 +172,7 @@ plot3dscape <-
 
     #### Define axes properties
     # Pretty axes
-    pretty_axis_args <- list()
+    pretty_axis_args <- list(side = 1)
     pretty_axis_args$x <- list(x, y, as.vector(z))
     axis_ls <- plot.pretty::implement_pretty_axis_args(pretty_axis_args)
     # Extract limits, if not provided
