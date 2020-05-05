@@ -220,7 +220,8 @@ plot3dscape <-
 
     #### Add plane
     if(!is.null(plane)){
-      plane_mat <- matrix(plane, nrow = length(x), ncol = length(y))*stretch
+      plane_mat <- z
+      plane_mat[] <- plane * stretch
       plane_surface$p <- p
       plane_surface$x <- x
       plane_surface$y <- y
