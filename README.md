@@ -109,7 +109,8 @@ conditions through space and/or time. These include the following:
     across multiple timepoints and/or WeStCOMS files;
   - `plot3dscape()` and `vis3dscape()` produce interactive,
     3-dimensional visualisations of landscapes/seascapes and/or
-    environmental conditions;
+    environmental conditions; for large rasters, `crop_aggr_utm()` helps
+    reduce raster dimensions for these functions;
 
 ## Model validation
 
