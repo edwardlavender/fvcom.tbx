@@ -7,6 +7,7 @@
 #' @param buffer (optional) A named list of arguments that is passed to \code{\link[rgeos]{gBuffer}} to add a buffer around inputted points,  provided via \code{add_markers}, below (e.g. \code{buffer = list(width = 1)}). If provided, only the raster cells which fall into this/these buffer(s) are shown.
 #' @param add_surface (optional) A named list of arguments that is passed to \code{\link[plotly]{add_surface}} to customise the raster surface added to the plot.
 #' @param add_markers (optional) A named list of arguments that is passed to \code{\link[plotly]{add_markers}} to add points to the plot.
+#' @param thin_markers (optional) A logical input which defines whether or not plot all inputted markers (\code{thin_markers = FALSE}) or only those markers that fall within the domain of the raster (\code{thin_markers = TRUE}).
 #' @param add_paths (optional) A named list of arguments that is passed to \code{\link[plotly]{add_paths}} to add lines to the plot.
 #' @param coastline (optional) A \code{\link[sp]{SpatialPointsDataFrame-class}} object which defines the coastline (if applicable).
 #' @param coastline_paths A named list of arguments that is passed to \code{\link[plotly]{add_paths}} to add the coastline as lines to the plot.
@@ -110,6 +111,7 @@ plot3dscape <-
            aggregate = NULL,
            add_surface = list(colors = viridis::viridis(100)),
            add_markers = NULL,
+           thin_markers = FALSE,
            buffer = NULL,
            add_paths = NULL,
            coastline = NULL,
@@ -172,7 +174,7 @@ plot3dscape <-
 
     #### Define axes properties
     # Pretty axes
-    pretty_axis_args <- list(side = 1)
+    pretty_axis_args <- list(side = 1:3)
     pretty_axis_args$x <- list(x, y, as.vector(z))
     axis_ls <- plot.pretty::implement_pretty_axis_args(pretty_axis_args)
     # Extract limits, if not provided
@@ -208,8 +210,36 @@ plot3dscape <-
 
     #### Add markers
     if(!is.null(add_markers)){
-      add_markers$p <- p
-      p <- do.call(plotly::add_markers, add_markers)
+      # By default, we will add markers if specified, unless the inputed list fails some checks, below.
+      add_markers_pass <- TRUE
+      # Check add_markers contains, at a minimum, the coordinates required to add markers:
+      if(!all(c("x", "y", "z") %in% names(add_markers))){
+        warning("add_markers must be a named list with x, y and z coordinates; add_markers input ignored.")
+        add_markers_pass <- FALSE
+      }
+      # Select only those markers which fall within the raster's horizontal domain, if requested:
+      if(thin_markers & add_markers_pass){
+        e <- raster::extent(r)
+        xyz_markers <- data.frame(x = add_markers$x, y = add_markers$y, z = add_markers$z)
+        pos_keep <- which(xyz_markers$x >= e[1] &
+                                  xyz_markers$x <= e[2] &
+                                  xyz_markers$y >= e[3] &
+                                  xyz_markers$y <= e[4])
+        if(length(pos_keep) == 0){
+          warning("No markers within raster domain.")
+          add_markers_pass <- FALSE
+        } else{
+          xyz_markers <- xyz_markers[pos_keep, ]
+          add_markers$x <- xyz_markers$x
+          add_markers$y <- xyz_markers$y
+          add_markers$z <- xyz_markers$z
+        }
+      }
+      if(add_markers_pass){
+        add_markers$p <- p
+        p <- do.call(plotly::add_markers, add_markers)
+      }
+
     }
 
     #### Add paths

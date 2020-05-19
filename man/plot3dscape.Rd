@@ -9,6 +9,7 @@ plot3dscape(
   aggregate = NULL,
   add_surface = list(colors = viridis::viridis(100)),
   add_markers = NULL,
+  thin_markers = FALSE,
   buffer = NULL,
   add_paths = NULL,
   coastline = NULL,
@@ -36,6 +37,8 @@ plot3dscape(
 \item{add_surface}{(optional) A named list of arguments that is passed to \code{\link[plotly]{add_surface}} to customise the raster surface added to the plot.}
 
 \item{add_markers}{(optional) A named list of arguments that is passed to \code{\link[plotly]{add_markers}} to add points to the plot.}
+
+\item{thin_markers}{(optional) A logical input which defines whether or not plot all inputted markers (\code{thin_markers = FALSE}) or only those markers that fall within the domain of the raster (\code{thin_markers = TRUE}).}
 
 \item{buffer}{(optional) A named list of arguments that is passed to \code{\link[rgeos]{gBuffer}} to add a buffer around inputted points,  provided via \code{add_markers}, below (e.g. \code{buffer = list(width = 1)}). If provided, only the raster cells which fall into this/these buffer(s) are shown.}
 
