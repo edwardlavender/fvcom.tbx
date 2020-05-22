@@ -197,7 +197,7 @@ plot2dfield <-
         stop("You have supplied a data.frame but specifed vector_field = TRUE. Either supply a data.frame with vector_field = FALSE to plot a scalar field or supply a list with vector_field = TRUE to plot a vector field.")
       }
       # Check colnames have been correctly specified:
-      if(!any(colnames(data) %in% c("ID", "fvcom"))){
+      if(!all(c("ID", "fvcom") %in% colnames(data))){
         stop("Please specify colnames(data) as ID and fvcom.")
       } # close if(!(colnames(data) ...
 
