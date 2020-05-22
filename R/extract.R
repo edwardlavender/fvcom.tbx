@@ -6,7 +6,7 @@
 #' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer. This is only necessary if you are working with 3d fields and if you are working with subsetted of WeStCOMS files: if WeStCOMS files have been subsetted (e.g. by selecting layers corresponding to columns 2 and 3), then columns 1 and 2 in WeStCOMS files now represent layers 2 and 3, not hours 1 and 2. \code{match_layer} provides this link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.
 #' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of WeStCOMS files: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in WeStCOMS files. \code{match_mesh} provides the link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.
 #' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files. These will not be loaded.
-#' @param read_fvcom A function which is used to load files. The function should take a single single argument, the file connection, as input, and load the file. The default is \code{\link{R.matlab}{readMat}} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).
+#' @param read_fvcom A function which is used to load files (and, if necessary, extract the WeStCOMS array from the loaded object). The function should take a single single argument, the file connection, as input, and load the file. The default is \code{function(con) = R.matlab::readMat(con)$data} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).
 #' @param dir2load A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.
 #' @param extension A string which defines the extension of the WeStCOMS files. The default is \code{".mat"}.
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
@@ -79,7 +79,7 @@ extract <-
            match_layer = NULL,
            match_mesh = NULL,
            corrupt = NULL,
-           read_fvcom = function(con){ R.matlab::readMat(con) },
+           read_fvcom = function(con) R.matlab::readMat(con)$data,
            dir2load,
            extension = ".mat",
            cl = NULL,
@@ -155,7 +155,6 @@ extract <-
       con <- paste0(dir2load, df$date_name[1], extension)
       if(verbose) cat(paste0("\n Loading file ", df$date_name[1], extension, "...\n"))
       wc <- read_fvcom(con)
-      wc <- wc$data
 
       #### Extract values from fvcom depending on whether or not the inputted variable is 2d or 3d
       if(length(dim(wc)) == 3){
