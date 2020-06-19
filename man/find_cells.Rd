@@ -36,7 +36,7 @@ find_cells(
 The function returns a vector or a dataframe, depending on the input to \code{return} (see above).
 }
 \description{
-This function identifies the mesh cells which surround inputted coordinates. Coordinates can be inputted as \code{lat} and \code{long} vectors, a dataframe (\code{dat} or a \code{\link[sp]{SpatialPoints-class}} object (\code{xysp}). The function can return a dataframe or vector of mesh IDs for each pair of coordinates or each unique pair of coordinates inputted.
+This function identifies the mesh cells which surround inputted coordinates. Coordinates can be inputted as \code{lat} and \code{long} vectors, a dataframe (\code{dat}) or a \code{\link[sp]{SpatialPoints-class}} object (\code{xysp}). The function can return a dataframe or vector of mesh IDs for each pair of coordinates or each unique pair of coordinates inputted.
 }
 \details{
 Ensure that the coordinate system of inputted coordinates, the mesh and the projection are identical (whether directly specified, e.g. if coordinates are specified via a \code{\link[sp]{SpatialPoints-class}} object, or otherwise or not (e.g. if coordinates are supplied via \code{lat} and \code{long} vectors.

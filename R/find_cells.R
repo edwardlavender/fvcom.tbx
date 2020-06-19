@@ -1,5 +1,5 @@
 #' @title Identify the mesh cells enclosing coordinates
-#' @description This function identifies the mesh cells which surround inputted coordinates. Coordinates can be inputted as \code{lat} and \code{long} vectors, a dataframe (\code{dat} or a \code{\link[sp]{SpatialPoints-class}} object (\code{xysp}). The function can return a dataframe or vector of mesh IDs for each pair of coordinates or each unique pair of coordinates inputted.
+#' @description This function identifies the mesh cells which surround inputted coordinates. Coordinates can be inputted as \code{lat} and \code{long} vectors, a dataframe (\code{dat}) or a \code{\link[sp]{SpatialPoints-class}} object (\code{xysp}). The function can return a dataframe or vector of mesh IDs for each pair of coordinates or each unique pair of coordinates inputted.
 #'
 #' @param lat A numeric vector of latitudes (in decimal degrees). Alternatively, \code{dat} or \code{xysp} can be provided (see below).
 #' @param long A numeric vector of longitudes (in decimal degrees). Alternatively, \code{dat} or \code{xysp} can be provided (see below).

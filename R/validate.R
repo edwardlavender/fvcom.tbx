@@ -16,7 +16,7 @@
 #' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}.
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
 #'
-#' @details To use this function, the user must supply a dataframe (\code{dat_obs1}) which contains the locations(s) , layer(s) and time(s) (in a column named 'timestamp'). These columns must be named 'long' and 'lat', 'layer' and 'timestamp' respectively. A column, 'key', may also need to be included (see below). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe, (\code{dat_obs2}) with columns 'timestamp', 'obs' and 'key'. One situation where this latter option is useful is for animal movement data when the location of the animal is known from one tag type (e.g. passive acoustic telemetry) and observations are recorded by another tag type (e.g. an archival tag), possibly at a different resolution. In this scenario, both dataframes should contain a column, 'key', which connects the factor level(s) (e.g. individuals) for which locations observations have been made in the first dataframe with the factor level(s) for which environmental observations (which will be used to validate WeStCOMS) have been made. In this case, a nearest neighbour matching approach, implemented using \code{\link[utils.add]{match_closest}}, is used to add observations into the first dataframe (\code{dat_obs1}) from the second dataframe (\code{dat_obs2}) by selecting those that occurred closest in time to the timestamps stipulated in the first dataframe (this is why is is important to have a 'key' to distinguish among factor levels). The function uses a mesh supplied by the user to determine the WeStCOMS mesh nodes/elements within which each location lies (i.e. nearest neighbour interpolation). With this information, the function loads in each FVCOM file from a user-defined directory, extracts the relevant model predictions from this file, and then returns the original dataframe with predictions added. FVCOM files can be loaded in parallel via \code{cl} and \code{pass2varlist} arguments.
+#' @details To use this function, the user must supply a dataframe (\code{dat_obs1}) which contains the locations(s) , layer(s) and time(s) (in a column named 'timestamp'). These columns must be named 'long' and 'lat', 'layer' and 'timestamp' respectively. A column, 'key', may also need to be included (see below). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe, (\code{dat_obs2}) with columns 'timestamp', 'obs' and 'key'. One situation where this latter option is useful is for animal movement data when the location of the animal is known from one tag type (e.g. passive acoustic telemetry) and observations are recorded by another tag type (e.g. an archival tag), possibly at a different resolution. In this scenario, both dataframes should contain a column, 'key', which connects the factor level(s) (e.g. individuals) for which locations observations have been made in the first dataframe with the factor level(s) for which environmental observations (which will be used to validate WeStCOMS) have been made. In this case, a nearest neighbour matching approach is used to add observations into the first dataframe (\code{dat_obs1}) from the second dataframe (\code{dat_obs2}) by selecting those that occurred closest in time to the timestamps stipulated in the first dataframe (this is why is is important to have a 'key' to distinguish among factor levels). The function uses a mesh supplied by the user to determine the WeStCOMS mesh nodes/elements within which each location lies (i.e. nearest neighbour interpolation). With this information, the function loads in each FVCOM file from a user-defined directory, extracts the relevant model predictions from this file, and then returns the original dataframe with predictions added. FVCOM files can be loaded in parallel via \code{cl} and \code{pass2varlist} arguments.
 #'
 #' @return The function returns a dataframe containing the columns in \code{dat_obs1} with some additions. If \code{dat_obs2} is used to add observations to this dataframe, the dataframe returned also contains a column with environmental observations, 'obs', the timestamps at which these were made ('timestamp_obs'), extracted from \code{dat_obs2}, and the difference (seconds) between the timestamps of known locations and the timestamps at which observations were made ('difftime'). 'meshID' defines the node (or element) within which each observation occurred and 'index_row', 'index_mesh' (and, if applicable, 'index_layer') provide a reference to the cells in the WeStCOMS files from which model predictions were extracted. 'wc' contains the predicted conditions from WeStCOMS and 'diff' contains the difference between observed and predicted conditions (i.e. 'obs' - 'wc').
 #'
@@ -225,7 +225,7 @@ validate <-
       stopifnot(!is.null(dat_obs1$obs))
 
     #### Else, if dat_obs2 has been provided...
-    # Then we'll add observations using utils.add::match_closest(), accounting for different keys
+    # Then we'll add observations using match_nearest_ts(), accounting for different keys
     } else{
 
       #### Check obs have been provided in dat_obs2 and keys have been provided
@@ -246,8 +246,8 @@ validate <-
       # ... last observation (e.g. because an archival tag was recovered early), then we'd get very large
       # ... negative values for match_gap because the algorithm matches each location to the final
       # ... observation, which may have been long ago).
-      # We could deal with this after match_closest(), which we do because the approach below
-      # ... doesn't deal with breaks in dat_obs2, but match_closest() can be slow, so
+      # We could deal with this after match_ts_nearest(), which we do because the approach below
+      # ... doesn't deal with breaks in dat_obs2, but match_ts_nearest() can be slow, so
       # ... we'll implement this inital pre-processing first.
 
       cat("Processing dat_obs1 for each key...\n")
@@ -308,11 +308,11 @@ validate <-
           #### subset dat_obs2 to focus in on the correct key too:
           dat_obs2_key <- dat_obs2[dat_obs2$key == dat_obs1_key$key[1], ]
 
-          #### Check dat_obs2_key is ordered, which is required by match_closest:
+          #### Check dat_obs2_key is ordered, which is required by match_ts_nearest:
           stopifnot(!is.unsorted(dat_obs2_key$timestamp))
 
           #### match closest:
-          match_closest_pos <- utils.add::match_closest(dat_obs1_key$timestamp, dat_obs2_key$timestamp)
+          match_closest_pos <- match_ts_nearest(dat_obs1_key$timestamp, dat_obs2_key$timestamp)
           # Checks:
           # rand_check_pos <- sample(x = 1:nrow(dat_obs1_key), size = 10)
           # data.frame(dat_obs1_key$timestamp[rand_check_pos], dat_obs2_key$timestamp[match_closest_pos[rand_check_pos]])

@@ -114,7 +114,7 @@ extract <-
 
     #### Define indices to extract predictions
     # Define whether or not we're dealing with a 2d or 3d field:
-    field3d <- ifelse(is.null(dat$layer), FALSE, TRUE)
+    field3d <- ifelse(rlang::has_name(dat, "layer"), TRUE, FALSE)
     # Define indices
     if(!is.null(match_hour)){
       dat$index_hour <- match_hour$index[match(dat$hour, match_hour$hour)]
