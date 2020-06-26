@@ -48,7 +48,7 @@ interp_layer <- function(x, l1, l2, b1, b2){
 #'
 #' @param x A number which specifies the fractional hour for which a prediction is desired.
 #' @param h1 An integer which specifies the hour of the first WeStCOMS prediction.
-#' @param h2 An integer which specifies the layer ID of the other surrounding layer.
+#' @param h2 An integer which specifies the hour of the surrounding WeStCOMS prediction.
 #' @param p1 A number which specifies the WeStCOMS prediction at \code{h1}.
 #' @param p2 A number which specifies the WeStCOMS prediction at \code{h2}.
 #'

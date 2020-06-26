@@ -11,7 +11,7 @@ interp_btw_hours(x, h1, h2, p1, p2)
 
 \item{h1}{An integer which specifies the hour of the first WeStCOMS prediction.}
 
-\item{h2}{An integer which specifies the layer ID of the other surrounding layer.}
+\item{h2}{An integer which specifies the hour of the surrounding WeStCOMS prediction.}
 
 \item{p1}{A number which specifies the WeStCOMS prediction at \code{h1}.}
 
