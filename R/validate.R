@@ -341,7 +341,7 @@ validate <-
           #              floor(range(match_gap)[1]), ":", ceiling(range(match_gap)[2]), " ", match_gap_units, ".\n"))
           #  }
           #  # histogram of the differences
-          #  plot.pretty::pretty_hist(as.numeric(match_gap),
+          #  prettyGraphics::pretty_hist(as.numeric(match_gap),
           #                           xlab = paste0("Time Gap (", match_gap_units, ")"),
           #                           ylab = "Frequency",
           #                           mtext_args = list())

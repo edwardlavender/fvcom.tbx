@@ -12,7 +12,7 @@ Imports:
     pbapply, parallel,
     methods, Hmisc, stringr,
     R.matlab,
-    plot.pretty, plotly, viridis, scales, 
+    prettyGraphics, plotly, viridis, scales, 
     shiny, shinyWidgets
 Suggests:
     microbenchmark, 
