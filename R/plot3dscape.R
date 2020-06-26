@@ -173,19 +173,15 @@ plot3dscape <-
     y <- rev(y)
 
     #### Define axes properties
-    # Pretty axes
-    pretty_axis_args <- list(side = 1:3)
-    pretty_axis_args$x <- list(x, y, as.vector(z))
-    axis_ls <- plot.pretty::implement_pretty_axis_args(pretty_axis_args)
     # Extract limits, if not provided
-    if(!is.null(xlim)){
-      xlim <- axis_ls[[1]]$lim
+    if(is.null(xlim)){
+      xlim <- plot.pretty::pretty_seq(x, lim = NULL, pretty_args = list(n = 5))
     }
-    if(!is.null(ylim)){
-      ylim <- axis_ls[[2]]$lim
+    if(is.null(ylim)){
+      ylim <- plot.pretty::pretty_seq(y, lim = NULL, pretty_args = list(n = 5))
     }
-    if(!is.null(zlim)){
-      zlim <- axis_ls[[3]]$lim
+    if(is.null(zlim)){
+      zlim <- plot.pretty::pretty_seq(as.vector(z), lim = NULL, pretty_args = list(n = 5))
     }
     # Define axis tick marks
     x_lab_ls <- list(title = xtitle, titlefont = font, range = xlim)
