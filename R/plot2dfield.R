@@ -72,7 +72,7 @@
 #'                               # mesh_border = "lightgrey",
 #'                               # mesh_lwd = 0.5,
 #'                               # mesh_lty = 1,
-#'                               #### Use default graphical parametera for the colour scheme/bar
+#'                               #### Use default graphical parameters for the colour scheme/bar
 #'                               # ncols = 5000,
 #'                               # col.fn = viridis::viridis,
 #'                               # colour_bar_add = TRUE,

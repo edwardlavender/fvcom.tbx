@@ -3,7 +3,7 @@
 \docType{data}
 \name{dat_gebco}
 \alias{dat_gebco}
-\title{The bathymetry around oban}
+\title{The bathymetry around Oban}
 \format{
 A \code{\link[raster]{raster}} with 36 rows, 36 columns and 1296 cells, with the following properties:
 \describe{

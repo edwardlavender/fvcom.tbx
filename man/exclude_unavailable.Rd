@@ -17,7 +17,7 @@ exclude_unavailable(dat, dir2load, ...)
 A dataframe, as inputted, but in which any rows which refer to the names of unavailable WeStCOMS files have been excluded. If rows have been excluded, the function returns a warning.
 }
 \description{
-This function screens vector of WeStCOMS file names in a dataframe and removes any rows wich refer to WeStCOMS files that are unavailable in a specified directory. This is an important check prior to loading multiple WeStCOMS files into R.
+This function screens vector of WeStCOMS file names in a dataframe and removes any rows which refer to WeStCOMS files that are unavailable in a specified directory. This is an important check prior to loading multiple WeStCOMS files into R.
 }
 \examples{
 
