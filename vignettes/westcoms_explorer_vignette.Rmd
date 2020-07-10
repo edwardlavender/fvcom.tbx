@@ -518,7 +518,7 @@ l <- lapply(summaries_ls, function(sdf){
   # Add a polygon which will surround a line marking the 'mean', representing the range:
   # (other polygons could be added based on other summary statistics to get a better picture
   # ... of where the 'bulk' of variation lies)
-  polygon(c(sdf$timestamp, rev(sdf$timestamp)), c(sdf$min, rev(sdf$max)), col = scales::alpha("lightgrey", 0.95),
+  polygon(c(sdf$timestamp, rev(sdf$timestamp)), c(sdf$min, rev(sdf$max)), col = "lightgrey",
           border = F)
   # Add a line defining the mean:
   lines(sdf$timestamp, sdf$mean, lwd = 1)
@@ -536,7 +536,6 @@ Future functionality includes:
   * Exploring spatiotemporal variation in environmental conditions in 3d;  
   * Defining bottom velocity from vertical profiles;  
   * Flexibility to define new environmental fields more easily; 
-
 
 # Acknowledgements
 

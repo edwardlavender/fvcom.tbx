@@ -4,11 +4,13 @@
 \name{dat_siglev}
 \alias{dat_siglev}
 \title{The siglev constants for each Sigma layer}
-\format{A data frame with 11 rows and 2 variables:
+\format{
+A data frame with 11 rows and 2 variables:
 \describe{
   \item{layer}{A unique identifier of each layer. The first layer is the surface; layer 10 is the seabed and layer 11 is slightly below the seabed.}
   \item{siglev}{The siglev constant for each layer.}
-}}
+}
+}
 \source{
 Dmitry Aleynik
 }

@@ -4,11 +4,13 @@
 \name{dat_h}
 \alias{dat_h}
 \title{The depth of each node below mean sea level}
-\format{A data frame with 802 rows and 2 variables:
+\format{
+A data frame with 802 rows and 2 variables:
 \describe{
   \item{node_id}{A unique identifier of each node.}
   \item{h}{Thedepth (m) of each node below mean sea level.}
-}}
+}
+}
 \source{
 Dmitry Aleynik
 }

@@ -4,12 +4,14 @@
 \name{dat_nodexy}
 \alias{dat_nodexy}
 \title{The coordinates of each node}
-\format{A data frame with 310 rows and 3 variables:
+\format{
+A data frame with 310 rows and 3 variables:
 \describe{
   \item{node_id}{A unique identifier of each node.}
   \item{x}{The longitude (decimal degrees) of each node.}
   \item{y}{The latitude (decimal degrees) of each node.}
-}}
+}
+}
 \source{
 Dmitry Aleynik
 }

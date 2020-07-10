@@ -468,7 +468,9 @@ explore <-
 
     if(compute_summary_stats){
       names(sls) <- as.character(field2d$cov2d)
-      sls <- plyr::compact(sls)
+      # compact list, using base R solution to remove reliance on plyr:
+      # sls <- plyr::compact(sls)
+      sls <- sls[which(!sapply(sls, is.null))]
       return(sls)
     }
 

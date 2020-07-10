@@ -4,11 +4,13 @@
 \name{dat_vwind_speed}
 \alias{dat_vwind_speed}
 \title{A sample of northward wind speeds around Oban on 2016-03-01.}
-\format{A data frame with 1307 rows and 2 variables:
+\format{
+A data frame with 1307 rows and 2 variables:
 \describe{
   \item{ID}{A unique identifier of each element.}
   \item{fvcom}{The northward wind speed (\eqn{ms^{-1}}) resolved at that element.}
-}}
+}
+}
 \source{
 Model output samples are extracted WeStCOMS outputs computed by Dmitry Aleynik.
 }

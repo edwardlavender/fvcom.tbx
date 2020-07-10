@@ -4,7 +4,9 @@
 \name{dat_coast_around_oban}
 \alias{dat_coast_around_oban}
 \title{The coastline around Oban}
-\format{A SpatialPolygonsDataFrame.}
+\format{
+A SpatialPolygonsDataFrame.
+}
 \source{
 https://biogeo.ucdavis.edu/data/gadm3.6/Rsp/gadm36_GBR_0_sp.rds
 }

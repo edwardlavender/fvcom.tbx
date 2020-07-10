@@ -109,7 +109,7 @@
 plot3dscape <-
   function(r,
            aggregate = NULL,
-           add_surface = list(colors = viridis::viridis(100)),
+           add_surface = list(colors = grDevices::heat.colors(100)),
            add_markers = NULL,
            thin_markers = FALSE,
            buffer = NULL,

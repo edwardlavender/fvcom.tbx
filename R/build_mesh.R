@@ -115,7 +115,7 @@ build_mesh <-
         # Define a matrix
         xynode_mat <- as.matrix(rbind(node1xy, node2xy, node3xy), ncol = 2)
         # convert to polygons with a unique id BASED ON ELEMENT (i) using the proj4string provided by the user:
-        poly <- mapview::coords2Polygons(xynode_mat, proj4string = proj4string, ID = i)
+        poly <- Orcs::coords2Polygons(xynode_mat, proj4string = proj4string, ID = i)
         # return the polygon
         return(poly)
       },
@@ -200,7 +200,8 @@ build_mesh <-
     # Remove any NULL elements of this list i.e. cases where there were
     # ... fewer than three prisms around a node so we couldn't create a polgyon
     # ... around that node based on elements.
-    mesh_spls <- plyr::compact(mesh_spls)
+    # mesh_spls <- plyr::compact(mesh_spls)
+    mesh_spls <- mesh_spls[which(!sapply(mesh_spls, is.null))]
 
   } # close if(mesh_type == "element"){
 

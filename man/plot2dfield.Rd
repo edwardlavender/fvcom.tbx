@@ -19,7 +19,7 @@ plot2dfield(
   mesh_lwd = 0.5,
   mesh_lty = 1,
   ncols = 50000,
-  col.fn = viridis::viridis,
+  col.fn = grDevices::heat.colors,
   colour_bar_add = TRUE,
   colour_bar_x = c(xlim[2] + c(0.01, 0.02)),
   colour_bar_y = ylim,
@@ -72,7 +72,7 @@ plot2dfield(
 
 \item{ncols}{The number of colours used to define the spectrum of colours that are used to colour either mesh cells (for scalar fields) or arrows (for vector fields) according to the value of the environmental variable resolved in that cell. Larger numbers result in smoother scales, which look as if they are continuous, which is desirable, but processing takes longer. 50000 is the default.}
 
-\item{col.fn}{A function used to created colours. \code{\link[viridis]{viridis}} is the default colour scheme.}
+\item{col.fn}{A function used to created colours. \code{\link[grDevices]{heat.colors}} is the default colour scheme.}
 
 \item{colour_bar_add}{A logical input defining whether or not to add a colour bar to the map. TRUE is the default.}
 

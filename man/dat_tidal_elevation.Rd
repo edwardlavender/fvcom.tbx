@@ -4,11 +4,13 @@
 \name{dat_tidal_elevation}
 \alias{dat_tidal_elevation}
 \title{A sample of tidal elevations around Oban on 2016-03-01.}
-\format{A data frame with 802 rows and 2 variables:
+\format{
+A data frame with 802 rows and 2 variables:
 \describe{
   \item{ID}{A unique identifier of each node.}
   \item{fvcom}{The tidal elevation (m) resolved at that node.}
-}}
+}
+}
 \source{
 Model outputs are extracted WeStCOMS outputs computed by Dmitry Aleynik.
 }

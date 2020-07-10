@@ -4,7 +4,9 @@
 \name{dat_mesh_around_elements}
 \alias{dat_mesh_around_elements}
 \title{The WeStCOMS mesh around a sample of elements in the Oban area}
-\format{A SpatialPolygonsDataFrame with 1307 features (i.e. cells).}
+\format{
+A SpatialPolygonsDataFrame with 1307 features (i.e. cells).
+}
 \source{
 The WeStCOMS mesh was designed by Dmitry Aleynik.
 }
