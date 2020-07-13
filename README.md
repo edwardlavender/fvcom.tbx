@@ -42,7 +42,12 @@ install.packages("WeStCOMSExploreR")
 devtools::install_github("edwardlavender/WeStCOMSExploreR")
 ```
 
-## Prerequisites
+## Acquisition of files
+
+  - `download_from_thredds()` downloads files from the SAMS thredds
+    server;
+
+## File prerequisites
 
 WeStCOMS files are MATLAB® files. To use these in R, some pre-processing
 outside of R is required. This is described in the vignette.
