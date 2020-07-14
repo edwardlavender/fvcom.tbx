@@ -157,5 +157,5 @@ functionality:
   - Exploring temperature profiles through space and time;
   - Exploring spatiotemporal variation in environmental conditions in
     3d;
-  - Defining bottom velocity from vertical profiles;
+  - Estimating bottom velocity from vertical profiles;
   - Improved flexibility to define new environmental fields;
