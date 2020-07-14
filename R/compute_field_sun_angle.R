@@ -14,7 +14,7 @@
 #' @examples
 #'
 #' #### (1) Compute sun angle across a sample of WeStCOMS nodes
-#' sun_angle <- compute_sun_angle_field(nodexy = WeStCOMSExploreR::dat_nodexy,
+#' sun_angle <- compute_field_sun_angle(nodexy = WeStCOMSExploreR::dat_nodexy,
 #' date = as.character("2016-01-01"),
 #' date_name = 160101,
 #' tz = "UTC",
@@ -32,9 +32,9 @@
 
 ################################################
 ################################################
-#### compute_sun_angle_field
+#### compute_field_sun_angle
 
-compute_sun_angle_field <-
+compute_field_sun_angle <-
   function(nodexy,
            date,
            date_name = NULL,

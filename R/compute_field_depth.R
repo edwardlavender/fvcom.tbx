@@ -1,5 +1,5 @@
 #' @title Compute the depth of WeStCOMS layers at specified location(s) and time(s)
-#' @description In WeStCOMS, three-dimensional hydrodynamic conditions are predicted for each node (or element) at 11 Sigma layers (or between these layers) for every hour of every day. The approximate depth of each layer depends on the of the seabed below mean sea level (in a given location), the tidal elevation (in a given location and at a given time) and a constant which adjusts this depth for each layer, according to the equation \eqn{s_l \times (h_n + el_{n, t})} where \eqn{s} is a constant multiplier for layer \eqn{l}, \code{h} is the depth of node \code{n} below mean sea level and el us the tidal elevation{n, t} predicted at that node at hour \code{t}. If values for \eqn{h_n} and \eqn{el_{n, t}} are already known, \code{\link[WeStCOMSExploreR]{calc_layer_depth}} calculates the depths of the layers accordingly. Otherwise, \code{compute_depth_layer()} first extracts necessary parameters for these variables and then uses these to calculate the depths of all layers specified in \code{siglev} at specified times and locations. To implement \code{compute_depth_layer()}, the user must supply a dataframe which contains the times (dates and hours) for which depths should be calculated, as well as a vector of constants (\code{siglev}) which are used to calculate the depths of corresponding layers. If requested, the function can use the computed depths of each layer to assign user-supplied depths Sigma layers IDs using nearest neighbour interpolation or fractional layer IDs using linear interpolation.
+#' @description In WeStCOMS, three-dimensional hydrodynamic conditions are predicted for each node (or element) at 11 Sigma layers (or between these layers) for every hour of every day. The approximate depth of each layer depends on the of the seabed below mean sea level (in a given location), the tidal elevation (in a given location and at a given time) and a constant which adjusts this depth for each layer, according to the equation \eqn{s_l \times (h_n + el_{n, t})} where \eqn{s} is a constant multiplier for layer \eqn{l}, \code{h} is the depth of node \code{n} below mean sea level and el us the tidal elevation{n, t} predicted at that node at hour \code{t}. If values for \eqn{h_n} and \eqn{el_{n, t}} are already known, \code{\link[WeStCOMSExploreR]{depth_layer_calc}} calculates the depths of the layers accordingly. Otherwise, \code{\link[WeStCOMSExploreR]{compute_field_depth}}first extracts necessary parameters for these variables and then uses these to calculate the depths of all layers specified in \code{siglev} at specified times and locations. To implement \code{compute_depth_layer()}, the user must supply a dataframe which contains the times (dates and hours) for which depths should be calculated, as well as a vector of constants (\code{siglev}) which are used to calculate the depths of corresponding layers. If requested, the function can use the computed depths of each layer to assign user-supplied depths Sigma layers IDs using nearest neighbour interpolation or fractional layer IDs using linear interpolation.
 
 #' @param dat 	A dataframe which defines the WeStCOMS file date names, hours, and mesh (node) IDs for which layer depths should be calculated. Columns should be named 'date_name', 'hour' and 'mesh_ID' respectively. The dataframe may contain column named 'depth', containing (absolute depths, m), if you want to assign layers IDs to depth observations (see Description). The dataframe may also contain a column named 'layer' if you want to compute the depths of a particular layer at each row in \code{dat}, rather than all layers in \code{siglev} (see below). The dataframe should be arranged by 'date_name'.
 #' @param h A dataframe which, for each mesh ID, defines the (absolute) depth of the seabed in that cell below mean sea level. Columns should be named 'ID' and 'h' respectively.
@@ -46,7 +46,7 @@
 #'                         package = "WeStCOMSExploreR", mustWork = TRUE)
 #'
 #' #### Example (1) Compute layer depths for all layers using default options
-#' dol1 <- compute_layer_depth(dat = dat,
+#' dol1 <- compute_field_depth(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -64,7 +64,7 @@
 #' head(dol1[, c("mesh_ID", "h", "h_from_h", "l10")])
 #'
 #' #### Example (2) Incorporate parallel loading of tidal elevation files
-#' dol2 <- compute_layer_depth(dat = dat,
+#' dol2 <- compute_field_depth(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -81,7 +81,7 @@
 #' # (Here, the use of match is simply to constrain hypothetical depths
 #' # ... to be below the maximum depth of the seabed)
 #' dat$depth <- h$h[match(dat$mesh_ID, h$ID)] - 5
-#' dol3 <- compute_layer_depth(dat = dat,
+#' dol3 <- compute_field_depth(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -98,7 +98,7 @@
 #'
 #' #### Example (4) Assign observed depths fractional layer IDs
 #' # ... based on the depths of surrounding layers
-#' dol4 <- compute_layer_depth(dat = dat,
+#' dol4 <- compute_field_depth(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -128,7 +128,7 @@
 #' # ... observations (i.e., observations deeper than the seabed) produce a warning:
 #' \dontrun{
 #' dat$depth[1:10] <- dat$depth[1:10] + 30
-#' dol5 <- compute_layer_depth(dat = dat,
+#' dol5 <- compute_field_depth(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -146,7 +146,7 @@
 #' # ... rather than all layers in siglev.
 #' set.seed(1)
 #' dat$layer <- sample(1:10, nrow(dat), replace = TRUE)
-#' dol6 <- compute_layer_depth(dat = dat,
+#' dol6 <- compute_field_depth(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -160,7 +160,7 @@
 #' dat$depth <- 1
 #' set.seed(1)
 #' dat$layer <- sample(1:10, nrow(dat), replace = TRUE)
-#' dol7 <- compute_layer_depth(dat = dat,
+#' dol7 <- compute_field_depth(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -180,9 +180,9 @@
 
 #######################################
 #######################################
-#### compute_layer_depth()
+#### compute_field_depth()
 
-compute_layer_depth <-
+compute_field_depth <-
   function(dat,
            h,
            siglev,
