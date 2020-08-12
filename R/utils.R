@@ -212,6 +212,55 @@ check_names <- function(arg = deparse(substitute(input)), input, req, extract_na
   }
 }
 
+###############################
+###############################
+#### utils.add::check_length()
+# Source: https://github.com/edwardlavender/utils.add
+# 14/07/2020
+
+#' @title Check the length of an input to a parent function
+#' @description This function checks that the length of an input to a parent function is correct. If not, the function returns a helpful error message.
+#' @param arg (optional) A character string which defines the argument of a parent function.
+#' @param input An object.
+#' @param req_length A number which defines the required length of \code{input}.
+#' @param req_arg A character which defines the name of the object which defines the required length.
+#' @return The function returns a helpful error message for unnamed lists (ignoring empty lists if requested) or the inputted list unchanged.
+#' @author Edward Lavender
+#' @keywords internal
+#'
+
+check_length <- function(arg = deparse(substitute(input)),
+                         input,
+                         req_length,
+                         req_arg = deparse(substitute(req_length))){
+  if(length(input) != req_length){
+    stop(paste0("The length of the argument '", arg, "' (=", length(input), ") must be the same as the length of ", req_arg, " (=", req_length, ")."), call. = FALSE)
+  }
+}
+
+###############################
+###############################
+#### utils.add::check_dir()
+# Source: https://github.com/edwardlavender/utils.add
+# 14/07/2020
+
+#' @title Check a directory exists
+#' @description This function checks whether a directory exists and, if not, returns an informative error message.
+#' @param arg (optional) A character string which defines the argument of a parent function.
+#' @param input A character string which defines a directory.
+#' @return The function checks whether or not a directory exists and, if not, returns an informative error message.
+#' @author Edward Lavender
+#' @keywords internal
+#'
+
+check_dir <- function(arg = deparse(substitute(input)),
+                      input){
+  if(!dir.exists(input)){
+    stop(paste0("The directory inputted to the argument '", arg, "' ('", input, "') does not exist."), call. = FALSE)
+  }
+}
+
+
 #### End of code.
 ###############################
 ###############################

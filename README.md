@@ -138,10 +138,12 @@ conditions through space and/or time. These include the following:
     WeStCOMS layer through space at a specified point in time;
   - `explore()` - implement `summarise2dfield()` and `plot2dfield()`
     across multiple timepoints and/or WeStCOMS files;
-  - `plot3dscape()` and `vis3dscape()` produce interactive,
-    3-dimensional visualisations of landscapes/seascapes and/or
-    environmental conditions; for large rasters, `crop_aggr_utm()` helps
-    reduce raster dimensions for these functions;
+  - Additional plotting functions are available in the `prettyGraphics`
+    package, including `pretty_scape_3d()` and `vis_scape_3d()` which
+    produce interactive, 3-dimensional visualisations of
+    landscapes/seascapes and/or environmental conditions; for large
+    rasters, `crop_aggr_utm()` helps reduce raster dimensions for these
+    functions;
 
 ## Validate model predictions
 

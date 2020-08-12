@@ -326,7 +326,7 @@ plot2dfield <-
       #### Add a colour bar, if specified:
       if(colour_bar_add){
         # Add the colour bar at user defined positions, using the colour_bar() function
-        Hmisc::subplot(x = colour_bar_x,
+        TeachingDemos::subplot(x = colour_bar_x,
                        y = colour_bar_y,
                        fun =
                          colour_bar(
