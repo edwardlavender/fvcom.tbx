@@ -31,16 +31,11 @@ includes functions which facilitate the following operations:
 
 ## Installation
 
-You can install the released version of WeStCOMSExploreR from
-[CRAN](https://CRAN.R-project.org) with:
+You can install the development version of WeStCOMSExploreR from
+[GitHub](https://github.com) with:
 
 ``` r
-#### install from CRAN
-install.packages("WeStCOMSExploreR")
-```
-
-``` r
-#### Or, install the development version from github
+#### install the development version from github
 devtools::install_github("edwardlavender/WeStCOMSExploreR")
 ```
 
