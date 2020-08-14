@@ -133,9 +133,22 @@ and `thredds_extract()` functions to implement this approach in future.
 For environmental arrays, `WeStCOMSExploreR` assumes the following
 conventions:
 
-    - File type. Environmental arrays can be saved in any format (e.g., as .mat files), providing this format can be loaded into `R`. The vignette provides a sample MATLAB® script in which full FVCOM files are loaded into MATLAB®, environmental arrays extracted and then into a pre-defined directory system as .mat files. Accordingly, in `WeStCOMSExploreR`, the default function to load files into `R` is `function(con) R.matlab::readMat(con)$data`, but this can be changed by the user as necessary. In any given directory (e.g., '/temp'), all of the environmental arrays should be of the same file type. 
-    - File dimension. In any given directory, all files should have the same dimension. 
-    - File name. In each directory, each file is named by a 6 digit code (hereafter termed the 'date_name') which provides a unique identifier of the date to which that file pertains in the format YYMMDD. The function `date_name()` is used to click between dates and WeStCOMS file names. 
+  - File type. Environmental arrays can be saved in any format (e.g., as
+    .mat files), providing this format can be loaded into `R`. The
+    vignette provides a sample MATLAB® script in which full FVCOM files
+    are loaded into MATLAB®, environmental arrays extracted and then
+    into a pre-defined directory system as .mat files. Accordingly, in
+    `WeStCOMSExploreR`, the default function to load files into `R` is
+    `function(con) R.matlab::readMat(con)$data`, but this can be changed
+    by the user as necessary. In any given directory (e.g., ‘/temp’),
+    all of the environmental arrays should be of the same file type.
+  - File dimension. In any given directory, all files should have the
+    same dimension.
+  - File name. In each directory, each file is named by a 6 digit code
+    (hereafter termed the ‘date\_name’) which provides a unique
+    identifier of the date to which that file pertains in the format
+    YYMMDD. The function `date_name()` is used to click between dates
+    and WeStCOMS file names.
 
 Armed with standard FVCOM objects and environmental arrays, we can now
 proceed to implement functions in WeStCOMSExploreR to build model
@@ -158,35 +171,30 @@ unstructured meshes. These include:
 
 ## Compute new fields
 
-Some functions are designed to compute new 2-dimensional fields, either
-using existing hydrodynamic model outputs (such as current speed) or
+The `compute_field_from_fvcom()` is designed for the flexible
+computation of new fields using existing hydrodynamic model outputs.
+This is supported by helper functions for commonly desirable fields such
+as:
+
+  - `calc_thermocline()` - calculate thermocline strength from
+    temperature predictions;
+  - `calc_direction()` - calculate wind/current direction from \(u\) and
+    \(v\) component vectors;
+  - `calc_speed()` - calculate wind/current speed from \(u\) and \(v\)
+    component vectors;
+
+There are also some functions for the computation of specific new fields
 from scratch (such as sun angle) in cases where it is helpful to express
 variables which are not resolved by the hydrodynamic model across the
 same mesh (for instance, to investigate the extent of spatiotemporal
 variation over the same spatial domain). These include the following:
 
-  - `compute_field_current_direction()` - compute current direction from
-    \(u\) and \(v\) component vectors;
-  - `compute_field_current_speed()` - compute current speed from \(u\)
-    and \(v\) component vectors;
-  - `compute_field_wind_direction()` - compute wind direction from \(u\)
-    and \(v\) component vectors;
-  - `compute_field_wind_speed()` - compute wind speed from \(u\) and
-    \(v\) component vectors;
-  - `compute_field_thermocline()` - compute thermoline strength as a new
-    field;
-  - `compute_field_sun_angle()` - compute sun angle as a new field;
+  - `compute_sun_angle()` - compute sun angle as a new field;
   - `compute_field_photoperiod()` - compute photoperiod as a new field;
-  - `compute_field_depth()` - compute the depths of Sigma layers,
-    extracting parameters from model outputs as necessary;
-  - `compute_field()` - compute multiple new 2 dimensional hydrodynamic
-    fields (namely, thermocline strength, wind speed, wind direction,
-    current speed, current direction and sun angle) from model outputs
-    at the same time;
 
 ## Extract model predictions
 
-Some functions are designed to faciliate the extraction of model
+Some functions are designed to facilitate the extraction of model
 predictions from source files. These include the following:
 
   - `exclude_corrupt()` and `exclude_unavailable()` exclude corrupt and
@@ -228,11 +236,17 @@ conditions to evaluate WeStCOMS skill.
 
 ## Future functionality
 
-Future plans for `WeStCOMSExploreR` include developing the following
-functionality:
+Future developments to `WeStCOMSExploreR` may include developing the
+following functionality:
 
+  - Relaxing directory and file naming conventions;
+  - Acquiring specific environmental fields from thredds’ servers;
   - Exploring temperature profiles through space and time;
   - Exploring spatiotemporal variation in environmental conditions in
     3d;
   - Estimating bottom velocity from vertical profiles;
-  - Improved flexibility to define new environmental fields;
+
+# Disclaimer
+
+`WeStCOMSExploreR` is a new package at an early stage of evolution.
+Please report issues, comments or suggestions\!

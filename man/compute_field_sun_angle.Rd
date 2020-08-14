@@ -20,7 +20,7 @@ compute_field_sun_angle(
 )
 }
 \arguments{
-\item{nodexy}{A dataframe containing node ids and coordinates (in latitude/longitude). The dataframe should have three columns: node_id, x and y. See \code{?WeStCOMSExploreR::dat_nodexy} for the dataset included in WeStCOMSExploreR as a guide.}
+\item{nodexy}{A dataframe containing node ids and coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.}
 
 \item{date}{The date for which sun angle is to be calculated.}
 
