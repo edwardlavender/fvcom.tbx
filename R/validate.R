@@ -362,19 +362,24 @@ validate <-
 
     ################################################
     ################################################
-    #### Add node IDs to dataframe
+    #### Add meshs IDs to dataframe
 
+    #### Add mesh IDs to dataframe
+    # ... use find_cells()
+    # ... use return = 1 to implement this only for unique coordinates
+    # ... and then match them to dat_obs1 for speed.
     if(verbose) cat("Step 3: Determining the corresponding WeStCOMS mesh location for each observation...\n")
-    # Define coordinates as spatial points; these are assumed to be in WGS84
-    xysp <- dat_obs1[, c("long", "lat")]
-    proj <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-    xysp <- sp::SpatialPoints(xysp, proj4string = proj)
-    # Define the node (or element if a mesh with elements is supplied) within which
-    # ... each location lies. unique() and match() could be used here to
-    # ... improve speed by only sampling unique mesh_IDs.
-    mesh_IDs <- sp::over(xysp, mesh)
-    # Add mesh_ID to observations; careful, use as.character(), bcause mesh_IDs$ID are a factor:
-    dat_obs1$mesh_ID <- as.numeric(as.character(mesh_IDs$ID))
+    mesh_IDs <- find_cells(lat = dat_obs1$lat,
+                           long = dat_obs1$long,
+                           mesh = mesh,
+                           proj = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                           f = function(x) as.integer(as.character(x)),
+                           return = 1
+                           )
+    mesh_IDs$xy <- paste0(mesh_IDs$long, "_", mesh_IDs$lat)
+    dat_obs1$xy <- paste0(dat_obs1$long, "_", dat_obs1$lat)
+    dat_obs1$mesh_ID <- mesh_IDs$mesh_ID[match(dat_obs1$xy, mesh_IDs$xy)]
+    dat_obs1$xy <- NULL
 
 
     ################################################
