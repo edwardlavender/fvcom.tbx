@@ -4,7 +4,7 @@
 #' @format A data frame with 802 rows and 2 variables:
 #' \describe{
 #'   \item{node_id}{A unique identifier of each node.}
-#'   \item{h}{Thedepth (m) of each node below mean sea level.}
+#'   \item{h}{The depth (m) of each node below mean sea level.}
 #' }
 #' @source Dmitry Aleynik
 "dat_h"

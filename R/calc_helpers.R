@@ -1,7 +1,7 @@
 #' @title Calculate thermocline strength
-#' @description This function calculates thermocline strength from a 3d
-#' @param l A list comprising a single environmental array (comprising temperature predictions for hours x layers x nodes) for a particular day.
-#' @details Thermocline strength is approximated as the difference in temperature between the surface and the bottom. This is much computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Positive numbers indicate the temperature at the surface is higher than at the bottom. Note that this means that the thermocline strength option cannot be applied properly to the data supplied with this package, which is a small subset of the temperature predictions that does not include the full 10 layers.
+#' @description This function calculates thermocline strength FVCOM temperature predictions.
+#' @param l A list composed of a single environmental array (comprising temperature predictions for hours x layers x nodes) for a particular day.
+#' @details Thermocline strength is approximated as the difference in temperature between the surface and the bottom. This is computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Positive numbers indicate the temperature at the surface is higher than at the bottom. Note that this means that the thermocline strength option cannot be applied properly to the data supplied with this package, which is a small subset of the temperature predictions that does not include the full 10 layers.
 #' @return The function returns a 2 d array comprising the thermocline strength for each hour for each node in the original array.
 #' @examples
 #' # Read example temperature file into a list
@@ -35,9 +35,9 @@ calc_thermocline <- function(l){
 
 #' @title Calculate wind or current speed from u and v component vectors
 #' @description This function calculates wind or current speed from u and v component vector arrays.
-#' @param l A list comprising a two environmental arrays (consisting of u and v component arrays) for a particular day.
+#' @param l A list composed of two environmental arrays (u and v component arrays) for a particular day.
 #' @details In each cell, speed (m/s) is given by Pythagoras' Theorem.
-#' @return The function returns an array comprising wind/current speeds for each cell in the original array.
+#' @return The function returns an array comprising wind/current speeds for each cell in the original arrays.
 #' @examples
 #' #### Read example u and v files into a list
 #' # Define the path to the u and v files:
@@ -70,8 +70,8 @@ calc_speed <- function(l){
 }
 
 #' @title Calculate wind or current direction from u and v component vectors
-#' @description This function calculates wind or current speed from u and v component vector arrays.
-#' @param l A list comprising a two environmental array (consisting of u and v component arrays) for a particular day.
+#' @description This function calculates wind or current direction from u and v component vector arrays.
+#' @param l A list composed of two environmental arrays (u and v component arrays) for a particular day.
 #' @details Wind or current direction are expressed as the direction (degrees) of mass flow.
 #' @return The function returns an array comprising wind/current directions for each cell in the original array.
 #' @seealso This function can be implemented within \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}.

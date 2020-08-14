@@ -7,10 +7,10 @@
 calc_speed(l)
 }
 \arguments{
-\item{l}{A list comprising a two environmental arrays (consisting of u and v component arrays) for a particular day.}
+\item{l}{A list composed of two environmental arrays (u and v component arrays) for a particular day.}
 }
 \value{
-The function returns an array comprising wind/current speeds for each cell in the original array.
+The function returns an array comprising wind/current speeds for each cell in the original arrays.
 }
 \description{
 This function calculates wind or current speed from u and v component vector arrays.

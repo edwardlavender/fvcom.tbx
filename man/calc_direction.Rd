@@ -7,13 +7,13 @@
 calc_direction(l)
 }
 \arguments{
-\item{l}{A list comprising a two environmental array (consisting of u and v component arrays) for a particular day.}
+\item{l}{A list composed of two environmental arrays (u and v component arrays) for a particular day.}
 }
 \value{
 The function returns an array comprising wind/current directions for each cell in the original array.
 }
 \description{
-This function calculates wind or current speed from u and v component vector arrays.
+This function calculates wind or current direction from u and v component vector arrays.
 }
 \details{
 Wind or current direction are expressed as the direction (degrees) of mass flow.

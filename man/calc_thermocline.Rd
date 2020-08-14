@@ -7,16 +7,16 @@
 calc_thermocline(l)
 }
 \arguments{
-\item{l}{A list comprising a single environmental array (comprising temperature predictions for hours x layers x nodes) for a particular day.}
+\item{l}{A list composed of a single environmental array (comprising temperature predictions for hours x layers x nodes) for a particular day.}
 }
 \value{
 The function returns a 2 d array comprising the thermocline strength for each hour for each node in the original array.
 }
 \description{
-This function calculates thermocline strength from a 3d
+This function calculates thermocline strength FVCOM temperature predictions.
 }
 \details{
-Thermocline strength is approximated as the difference in temperature between the surface and the bottom. This is much computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Positive numbers indicate the temperature at the surface is higher than at the bottom. Note that this means that the thermocline strength option cannot be applied properly to the data supplied with this package, which is a small subset of the temperature predictions that does not include the full 10 layers.
+Thermocline strength is approximated as the difference in temperature between the surface and the bottom. This is computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Positive numbers indicate the temperature at the surface is higher than at the bottom. Note that this means that the thermocline strength option cannot be applied properly to the data supplied with this package, which is a small subset of the temperature predictions that does not include the full 10 layers.
 }
 \examples{
 # Read example temperature file into a list
