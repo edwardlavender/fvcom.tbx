@@ -246,7 +246,7 @@ depth_layer_compute <-
     #### Extract tidal predictions with extract()
 
     #### Use extract() to extract tidal heightrs
-    if(verbose) cat("Step 1: Calling extract() to extract tidal elevation(s)...\n")
+    if(verbose) cat("Step 1: Calling WeStCOMSExploreR::extract() to extract tidal elevation(s)...\n")
     dat <- extract(dat,
                    match_hour = match_hour,
                    match_mesh = match_mesh,
