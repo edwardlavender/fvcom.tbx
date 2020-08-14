@@ -26,7 +26,7 @@ validate(
 
 \item{dat_obs2}{A dataframe which contains the environmental observations which will be used to validate WeStCOMS predictions. This must contain timestamps ('timestamp'), observations ('obs'). A column 'key' may also need to be included (see Details). Note that observations can be provided in \code{dat_obs1} but, for some validation datasets, observations and locations are in separate datasets (see Details). \code{dat_obs2} allows for this flexibility.}
 
-\item{threshold_match_gap}{A numeric input which defines the gap between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.}
+\item{threshold_match_gap}{A numeric input which defines the duration (s) between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.}
 
 \item{mesh}{A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build_mesh}}.}
 
@@ -131,11 +131,12 @@ mapply(list.files(path, full.names = TRUE),
          print(identical(sample, df$wc))
        })
 
+
 ###########################################
 #### Example (2): A validation dataset from animal movement data
 
 #### Hypothetical scenario
-# Imagine that our valiidation dataset comes from animal movement data
+# Imagine that our validation dataset comes from animal movement data
 # ... in which locations are known from one dataset and observations have been made
 # ... and stored in another dataset.
 

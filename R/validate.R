@@ -4,7 +4,7 @@
 #'
 #' @param dat_obs1 A dataframe which contains the location(s), layer(s) and timestamp(s) at which environmental observations have been made. These should be defined in columns named 'lat' and 'long', 'location', 'layer' and 'timestamp' respectively. A column 'key' may also need to be included (see Details). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe, (\code{dat_obs2}), see below.
 #' @param dat_obs2 A dataframe which contains the environmental observations which will be used to validate WeStCOMS predictions. This must contain timestamps ('timestamp'), observations ('obs'). A column 'key' may also need to be included (see Details). Note that observations can be provided in \code{dat_obs1} but, for some validation datasets, observations and locations are in separate datasets (see Details). \code{dat_obs2} allows for this flexibility.
-#' @param threshold_match_gap A numeric input which defines the gap between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.
+#' @param threshold_match_gap A numeric input which defines the duration (s) between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.
 #' @param mesh A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build_mesh}}.
 #' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer n (see \code{\link[WeStCOMSExploreR]{extract}}).
@@ -93,11 +93,12 @@
 #'          print(identical(sample, df$wc))
 #'        })
 #'
+#'
 #' ###########################################
 #' #### Example (2): A validation dataset from animal movement data
 #'
 #' #### Hypothetical scenario
-#' # Imagine that our valiidation dataset comes from animal movement data
+#' # Imagine that our validation dataset comes from animal movement data
 #' # ... in which locations are known from one dataset and observations have been made
 #' # ... and stored in another dataset.
 #'
@@ -168,201 +169,26 @@ validate <-
   ){
 
 
-
-    ################################################
     ################################################
     #### Set up
 
-    #### algorithm start
+    #### Algorithm start
     t1 <- Sys.time()
-    if(verbose) cat("Step 1: Initial processing of dat_obs1...\n")
-    # Define output list [not currently implemented]
-    # output <- list()
+    if(verbose) {
+      cat("WeStCOMSExploreR::validate() called...\n")
+      cat("Step 1: Initial processing of dat_obs1...\n")
+    }
+
+    #### Initial checks
     # Check dat_obs1 contains minimum required columns
     stopifnot(all(c("timestamp", "lat", "long") %in% colnames(dat_obs1)))
 
-    #### Add necessary columns
+    #### Add hour, date and date_name to dat_obs1
     # Add hour (dat_obs1 must contain 'timestamp' column):
     dat_obs1$hour <- lubridate::hour(lubridate::round_date(dat_obs1$timestamp, unit = "hour"))
     # Define date and date_name (dat_obs1 must contain 'timestamp' column):
     dat_obs1$date <- as.Date(dat_obs1$timestamp)
     dat_obs1$date_name <- date_name(dat_obs1$date, define = "date_name")
-
-    #### Remove any corrupt files from dat_obs1
-    # This stops errors later when we used dat_obs1$date_name to load files
-    if(!is.null(corrupt)){
-      pos_corrupt <- which(dat_obs1$date_name %in% corrupt)
-      lpc <- length(pos_corrupt)
-      if(lpc > 0){
-        if(verbose){
-          cat(paste0(lpc, " records in dat_obs1 associated with corrupt files. These observations will be removed.\n"))
-        }
-        dat_obs1 <- dat_obs1[-c(pos_corrupt), ]
-      }
-    }
-
-    #### Remove any observations in dat_obs1 before/after first/last file:
-    files <- list.files(dir2load, pattern = paste0("*", extension))
-    stopifnot(length(files) > 0)
-    file_codes <- as.numeric(substr(files, 1, 6))
-    first_date_name <- min(file_codes)
-    last_date_name <- max(file_codes)
-    dat_obs1 <- dat_obs1[dat_obs1$date_name >= first_date_name &
-                           dat_obs1$date_name <= last_date_name, ]
-    stopifnot(all(dat_obs1$date_name %in% file_codes))
-
-    #### Check observations remain after processing
-    stopifnot(nrow(dat_obs1) > 0)
-
-
-    ################################################
-    ################################################
-    #### Add observations from dat_obs2 to dat_obs1, if necessary
-
-    #### Define step 2
-    if(verbose) cat("Step 2: Checking and/adding observations to dat_obs1...\n")
-
-    #### First, check that if dat_obs2 is NULL , then 'obs' have been provided in dat_obs1
-    if(is.null(dat_obs2)){
-      stopifnot(!is.null(dat_obs1$obs))
-
-    #### Else, if dat_obs2 has been provided...
-    # Then we'll add observations using match_nearest_ts(), accounting for different keys
-    } else{
-
-      #### Check obs have been provided in dat_obs2 and keys have been provided
-      stopifnot(!is.null(dat_obs2$obs),
-                !is.null(dat_obs1$key),
-                !is.null(dat_obs2$key),
-                all(unique(dat_obs1$key) %in% unique(dat_obs2$key))
-                )
-
-      ################################################
-      #### Remove locations outside observation windows
-
-      #### Loop over the dataframe for each key and adjust
-      # ... dataframe accounting to timing of location/observations:
-      # Before implementing match closest (below), we'll adjust dat_obs1_key so that we limit the number of timestamps with locations
-      # ... before the first observation/after the last known location
-      # ... This avoids issues with match closest (e.g. if we have lots of known locations after the
-      # ... last observation (e.g. because an archival tag was recovered early), then we'd get very large
-      # ... negative values for match_gap because the algorithm matches each location to the final
-      # ... observation, which may have been long ago).
-      # We could deal with this after match_ts_nearest(), which we do because the approach below
-      # ... doesn't deal with breaks in dat_obs2, but match_ts_nearest() can be slow, so
-      # ... we'll implement this inital pre-processing first.
-
-      cat("Processing dat_obs1 for each key...\n")
-      dat_obs1_key_ls <- split(dat_obs1, f = dat_obs1$key)
-      if(!is.null(threshold_match_gap)){
-
-        #### Define a list of processed outputs
-        dat_obs1_key_ls <-
-          pbapply::pblapply(dat_obs1_key_ls, function(dat_obs1_key){
-            # subset dat_obs2 to focus in on the correct key too:
-            dat_obs2_key <- dat_obs2[dat_obs2$key == dat_obs1_key$key[1], ]
-            # define positions to keep and remove and a processed dataframe:
-            first_obs <- min(dat_obs2_key$timestamp); last_obs <- max(dat_obs2_key$timestamp)
-            pos2keep <- which(dat_obs1_key$timestamp >= (first_obs - threshold_match_gap) &
-                                dat_obs1_key$timestamp <= (last_obs + threshold_match_gap))
-            lpos2keep <- length(pos2keep)
-            lpos2rem <- nrow(dat_obs1_key) - lpos2keep
-            dat_obs1_key <- dat_obs1_key[pos2keep, ]
-            # define output list:
-            ls <- list(pos2keep = pos2keep, lpos2keep = lpos2keep, lpos2rem = lpos2rem, dat_obs1_key = dat_obs1_key)
-            return(ls)
-          })
-
-        #### Define dataframe showing the number of positions to be removed for each key
-        lpos2keep <- sapply(dat_obs1_key_ls, function(elm) elm$lpos2keep)
-        lpos2rem <- sapply(dat_obs1_key_ls, function(elm) elm$lpos2rem)
-        keys <- names(dat_obs1_key_ls)
-        dp <- data.frame(key = keys, n_keep = lpos2keep, n_remove = lpos2rem)
-        keys2rem <- NULL
-        if(any(dp$n_keep == 0)){
-          keys2rem <- as.character(dp$key[which(dp$n_keep == 0)])
-        }
-
-        #### Relay results to user
-        # if(verbose) {
-        #  cat("dat_obs1 processing results: for each key, the number of retained versus removed observations (because corresponding timestamps are too far outside the window for which observations are available: \n")
-        #  print(dp)
-        #  if(!is.null(keys2rem)) { cat(paste0("\n", "key(s) excluded from dat_obs1 are: \n")); cat(keys2rem); cat("\n") }
-        # }
-
-        #### Process dat_obs1_key_ls
-        dat_obs1_key_ls <- lapply(dat_obs1_key_ls, function(elm) elm$dat_obs1_key)
-        # Remove any elements for keys to be removed
-        if(!is.null(keys2rem)){
-          dat_obs1_key_ls[which(names(dat_obs1_key_ls) %in% keys2rem)] <- NULL
-        }
-      }
-
-      ################################################
-      #### Match observations
-
-      cat("Matching observations to dat_obs1 for each key...\n")
-      dat_obs1_key_ls <-
-        pbapply::pblapply(dat_obs1_key_ls, function(dat_obs1_key){
-          #### testing
-          # dat_obs1_key <- dat_obs1_key_ls[[1]]
-
-          #### subset dat_obs2 to focus in on the correct key too:
-          dat_obs2_key <- dat_obs2[dat_obs2$key == dat_obs1_key$key[1], ]
-
-          #### Check dat_obs2_key is ordered, which is required by match_ts_nearest:
-          stopifnot(!is.unsorted(dat_obs2_key$timestamp))
-
-          #### match closest:
-          match_closest_pos <- match_ts_nearest(dat_obs1_key$timestamp, dat_obs2_key$timestamp)
-          # Checks:
-          # rand_check_pos <- sample(x = 1:nrow(dat_obs1_key), size = 10)
-          # data.frame(dat_obs1_key$timestamp[rand_check_pos], dat_obs2_key$timestamp[match_closest_pos[rand_check_pos]])
-
-          #### Add observations to df
-          dat_obs1_key$obs <- dat_obs2_key$obs[match_closest_pos]
-          dat_obs1_key$timestamp_obs <- dat_obs2_key$timestamp[match_closest_pos]
-
-          #### Additional post-processing
-          # Implement additional processing to remove observations for which the gaps between known locations/observations
-          # ... are too large (i.e., those due to gaps in dat_obs2)
-          dat_obs1_key$difftime <- difftime(dat_obs1_key$timestamp_obs, dat_obs1_key$timestamp, units = "secs")
-          if(!is.null(threshold_match_gap)){
-            pos2rem <- which(dat_obs1_key$difftime < -threshold_match_gap | dat_obs1_key$difftime > threshold_match_gap)
-            if(length(pos2rem) > 0) dat_obs1_key <- dat_obs1_key[-c(pos2rem), ]
-          }
-
-          #### Relay match_gap results to user
-          # (no longer implemented)
-          # if(check_match_gap){
-          #  match_gap <- difftime(dat_obs1_key$timestamp_obs, dat_obs1_key$timestamp)
-          #  match_gap_units <- attributes(match_gap)$units
-          #  if(verbose){
-          #    cat(paste0("\n For key ", dat_obs1_key$key[1],
-          #              ", the approximate range in the difference between the timestamp recorded dat_obs1 and dat_obs2 is ",
-          #              floor(range(match_gap)[1]), ":", ceiling(range(match_gap)[2]), " ", match_gap_units, ".\n"))
-          #  }
-          #  # histogram of the differences
-          #  prettyGraphics::pretty_hist(as.numeric(match_gap),
-          #                           xlab = paste0("Time Gap (", match_gap_units, ")"),
-          #                           ylab = "Frequency",
-          #                           mtext_args = list())
-          # }
-
-          #### Return processed dataframe
-          return(dat_obs1_key)
-        })
-
-      #### Bind dat_obs1_key_ls back into a single dataframe, which now has 'obs' added
-      # ... appropriately for each key
-      dat_obs1 <- do.call(rbind, dat_obs1_key_ls)
-
-    }
-
-
-    ################################################
-    ################################################
-    #### Add meshs IDs to dataframe
 
     #### Add mesh IDs to dataframe
     # ... use find_cells()
@@ -375,11 +201,53 @@ validate <-
                            proj = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
                            f = function(x) as.integer(as.character(x)),
                            return = 1
-                           )
+    )
     mesh_IDs$xy <- paste0(mesh_IDs$long, "_", mesh_IDs$lat)
     dat_obs1$xy <- paste0(dat_obs1$long, "_", dat_obs1$lat)
     dat_obs1$mesh_ID <- mesh_IDs$mesh_ID[match(dat_obs1$xy, mesh_IDs$xy)]
     dat_obs1$xy <- NULL
+
+
+    ################################################
+    #### Add observations from dat_obs2 to dat_obs1, if necessary
+
+    #### Scenario 1: dat_obs2 is NULL
+    # Simply ensure that 'obs' has been provided in dat_obs1
+    if(is.null(dat_obs2)){
+      stopifnot(!is.null(dat_obs1$obs))
+
+    #### Scenario 2: dat_obs2 has been provided...
+    # Then we'll add observations using pair_ts(), accounting for different keys
+    } else{
+      if(verbose) cat("Step 2: Adding observations to dat_obs1 from dat_obs2...\n")
+
+      #### Check obs have been provided in dat_obs2 and keys have been provided
+      stopifnot(!is.null(dat_obs2$obs),
+                !is.null(dat_obs1$key),
+                !is.null(dat_obs2$key),
+                all(unique(dat_obs1$key) %in% unique(dat_obs2$key))
+                )
+
+      #### Implement pair_ts() to pair timeseries
+      # Define control match gap appropriately
+      if(!is.null(threshold_match_gap)) control_match_gap <- "remove" else control_match_gap <- NULL
+      # Implement pair_ts(), adding a column 'timestamp_obs' rather than 'obs' directly
+      # ... into dat_obs1 (it is useful to retain this column).
+      dat_obs2$timestamp_obs <- dat_obs2$timestamp
+      dat_obs1 <- pair_ts(d1 = dat_obs1,
+                          d2 = dat_obs2,
+                          time_col = "timestamp",
+                          key_col = "key",
+                          val_col = "timestamp_obs",
+                          method = "match_ts_nearest_by_key",
+                          min_gap = threshold_match_gap,
+                          max_gap = threshold_match_gap,
+                          units = "secs",
+                          control_beyond_gap = control_match_gap
+                          )
+      # Add the observations back in by matching timestamp_obs.
+      dat_obs1$obs <- dat_obs2$obs[match(dat_obs1$timestamp_obs, dat_obs2$timestamp_obs)]
+    }
 
 
     ################################################
@@ -405,7 +273,7 @@ validate <-
     #### End time
     t2 <- Sys.time()
     tdiff <- round(difftime(t2, t1))
-    if(verbose) cat(paste0("Algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+    if(verbose) cat(paste0("WeStCOMSExploreR::validate() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
 
     #### Return dataframe
     return(dat_obs1_wc)

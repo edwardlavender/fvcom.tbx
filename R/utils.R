@@ -141,9 +141,7 @@ colour_bar <-
 
 ###############################
 ###############################
-#### Tools4ETS::match_ts_nearest() from Tools4ETS
-# Source: https://github.com/edwardlavender/Tools4ETS
-# 18/06/2020
+#### match_ts_nearest() from Tools4ETS
 
 #' @title Find the position in one vector that is nearest in time to a value in another dataframe
 #' @import data.table
@@ -180,6 +178,162 @@ match_ts_nearest <- function(times, lookup){
   index_times <- NULL
   data.table::setkey(djoin, index_times)
   return(djoin$index_lookup)
+}
+
+
+###############################
+###############################
+#### match_ts_nearest_by_key() from Tools4ETS
+
+#' @title Match timeseries by key and time
+#' @description For two dataframes, \code{d1} and \code{d2}, this function finds the positions in the second dataframe which, for each key (e.g., factor level, individual) in the first dataframe, are nearest in time (i.e., nearest neighbour interpolation accounting for observations from different factor levels).
+#'
+#' @param d1 A dataframe which includes a column that defines factor levels and a column that defines timestamps. The names of these columns need to match those in \code{d2}.
+#' @param d2 A dataframe which includes a column that defines factor levels and a column that defines timestamps. The names of these columns need to match those in \code{d1}.
+#' @param key_col A character that defines the column name in \code{d1} and \code{d2} that distinguishes factor levels.
+#' @param time_col A character that defines the column name in \code{d1} and \code{d2} that defines timestamps.
+#'
+#' @details If there are multiple matches, only the first is returned.
+#'
+#' @return For a dataframe comprising observations from a series of factor levels (e.g., individuals) collected through time, the function returns a vector of positions in a second dataframe which, for the appropriate factor level, are nearest in time.
+#'
+#' @author Edward Lavender
+#' @keywords internal
+#'
+
+match_ts_nearest_by_key <- function(d1, d2, key_col, time_col){
+  # Check dataframes contain required columns
+  stopifnot(all(c(key_col, time_col) %in% colnames(d1)))
+  stopifnot(all(c(key_col, time_col) %in% colnames(d2)))
+  # Check that all keys in d1 are in d2 and, if not, return a warning
+  if(!all(unique(d1[, key_col]) %in% unique(d2[, key_col]))){
+    warning("Not all unique keys in d1 are found in d2.")
+  }
+  # Convert tibbles to dataframes: this is necessary to correctly define data.tables, below.
+  if(inherits(d1, "tbl")) d1 <- data.frame(d1)
+  if(inherits(d2, "tbl")) d2 <- data.frame(d2)
+  # Define datatables
+  dt1 <- data.table::data.table(ky = d1[, key_col], t = d1[, time_col],  d1_index = 1:nrow(d1))
+  dt2 <- data.table::data.table(ky = d2[, key_col], t = d2[, time_col],  d2_index = 1:nrow(d2))
+  # Set the key for both tables, arranging by key then time
+  ky <- NULL; t <- NULL;
+  data.table::setkey(dt1, ky, t)
+  data.table::setkey(dt2, ky, t)
+  # Join the data tables by the observations by key and nearest in time
+  djoin <- dt2[dt1, roll = "nearest", mult = "first"]
+  # Reorder djoin by d1_index to match input order
+  d1_index <- NULL
+  data.table::setkey(djoin, d1_index)
+  return(djoin$d2_index)
+}
+
+
+###############################
+###############################
+#### pair_ts() from Tools4ETS
+
+#' @title Pair timeseries
+#' @description This function adds observations from one timeseries to another timeseries using a matching process (e.g., nearest neighbour interpolation). This is useful when you have a main dataframe to which you need to add observations (e.g., those occurring closest in time) from another dataframe.
+#'
+#' @param d1 A dataframe that contains, at a minimum, a vector of timestamps, to which observations are added from \code{d2}.
+#' @param d2 A dataframe that contains, at a minimum, a vector of timestamps and associated observations, to be added to \code{d1}.
+#' @param time_col A character that defines the name of the column that contains timestamps in \code{d1} and \code{d2}.
+#' @param key_col (optional) A character that defines the name of the column that contains keys in \code{d1} and \code{d2}. This is required for \code{method = "match_ts_nearest_by_key"} (see below).
+#' @param val_col A character that defines the name of the column that contains observations in \code{d2}.
+#' @param method A character that defines the matching method. The options currently implemented are \code{"match_ts_nearest"}, which implements \code{\link[Tools4ETS]{match_ts_nearest}} and \code{"match_ts_nearest_by_key"} which implements \code{\link[Tools4ETS]{match_ts_nearest_by_key}}.
+#' @param min_gap (optional) A number that defines the minimum time gap (in user-defined units, see \code{units}, below) between times in \code{d1} and the times of observations that are added to \code{d1} from \code{d2}. This is useful if, for instance, some of the nearest observations in \code{d2} occurred long before the nearest observations in \code{d1}. If provided, the function counts the number of observations which do not meet this requirement and, if requested via \code{control_beyond_gap}, removes these from the returned dataframe or sets them to NA (see below).
+#' @param max_gap As above, for \code{min_gap}, but the maximum time gap.
+#' @param units A character that defines the units of the inputted \code{min_gap} or \code{max_gap}. This is passed to \code{\link[base]{difftime}}.
+#' @param control_beyond_gap A character that defines whether or not to rows from \code{d1} that contain observations from \code{d2} that exceed \code{min_gap} or \code{max_gap} to NA (\code{"NA"}) or to remove those rows (\code{"remove"}).
+#'
+#' @return The function returns a dataframe, \code{d1}, as inputted, with an added column (whose name is given by \code{val_col}), comprising values added from another dataframe, \code{d2}. Any observations in \code{d1} for which there are not observations in \code{d2} occurring within some time window (defined by \code{min_gap} and \code{max_gap}), if specified, are counted and, if requested, removed from the returned dataframe.
+#'
+#' @author Edward Lavender
+#' @keywords internal
+
+pair_ts <- function(d1,
+                    d2,
+                    time_col,
+                    key_col = NULL,
+                    val_col,
+                    method = "match_ts_nearest",
+                    min_gap = NULL,
+                    max_gap = min_gap,
+                    units = "mins",
+                    control_beyond_gap = NULL){
+
+  #### Identify current columns in d1
+  cols_in_d1 <- colnames(d1)
+
+  #### Checks
+  stopifnot(time_col %in% colnames(d1) & time_col %in% colnames(d2))
+  stopifnot(val_col %in% colnames(d2))
+  check_value(arg = "method", input = method, supp = c("match_ts_nearest", "match_ts_nearest_by_key"))
+  if(!is.null(control_beyond_gap))
+    check_value(arg = "control_beyond_gap", input = control_beyond_gap, supp = c("NA", "remove"))
+
+  #### Implement match_ts method
+  if(method == "match_ts_nearest"){
+    d1$position_in_d2 <- match_ts_nearest(d1[, time_col], d2[, time_col])
+  } else if(method == "match_ts_nearest_by_key"){
+    if(is.null(key_col)){
+      stop("key_col must be specified for method = 'match_ts_nearest_by_key'")
+    } else{
+      stopifnot(key_col %in% colnames(d2))
+    }
+    d1$position_in_d2 <- match_ts_nearest_by_key(d1, d2, key_col = key_col, time_col = time_col)
+  }
+
+  #### Add values to d1 from d2
+  d1[, val_col] <- d2[d1$position_in_d2, val_col]
+
+  #### Check whether min or max gap have been exceeded, if requested
+  if(!is.null(min_gap) | !is.null(max_gap)){
+
+    ## Add times in d2 to d1
+    d1$time_in_d2 <- d2[d1$position_in_d2, time_col]
+    # Compute difference in time using specified units
+    # Use drop = TRUE in case a tibble has been provided.
+    d1$difftime <- as.numeric(difftime(d1[, "time_in_d2", drop = TRUE], d1[, time_col, drop = TRUE], units = units))
+
+    ## Check whether the min_gap was exceeded
+    min_gap_exceeded <- any(d1$difftime < min_gap, na.rm = TRUE)
+    l_min_gap_exceeded <- length(which(min_gap_exceeded))
+    if(min_gap_exceeded){
+      warning(paste0(l_min_gap_exceeded, " observations exceeded min_gap."))
+      if(!is.null(control_beyond_gap)){
+        if(control_beyond_gap == "remove"){
+          d1 <- d1[which(d1$difftime >= min_gap), ]
+        } else if(control_beyond_gap == "NA"){
+          d1[which(d1$difftime < min_gap), val_col] <- NA
+        }
+      }
+    }
+
+    ## Check whether the max_gap was exceeded
+    max_gap_exceeded <- any(d1$difftime > max_gap, na.rm = TRUE)
+    l_max_gap_exceeded <- length(which(max_gap_exceeded))
+    if(max_gap_exceeded){
+      warning(paste0(l_max_gap_exceeded, " observations exceeded max_gap."))
+      if(!is.null(control_beyond_gap)){
+        if(control_beyond_gap == "remove"){
+          d1 <- d1[which(d1$difftime <= max_gap), ]
+        } else if(control_beyond_gap == "NA"){
+          d1[which(d1$difftime > max_gap), val_col] <- NA
+        }
+      }
+    }
+
+  } else{
+    if(!is.null(control_beyond_gap)) warning("control_beyond_gap is ignored: both min_gap and max_gap are NULL.")
+  }
+
+  #### Return dataframe
+  d1_to_return <- d1[, c(cols_in_d1, val_col)]
+  if(nrow(d1_to_return) == 0){
+    warning("No observations remain in d1; NULL returned.")
+    return(NULL)
+  } else return(d1_to_return)
 }
 
 
@@ -237,6 +391,38 @@ check_length <- function(arg = deparse(substitute(input)),
     stop(paste0("The length of the argument '", arg, "' (=", length(input), ") must be the same as the length of ", req_arg, " (=", req_length, ")."), call. = FALSE)
   }
 }
+
+
+######################################
+######################################
+#### check_value()
+
+#' @title Check the input value to a parent function argument
+#' @description Within a function, this function checks the value of an input to an argument of that function. If the input value is supported, the function simply returns this value. If the input is not supported, the function returns a warning and the default value. This function is designed to be implemented internally within functions and not intended for general use.
+#'
+#' @param arg A character string which defines the argument of the parent function.
+#' @param input The input to an argument of a parent function.
+#' @param supp A vector of supported input values for the argument in the parent function.
+#' @param default The default input value for the parent function.
+#'
+#' @return The function returns \code{input} or \code{default} (the latter with a warning) depending on whether or not \code{input} is within \code{supp} (i.e., whether or not the input to the argument of a parent function is supported).
+#' @author Edward Lavender
+#' @keywords internal
+#'
+
+check_value <- function(arg = deparse(substitute(input)), input, supp, default = supp[1]){
+  # If the input is not in a vector of supported arguments...
+  if(!(input %in% supp)){
+    # Provide a warning and revert to the default
+    if(is.character(input)) input <- paste0("',", input, "'")
+    if(is.character(default)) default <- paste0("'", default, "'")
+    warning(paste0("Argument '", arg, "' = ", input, " is not supported; defaulting to ", arg, " = ", default, ".\n"))
+    input <- default
+  }
+  # Return input
+  return(input)
+}
+
 
 ###############################
 ###############################
