@@ -201,10 +201,12 @@ predictions from source files. These include the following:
     unavailable files from file names vectors;
   - `extract()` - extract WeStCOMS predictions for multiple
     dates/hours/layers/mesh cells;
-  - `depth_layer_calc()` - calculate the depth of Sigma layers;
-  - `depth_layer_add()` - add the depths of Sigma layers to a dataframe;
-  - `depth_layer_assign()` - assign the Sigma layers to a dataframe
-    based on the depth;
+  - `depth_layer_calc()` - calculate the depth of Sigma layers using
+    known parameters;
+  - `depth_layer_compute()` - compute the depth of Sigma layers using
+    unknown (i.e., extracted) parameters and/or assign the depths of
+    Sigma layers to a dataframe using nearest neighbour or bilinear
+    interpolation;
   - `interp_layer()`, `interp_btw_hours()` and `interp_btw_depths()` -
     interpolate fractional layer numbers and predictions between hours
     or layers;

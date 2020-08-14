@@ -1,16 +1,17 @@
 #' @title Compute the depth of WeStCOMS layers at specified location(s) and time(s)
-#' @description In WeStCOMS, three-dimensional hydrodynamic conditions are predicted for each node (or element) at 11 Sigma layers (or between these layers) for every hour of every day. The approximate depth of each layer depends on the of the seabed below mean sea level (in a given location), the tidal elevation (in a given location and at a given time) and a constant which adjusts this depth for each layer, according to the equation \eqn{s_l \times (h_n + el_{n, t})} where \eqn{s} is a constant multiplier for layer \eqn{l}, \code{h} is the depth of node \code{n} below mean sea level and el us the tidal elevation{n, t} predicted at that node at hour \code{t}. If values for \eqn{h_n} and \eqn{el_{n, t}} are already known, \code{\link[WeStCOMSExploreR]{depth_layer_calc}} calculates the depths of the layers accordingly. Otherwise, \code{\link[WeStCOMSExploreR]{compute_field_depth}}first extracts necessary parameters for these variables and then uses these to calculate the depths of all layers specified in \code{siglev} at specified times and locations. To implement \code{compute_depth_layer()}, the user must supply a dataframe which contains the times (dates and hours) for which depths should be calculated, as well as a vector of constants (\code{siglev}) which are used to calculate the depths of corresponding layers. If requested, the function can use the computed depths of each layer to assign user-supplied depths Sigma layers IDs using nearest neighbour interpolation or fractional layer IDs using linear interpolation.
+#' @description In WeStCOMS, three-dimensional hydrodynamic conditions are predicted for each node (or element) at 11 Sigma layers (or between these layers) for every hour of every day. The approximate depth of each layer depends on the of the seabed below mean sea level (in a given location), the tidal elevation (in a given location and at a given time) and a constant which adjusts this depth for each layer, according to the equation \eqn{s_l \times (h_n + el_{n, t})} where \eqn{s} is a constant multiplier for layer \eqn{l}, \code{h} is the depth of node \code{n} below mean sea level and el us the tidal elevation{n, t} predicted at that node at hour \code{t}. If values for \eqn{h_n} and \eqn{el_{n, t}} are already known, \code{\link[WeStCOMSExploreR]{depth_layer_calc}} calculates the depths of the layers accordingly. Otherwise, \code{\link[WeStCOMSExploreR]{depth_layer_compute}} first extracts necessary parameters for these variables using \code{\link[WeStCOMSExploreR]{extract}} and then uses these to calculate the depths of all layers specified in \code{siglev} at specified times and locations. To implement (see \code{\link[WeStCOMSExploreR]{depth_layer_compute}}), the user must supply a dataframe which contains the times (dates and hours) for which depths should be calculated, as well as a vector of constants (\code{siglev}) which are used to calculate the depths of corresponding layers. If requested, the function can use the computed depths of each layer to assign user-supplied depths Sigma layers IDs using nearest neighbour interpolation or fractional layer IDs using linear interpolation.
 
-#' @param dat 	A dataframe which defines the WeStCOMS file date names, hours, and mesh (node) IDs for which layer depths should be calculated. Columns should be named 'date_name', 'hour' and 'mesh_ID' respectively. The dataframe may contain column named 'depth', containing (absolute depths, m), if you want to assign layers IDs to depth observations (see Description). The dataframe may also contain a column named 'layer' if you want to compute the depths of a particular layer at each row in \code{dat}, rather than all layers in \code{siglev} (see below). The dataframe should be arranged by 'date_name'.
+#' @param dat 	A dataframe which defines the WeStCOMS file date names, hours, and mesh (node) IDs for which layer depths should be calculated (see \code{\link[WeStCOMSExploreR]{extract}}). The dataframe may contain column named 'depth', containing (absolute depths, m), if you want to assign layers IDs to depth observations (see Description). The dataframe may also contain a column named 'layer' if you want to compute the depths of a particular layer at each row in \code{dat}, rather than all layers in \code{siglev} (see below). The dataframe should be arranged by 'date_name'.
 #' @param h A dataframe which, for each mesh ID, defines the (absolute) depth of the seabed in that cell below mean sea level. Columns should be named 'ID' and 'h' respectively.
 #' @param siglev A dataframe which, for each Sigma layer, defines the (absolute value of) siglev constant. Columns should be named 'layer' and 'siglev' respectively.
-#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour. The default dataframe is usually appropriate, if WeStCOMS files have not been subsetted. However, if WeStCOMS files have been subsetted (e.g. by selecting rows corresponding to hours 12 and 13), then rows 1 and 2 in WeStCOMS files now represent hours 12 and 13, not hours 0 and 1. \code{match_hour} provides the link which ensures that data for specified hours (e.g. hours 12 and 13) are correctly extracted from a WeStCOMS array (see Examples). All WeStCOMS files are assumed to have the same structure.
-#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of WeStCOMS files: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in WeStCOMS files. \code{match_mesh} provides the link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.
-#' @param dir2load A string which defines the directory from which to load WeStCOMS files containing tidal elevation predictions (required to calculate depth). In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.
-#' @param extension A string which defines the extension of the WeStCOMS files. The default is \code{".mat"}.
-#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files. These will not be loaded.
-#' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
-#' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}.
+#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param read_fvcom A function which is used to load files (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param dir2load A string which defines the directory from which to load WeStCOMS files containing tidal elevation predictions required to calculate depth (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param extension A string which defines the extension of the WeStCOMS files (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param cl (optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}} (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param depth_of_specified A logical input that defines whether or not to calculate the depths of all layers in \code{siglev} for each row in \code{dat} (\code{depth_of_specified = FALSE}), or just the depths of specified layers, specified via \code{dat$layer} (\code{depth_of_specified = TRUE}).
 #' @param assign_layer A logical input that defines whether or not layer IDs should be assigned to observed depths, based on the computed depths of Sigma layers. This method requires a column named 'depth' in \code{dat}.
 #' @param assign_layer_method A character which defines the method by which layer IDs should be assigned to observed depths, if \code{assign_layer = TRUE}. Implemented options are \code{"nearest"} or \code{"fractional"}. If \code{assign_layer_method = "nearest"}, then each depth observation is assigned the layer ID of the nearest node. If \code{assign_layer_method = "fractional"}, a fractional layer ID is computed based on the depths of the two nodes which surround the observed depth.
@@ -46,7 +47,7 @@
 #'                         package = "WeStCOMSExploreR", mustWork = TRUE)
 #'
 #' #### Example (1) Compute layer depths for all layers using default options
-#' dol1 <- compute_field_depth(dat = dat,
+#' dol1 <- depth_layer_compute(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -64,7 +65,7 @@
 #' head(dol1[, c("mesh_ID", "h", "h_from_h", "l10")])
 #'
 #' #### Example (2) Incorporate parallel loading of tidal elevation files
-#' dol2 <- compute_field_depth(dat = dat,
+#' dol2 <- depth_layer_compute(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -81,7 +82,7 @@
 #' # (Here, the use of match is simply to constrain hypothetical depths
 #' # ... to be below the maximum depth of the seabed)
 #' dat$depth <- h$h[match(dat$mesh_ID, h$ID)] - 5
-#' dol3 <- compute_field_depth(dat = dat,
+#' dol3 <- depth_layer_compute(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -98,7 +99,7 @@
 #'
 #' #### Example (4) Assign observed depths fractional layer IDs
 #' # ... based on the depths of surrounding layers
-#' dol4 <- compute_field_depth(dat = dat,
+#' dol4 <- depth_layer_compute(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -128,7 +129,7 @@
 #' # ... observations (i.e., observations deeper than the seabed) produce a warning:
 #' \dontrun{
 #' dat$depth[1:10] <- dat$depth[1:10] + 30
-#' dol5 <- compute_field_depth(dat = dat,
+#' dol5 <- depth_layer_compute(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -146,7 +147,7 @@
 #' # ... rather than all layers in siglev.
 #' set.seed(1)
 #' dat$layer <- sample(1:10, nrow(dat), replace = TRUE)
-#' dol6 <- compute_field_depth(dat = dat,
+#' dol6 <- depth_layer_compute(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -160,7 +161,7 @@
 #' dat$depth <- 1
 #' set.seed(1)
 #' dat$layer <- sample(1:10, nrow(dat), replace = TRUE)
-#' dol7 <- compute_field_depth(dat = dat,
+#' dol7 <- depth_layer_compute(dat = dat,
 #'                             h = h,
 #'                             siglev = dat_siglev,
 #'                             match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -180,17 +181,18 @@
 
 #######################################
 #######################################
-#### compute_field_depth()
+#### depth_layer_compute()
 
-compute_field_depth <-
+depth_layer_compute <-
   function(dat,
            h,
            siglev,
            match_hour = data.frame(hour = 0:23, index = 1:24),
            match_mesh = NULL,
+           corrupt = NULL,
+           read_fvcom = function(con) R.matlab::readMat(con)$data,
            dir2load,
            extension = ".mat",
-           corrupt = NULL,
            cl = NULL,
            pass2varlist = NULL,
            depth_of_specified = FALSE,
@@ -202,15 +204,14 @@ compute_field_depth <-
 
 
     ########################################
-    #### Check and process dat as required
+    #### Initial checks
 
     #### Algorithm start
     t1 <- Sys.time()
-    if(verbose) cat("Step 1: Initial checks/processing of dat...\n")
+    if(verbose) cat("Step 1: Initial checks...\n")
 
-    #### Check data has been provided correctly
-    stopifnot(all(c("date_name", "hour", "mesh_ID") %in% colnames(dat)),
-              all(c("ID", "h") %in% colnames(h)),
+    #### Check h and siglev have been provided correctly
+    stopifnot(all(c("ID", "h") %in% colnames(h)),
               all(c("layer", "siglev") %in% colnames(siglev))
               )
 
@@ -218,48 +219,6 @@ compute_field_depth <-
     # This simplifies later calculations.
     siglev$siglev <- abs(siglev$siglev)
     if(!is.null(dat$depth)) abs(dat$depth)
-
-    #### Exclude corrupt files
-    if(!is.null(corrupt)){
-      pos_corrupt <- which(dat$date_name %in% corrupt)
-      if(length(pos_corrupt) > 0){
-        warning(paste(length(pos_corrupt), "obserations associated with corrupt files excluded. \n"))
-        dat <- dat[-c(pos_corrupt), ]
-      }
-    }
-
-    #### Exclude any dates without associated files
-    files <- list.files(dir2load, pattern = paste0("*", extension))
-    stopifnot(length(files) > 0)
-    file_codes <- as.numeric(substr(files, 1, 6))
-    pos_unavailable <- which(!(dat$date_name %in% file_codes))
-    if(length(pos_unavailable) > 0){
-      warning(paste(length(pos_unavailable), "obserations with unavailable predictions excluded. \n"))
-      dat <- dat[-c(pos_unavailable), ]
-    }
-
-    #### Check that observations remain in dat
-    stopifnot(nrow(dat) > 0)
-
-    #### dat should be arranged by date_name
-    # (This is to avoid issues when we add tidal elevations back to the dataframe,
-    # ... having computed them for each element in a list)
-    stopifnot(!is.unsorted(dat$date_name))
-
-
-    ########################################
-    #### Implements required to load FVCOM files
-
-    if(verbose) cat("Step 2: Getting ready to load in FVCOM files to extract tidal elevation(s)...\n")
-
-    #### Define indices to extract tidal elevation values
-    # ... (required to compute depth of layers)
-    dat$index_hour <- match_hour$index[match(dat$hour, match_hour$hour)]
-    if(!is.null(match_mesh)){
-      dat$index_mesh <- match_mesh$index[match(dat$mesh_ID, match_mesh$mesh)]
-    } else{
-      dat$index_mesh <- dat$mesh_ID
-    }
 
     #### Extract depth of nodes below mean sea level
     if(class(dat$mesh_ID) != "integer"){
@@ -272,40 +231,35 @@ compute_field_depth <-
     }
     dat$h <- h$h[match(dat$mesh_ID, h$ID)]
 
-    #### Define a list with one element for each unique date_name
-    dat_ls <- split(dat, f = dat$date_name)
+    #### dat should be arranged by date_name
+    # (This is to avoid issues when we add tidal elevations back to the dataframe,
+    # ... having computed them for each element in a list)
+    stopifnot(!is.unsorted(dat$date_name))
 
-    #### Set up paralelisation if required
-    if(!is.null(cl) & !is.null(pass2varlist)){
-      varlist <- pass2varlist
-      parallel::clusterExport(cl = cl, varlist = varlist)
-    }
+    #### Other processing implemented internally by extract()]
+    # Check column names in dat
+    # Exclude corrupt files
+    # Exclude dates without any dates without associated files
 
 
     ########################################
-    #### Load FVCOM files
+    #### Extract tidal predictions with extract()
 
-    #### Loop over every date_name and extract tidal heights for mesh IDs/hours of interest
-    if(verbose) cat("Step 3: Loading FVCOM files to obtain tidal elevation(s)...\n")
-    els <- pbapply::pblapply(dat_ls, cl = cl, FUN = function(d){
-
-      #### Load tidal elevation values for selected date
-      # (these are needed to calculate depths of layers)
-      tidal_elevation <- R.matlab::readMat(paste0(dir2load, d$date_name[1], extension))
-      tidal_elevation <- tidal_elevation$data
-
-      #### Extract tidal elevation (needed to compute depth)
-      el <- tidal_elevation[cbind(d$index_hour, d$index_mesh)]
-
-      #### Return tidal elevation
-      return(el)
-
-    })
-    if(!is.null(cl)) parallel::stopCluster(cl)
-
-
-    #### Add tidal elevations to dataframe
-    dat$el <- as.numeric(unlist(els))
+    #### Use extract() to extract tidal heightrs
+    if(verbose) cat("Step 1: Calling extract() to extract tidal elevation(s)...\n")
+    dat <- extract(dat,
+                   match_hour = match_hour,
+                   match_mesh = match_mesh,
+                   match_layer = NULL,
+                   corrupt = corrupt,
+                   read_fvcom = read_fvcom,
+                   dir2load = dir2load,
+                   extension = extension,
+                   cl = cl,
+                   pass2varlist = pass2varlist,
+                   verbose = verbose)
+    dat$el <- dat$wc
+    dat$wc <- NULL
 
 
     ########################################
