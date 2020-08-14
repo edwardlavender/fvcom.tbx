@@ -6,19 +6,20 @@
 #' @param dat_obs2 A dataframe which contains the environmental observations which will be used to validate WeStCOMS predictions. This must contain timestamps ('timestamp'), observations ('obs'). A column 'key' may also need to be included (see Details). Note that observations can be provided in \code{dat_obs1} but, for some validation datasets, observations and locations are in separate datasets (see Details). \code{dat_obs2} allows for this flexibility.
 #' @param threshold_match_gap A numeric input which defines the gap between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.
 #' @param mesh A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build_mesh}}.
-#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour. The default dataframe is usually appropriate, if WeStCOMS files have not been subsetted. However, if WeStCOMS files have been subsetted (e.g. by selecting rows corresponding to hours 12 and 13), then rows 1 and 2 in WeStCOMS files now represent hours 12 and 13, not hours 0 and 1. \code{match_hour} provides the link which ensures that data for specified hours (e.g. hours 12 and 13) are correctly extracted from a WeStCOMS array (see Examples). All WeStCOMS files are assumed to have the same structure.
-#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer. This is only necessary if you are working with 3d fields and if you are working with subsetted of WeStCOMS files: if WeStCOMS files have been subsetted (e.g. by selecting layers corresponding to columns 2 and 3), then columns 1 and 2 in WeStCOMS files now represent layers 2 and 3, not hours 1 and 2. \code{match_layer} provides this link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.
-#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of WeStCOMS files: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in WeStCOMS files. \code{match_mesh} provides the link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.
-#' @param dir2load A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.
-#' @param extension A string which defines the extension of the WeStCOMS files. The default is \code{".mat"}.
-#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files. These will not be loaded.
-#' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
-#' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}.
+#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer n (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param read_fvcom A function which is used to load files (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param dir2load A string which defines the directory from which to load WeStCOMS files containing predictions (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param extension A string which defines the extension of the WeStCOMS files (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param cl (optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}} (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
 #'
 #' @details To use this function, the user must supply a dataframe (\code{dat_obs1}) which contains the locations(s) , layer(s) and time(s) (in a column named 'timestamp'). These columns must be named 'long' and 'lat', 'layer' and 'timestamp' respectively. A column, 'key', may also need to be included (see below). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe, (\code{dat_obs2}) with columns 'timestamp', 'obs' and 'key'. One situation where this latter option is useful is for animal movement data when the location of the animal is known from one tag type (e.g. passive acoustic telemetry) and observations are recorded by another tag type (e.g. an archival tag), possibly at a different resolution. In this scenario, both dataframes should contain a column, 'key', which connects the factor level(s) (e.g. individuals) for which locations observations have been made in the first dataframe with the factor level(s) for which environmental observations (which will be used to validate WeStCOMS) have been made. In this case, a nearest neighbour matching approach is used to add observations into the first dataframe (\code{dat_obs1}) from the second dataframe (\code{dat_obs2}) by selecting those that occurred closest in time to the timestamps stipulated in the first dataframe (this is why is is important to have a 'key' to distinguish among factor levels). The function uses a mesh supplied by the user to determine the WeStCOMS mesh nodes/elements within which each location lies (i.e. nearest neighbour interpolation). With this information, the function loads in each FVCOM file from a user-defined directory, extracts the relevant model predictions from this file, and then returns the original dataframe with predictions added. FVCOM files can be loaded in parallel via \code{cl} and \code{pass2varlist} arguments.
 #'
-#' @return The function returns a dataframe containing the columns in \code{dat_obs1} with some additions. If \code{dat_obs2} is used to add observations to this dataframe, the dataframe returned also contains a column with environmental observations, 'obs', the timestamps at which these were made ('timestamp_obs'), extracted from \code{dat_obs2}, and the difference (seconds) between the timestamps of known locations and the timestamps at which observations were made ('difftime'). 'meshID' defines the node (or element) within which each observation occurred and 'index_row', 'index_mesh' (and, if applicable, 'index_layer') provide a reference to the cells in the WeStCOMS files from which model predictions were extracted. 'wc' contains the predicted conditions from WeStCOMS and 'diff' contains the difference between observed and predicted conditions (i.e. 'obs' - 'wc').
+#' @return The function returns a dataframe containing the columns in \code{dat_obs1} with some additions. If \code{dat_obs2} is used to add observations to this dataframe, the dataframe returned also contains a column with environmental observations, 'obs', the timestamps at which these were made ('timestamp_obs'), extracted from \code{dat_obs2}, and the difference (seconds) between the timestamps of known locations and the timestamps at which observations were made ('difftime'). 'mesh_ID' defines the node (or element) within which each observation occurred and 'index_row', 'index_mesh' (and, if applicable, 'index_layer') provide a reference to the cells in the WeStCOMS files from which model predictions were extracted. 'wc' contains the predicted conditions from WeStCOMS and 'diff' contains the difference between observed and predicted conditions (i.e. 'obs' - 'wc').
 #'
 #' @examples
 #'
@@ -75,9 +76,9 @@
 #' #### Check that each node IDs was correctly identified given supplied coordinates:
 #' # Compare selected nodes from which coordinates were inputted
 #' # ... with the nodes identified by the function:
-#' as.character(dat_mesh_around_nodes$ID)[xy_sel]; validation$meshID
+#' as.character(dat_mesh_around_nodes$ID)[xy_sel]; validation$mesh_ID
 #' # We can see we have identified the correct position in the array corresponding to each node:
-#' cbind(validation[, c("index_mesh", "meshID")], match_mesh[validation$index_mesh, ])
+#' cbind(validation[, c("index_mesh", "mesh_ID")], match_mesh[validation$index_mesh, ])
 #'
 #' ### We can see that the data for each node has been extracted correctly:
 #' mapply(list.files(path, full.names = TRUE),
@@ -157,9 +158,10 @@ validate <-
            match_hour = data.frame(hour = 0:23, index = 1:24),
            match_layer = NULL,
            match_mesh = NULL,
-           dir2load,
            extension = ".mat",
            corrupt = NULL,
+           read_fvcom = function(con) R.matlab::readMat(con)$data,
+           dir2load,
            cl = NULL,
            pass2varlist = NULL,
            verbose = TRUE
@@ -369,88 +371,30 @@ validate <-
     xysp <- sp::SpatialPoints(xysp, proj4string = proj)
     # Define the node (or element if a mesh with elements is supplied) within which
     # ... each location lies. unique() and match() could be used here to
-    # ... improve speed by only sampling unique meshIDs.
-    meshIDs <- sp::over(xysp, mesh)
-    # Add meshID to observations; careful, use as.character(), bcause meshIDs$ID are a factor:
-    dat_obs1$meshID <- as.numeric(as.character(meshIDs$ID))
+    # ... improve speed by only sampling unique mesh_IDs.
+    mesh_IDs <- sp::over(xysp, mesh)
+    # Add mesh_ID to observations; careful, use as.character(), bcause mesh_IDs$ID are a factor:
+    dat_obs1$mesh_ID <- as.numeric(as.character(mesh_IDs$ID))
 
 
     ################################################
     ################################################
     #### Add wc predictions to dataframe
 
-    if(verbose) cat("Step 4: Getting ready to load in FVCOM files...\n")
+    if(verbose) cat("Step 4: Calling WeStCOMSExploreR::extract() to extract predictions...\n")
+    dat_obs1_wc <- extract(dat = dat_obs1,
+                           match_hour = match_hour,
+                           match_layer = match_layer,
+                           match_mesh = match_mesh,
+                           corrupt = corrupt,
+                           read_fvcom = read_fvcom,
+                           dir2load = dir2load,
+                           extension = extension,
+                           cl = cl,
+                           pass2varlist = pass2varlist,
+                           verbose = verbose)
 
-    #### Define indices for extracting data correctly
-    ## hour
-    if(is.null(match_hour)) {
-      dat_obs1$index_hour <- dat_obs1$hour
-    } else {
-      dat_obs1$index_hour <- match_hour$index[match(dat_obs1$hour, match_hour$hour)]
-    }
-    ## layer (if applicable)
-    if(!is.null(dat_obs1$layer)) {
-      if(is.null(match_layer)) {
-        dat_obs1$index_layer <- dat_obs1$layer
-      } else{
-        dat_obs1$index_layer <- match_layer$index[match(dat_obs1$layer, match_layer$layer)]
-      }
-    }
-    ## Mesh
-    if(is.null(match_mesh)) {
-      dat_obs1$index_mesh <- dat_obs1$meshID
-    } else{
-      dat_obs1$index_mesh <- match_mesh$index[match(dat_obs1$meshID, match_mesh$mesh)]
-    }
-
-    #### Define cluster
-    if(!is.null(cl)){
-      varlist <- pass2varlist
-      parallel::clusterExport(cl, varlist)
-    }
-
-    #### Loop over every dataframe (date_name)
-    # ...load in the FVCOM data array and add the model outputs to the dataframe
-    if(verbose) cat("Step 5: Loading FVCOM files and adding model predictions to dat_obs1...\n")
-    dat_obs1_ls <- split(dat_obs1, f = dat_obs1$date_name)
-    dat_obs1_ls_wc <-
-      pbapply::pblapply(dat_obs1_ls, cl = cl, function(df){
-
-        #### Define first df for testing
-        # df <- dat_obs1_ls[[1]]
-
-        #### Define connection and load file
-        con <- paste0(dir2load, df$date_name[1], extension)
-        if(verbose) cat(paste0("\n Loading file ", df$date_name[1], extension, "...\n"))
-        wc <- R.matlab::readMat(con)
-        wc <- wc$data
-
-        #### Extract wc predictions for each position, depending on whether
-        # ... or not we're dealing with a 2d or 3d array.
-        # Note use use of cbind() in the indexing which is necessary to return
-        # ... a single value for index (e.g. index [1, 2, 3]).
-        if(length(dim(wc)) == 3){
-          stopifnot(!is.null(df$layer))
-          df$wc <- wc[cbind(df$index_hour, df$index_layer, df$index_mesh)]
-        } else if(length(dim(wc)) == 2){
-          df$wc <- wc[cbind(df$index_hour, df$index_mesh)]
-        } else{
-          stop("2d or 3d matrix should be supplied")
-        }
-
-        # Print first value for checking purposes
-        # if(verbose) cat(paste0("wc[1] = ", df$wc[1]))
-
-        #### Return dataframe
-        return(df)
-      })
-
-    if(!is.null(cl)) parallel::stopCluster(cl = cl)
-
-    #### Define dataframe
-    dat_obs1_wc <- do.call(rbind, dat_obs1_ls_wc)
-
-    #### Difference between observed and expected temperatures
+    #### Difference between observed and expected values
     dat_obs1_wc$diff <- dat_obs1_wc$obs - dat_obs1_wc$wc
 
     #### End time

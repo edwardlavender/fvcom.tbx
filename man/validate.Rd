@@ -12,9 +12,10 @@ validate(
   match_hour = data.frame(hour = 0:23, index = 1:24),
   match_layer = NULL,
   match_mesh = NULL,
-  dir2load,
   extension = ".mat",
   corrupt = NULL,
+  read_fvcom = function(con) R.matlab::readMat(con)$data,
+  dir2load,
   cl = NULL,
   pass2varlist = NULL,
   verbose = TRUE
@@ -29,26 +30,28 @@ validate(
 
 \item{mesh}{A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build_mesh}}.}
 
-\item{match_hour}{A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour. The default dataframe is usually appropriate, if WeStCOMS files have not been subsetted. However, if WeStCOMS files have been subsetted (e.g. by selecting rows corresponding to hours 12 and 13), then rows 1 and 2 in WeStCOMS files now represent hours 12 and 13, not hours 0 and 1. \code{match_hour} provides the link which ensures that data for specified hours (e.g. hours 12 and 13) are correctly extracted from a WeStCOMS array (see Examples). All WeStCOMS files are assumed to have the same structure.}
+\item{match_hour}{A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{match_layer}{A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer. This is only necessary if you are working with 3d fields and if you are working with subsetted of WeStCOMS files: if WeStCOMS files have been subsetted (e.g. by selecting layers corresponding to columns 2 and 3), then columns 1 and 2 in WeStCOMS files now represent layers 2 and 3, not hours 1 and 2. \code{match_layer} provides this link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.}
+\item{match_layer}{A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer n (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{match_mesh}{(optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of WeStCOMS files: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in WeStCOMS files. \code{match_mesh} provides the link which ensures that WeStCOMS predictions are extracted correctly (see Examples). All WeStCOMS files are assumed to have the same structure.}
+\item{match_mesh}{(optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{dir2load}{A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.}
+\item{extension}{A string which defines the extension of the WeStCOMS files (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{extension}{A string which defines the extension of the WeStCOMS files. The default is \code{".mat"}.}
+\item{corrupt}{A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{corrupt}{A vector of numbers, representing WeStCOMS date names, which define corrupt files. These will not be loaded.}
+\item{read_fvcom}{A function which is used to load files (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{cl}{(optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.}
+\item{dir2load}{A string which defines the directory from which to load WeStCOMS files containing predictions (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{pass2varlist}{A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}.}
+\item{cl}{(optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).}
+
+\item{pass2varlist}{A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}} (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
 \item{verbose}{A logical input which defines whether or not to display messages to the console detailing function progress.}
 }
 \value{
-The function returns a dataframe containing the columns in \code{dat_obs1} with some additions. If \code{dat_obs2} is used to add observations to this dataframe, the dataframe returned also contains a column with environmental observations, 'obs', the timestamps at which these were made ('timestamp_obs'), extracted from \code{dat_obs2}, and the difference (seconds) between the timestamps of known locations and the timestamps at which observations were made ('difftime'). 'meshID' defines the node (or element) within which each observation occurred and 'index_row', 'index_mesh' (and, if applicable, 'index_layer') provide a reference to the cells in the WeStCOMS files from which model predictions were extracted. 'wc' contains the predicted conditions from WeStCOMS and 'diff' contains the difference between observed and predicted conditions (i.e. 'obs' - 'wc').
+The function returns a dataframe containing the columns in \code{dat_obs1} with some additions. If \code{dat_obs2} is used to add observations to this dataframe, the dataframe returned also contains a column with environmental observations, 'obs', the timestamps at which these were made ('timestamp_obs'), extracted from \code{dat_obs2}, and the difference (seconds) between the timestamps of known locations and the timestamps at which observations were made ('difftime'). 'mesh_ID' defines the node (or element) within which each observation occurred and 'index_row', 'index_mesh' (and, if applicable, 'index_layer') provide a reference to the cells in the WeStCOMS files from which model predictions were extracted. 'wc' contains the predicted conditions from WeStCOMS and 'diff' contains the difference between observed and predicted conditions (i.e. 'obs' - 'wc').
 }
 \description{
 For specified location(s), layer(s) and timestamp(s), this function pairs observations with corresponding WeStCOMS predictions. Locations and observations can be derived from different datasets. This means that animal movement datasets, in which locations and observations may be derived from different electronic tags, can be used for validation. The function uses nearest neighbour interpolation to extract WeStCOMS predictions for the nearest hour, at the specified layer and at the nearest mesh cell for which predictions are available relative to user inputs. Paired observations and predictions can be used to examine WeStCOMS skill (i.e., prediction accuracy).
@@ -111,9 +114,9 @@ validation
 #### Check that each node IDs was correctly identified given supplied coordinates:
 # Compare selected nodes from which coordinates were inputted
 # ... with the nodes identified by the function:
-as.character(dat_mesh_around_nodes$ID)[xy_sel]; validation$meshID
+as.character(dat_mesh_around_nodes$ID)[xy_sel]; validation$mesh_ID
 # We can see we have identified the correct position in the array corresponding to each node:
-cbind(validation[, c("index_mesh", "meshID")], match_mesh[validation$index_mesh, ])
+cbind(validation[, c("index_mesh", "mesh_ID")], match_mesh[validation$index_mesh, ])
 
 ### We can see that the data for each node has been extracted correctly:
 mapply(list.files(path, full.names = TRUE),
