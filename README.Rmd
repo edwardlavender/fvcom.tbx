@@ -144,6 +144,6 @@ Future developments to `WeStCOMSExploreR` may include developing the following f
 * Exploring spatiotemporal variation in environmental conditions in 3d;
 * Estimating bottom velocity from vertical profiles;
 
-# Disclaimer
+## Disclaimer
 
 `WeStCOMSExploreR` is a new package at an early stage of evolution. Please report issues, comments or suggestions! 

@@ -248,7 +248,7 @@ following functionality:
     3d;
   - Estimating bottom velocity from vertical profiles;
 
-# Disclaimer
+## Disclaimer
 
 `WeStCOMSExploreR` is a new package at an early stage of evolution.
 Please report issues, comments or suggestions\!
