@@ -208,7 +208,10 @@ depth_layer_compute <-
 
     #### Algorithm start
     t1 <- Sys.time()
-    if(verbose) cat("Step 1: Initial checks...\n")
+    if(verbose) {
+      cat("WeStCOMSExploreR::depth_layer_compute() called...\n")
+      cat("Step 1: Implementing initial checks...\n")
+    }
 
     #### Check h and siglev have been provided correctly
     stopifnot(all(c("ID", "h") %in% colnames(h)),
@@ -246,7 +249,7 @@ depth_layer_compute <-
     #### Extract tidal predictions with extract()
 
     #### Use extract() to extract tidal heightrs
-    if(verbose) cat("Step 1: Calling WeStCOMSExploreR::extract() to extract tidal elevation(s)...\n")
+    if(verbose) cat("Step 2: Calling WeStCOMSExploreR::extract() to extract tidal elevation(s)...\n")
     dat <- extract(dat,
                    match_hour = match_hour,
                    match_mesh = match_mesh,
@@ -268,7 +271,7 @@ depth_layer_compute <-
     #### Use tidal elevation to compute depths of layers
     # ... at specified times and in specified locations
     # ... We'll generate a list, with one element for each layer
-    if(verbose) cat("Step 4: Computing depths...\n")
+    if(verbose) cat("Step 3: Computing depths...\n")
 
     #### If the user has requested depth for inputted layers,
     # we'll define these, add them to the dataframe and return.
@@ -307,7 +310,7 @@ depth_layer_compute <-
     if(assign_layer){
 
       #### Checks
-      if(verbose) cat("Step 5: Assigning layer IDs to observed depths based on Sigma layer depths...\n")
+      if(verbose) cat("Step 4: Assigning layer IDs to observed depths based on Sigma layer depths...\n")
       stopifnot(!is.null(dat$depth))
       if(!(assign_layer_method %in% c("nearest", "fractional"))){
         warning("Input to assign_layer_method not implemented. Options are 'nearest' or 'fractional'. Defaulting to 'nearest'.")
@@ -403,7 +406,7 @@ depth_layer_compute <-
     #### End time
     t2 <- Sys.time()
     tdiff <- round(difftime(t2, t1))
-    if(verbose) cat(paste0("Algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+    if(verbose) cat(paste0("WeStCOMSExploreR::depth_layer_compute() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
 
     #### Return dataframe
     return(dat)

@@ -94,7 +94,7 @@ extract <-
     t1 <- Sys.time()
     if(verbose){
       cat("WeStCOMSExploreR::extract() called...\n")
-      cat("Step 1: Initial checks/processing of dat...\n")
+      cat("... extract() step 1: Initial checks/processing of dat...\n")
     }
 
     #### Check dat has been provided correctly
@@ -110,7 +110,7 @@ extract <-
     ########################################
     #### Implements required to load FVCOM files
 
-    if(verbose) cat("Step 2: Getting ready to load in FVCOM files...\n")
+    if(verbose) cat("... extract() step 2: Getting ready to load in FVCOM files...\n")
 
     #### Define indices to extract predictions
     # Define whether or not we're dealing with a 2d or 3d field:
@@ -148,7 +148,7 @@ extract <-
     #### Load FVCOM files
 
     #### Loop over every date_name and extract predictions for hours/layers/mesh IDs
-    if(verbose) cat("Step 3: Loading FVCOM files and adding model predictions to dat...\n")
+    if(verbose) cat("... extract() step 3: Loading FVCOM files and adding model predictions to dat...\n")
     pls <- pbapply::pblapply(dat_ls, cl = cl, FUN = function(df){
 
       #### Define connection and load file
@@ -178,7 +178,7 @@ extract <-
     #### End time
     t2 <- Sys.time()
     tdiff <- round(difftime(t2, t1))
-    if(verbose) cat(paste0("extract() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+    if(verbose) cat(paste0("WeStCOMSExploreR::extract() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
 
     #### Return dataframe
     return(dat)
