@@ -78,6 +78,102 @@ If \code{make_plot = TRUE}, the function will produce plots, either saved to fil
 This function computes summary statistics and/or maps environmental conditions for multiple environmental variables and/or timepoints. The user passes the function a dataframe specifying the variables to be included, their properties, and the directory of the WeStCOMS files from which they can be loaded. For each variable, the function loads in the WeStCOMS files for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of WeStCOMS files.
 }
 \examples{
+############################
+############################
+#### Example (1): Implement explore() with a single variable
+
+#### Define field2d, a dataframe which defines variables and details
+# ... needed for extraction.
+field2d <- data.frame(cov2d = "temp",
+                      mesh_type = "element",
+                      extension = ".mat",
+                      vector_field = FALSE,
+                      dir2save = "/Users/el72/Desktop/")
+
+#### Define dat_ls, a list of dataframes which defines
+# ... the specific FVCOM outputs we'll extract.
+# We'll extract all predictions for two days from example files for the top layer:
+timestamp <- as.POSIXct(c("2016-03-01", "2016-03-02"), tz = "UTC")
+dat <- expand.grid(timestamp = timestamp, mesh_ID = dat_nodexy$node_id)
+dat$date_name <- date_name(dat$timestamp)
+dat$hour <- lubridate::hour(dat$timestamp)
+dat$mesh_ID <- dat_nodexy[1:nrow(dat), "node_id"]
+dat$layer <- 1
+dat <- dat[, c("date_name", "hour", "layer", "mesh_ID")]
+dat_ls <- list(temp = dat)
+
+#### Define other general parameters for extract()
+match_hour <- data.frame(hour = 0:1, index = 1:2)
+# match_layer <- NULL # not needed in this example
+match_mesh <-
+  data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
+match_mesh_around_nodes <-
+  data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
+match_mesh_around_elements <- NULL # not needed in this example
+# corrupt <- NULL # not needed in this example
+
+#### Define a NAMED list of functions to load files
+read_fvcom_ls <- list(temp = function(con) R.matlab::readMat(con)$data)
+
+#### Define a NAMED list of directories used to load files
+root <- system.file("WeStCOMS_files/",
+                     package = "WeStCOMSExploreR", mustWork = TRUE)
+dir2load_ls <- list(temp = paste0(root, "temp/"))
+
+#### Define mesh(es)
+# We'll use the example data files.
+mesh_around_nodes <- dat_mesh_around_nodes
+# mesh_around_elements <- NULL
+
+#### Define plot parameters
+make_plot <- TRUE
+plot_param = list(hours4plots = unique(dat$hour)[1],
+                  par_op = par(oma = c(3, 3, 3, 7)),
+                  coastline = dat_coast_around_oban,
+                  zlab = expression(paste("Temperature (", degree, ")")),
+                  zlab_line = 3,
+                  vector_scale = NA
+)
+# png_param <- list() # not needed in this example
+
+#### Define compute stats parameters
+compute_summary_stats <- TRUE
+summary_stats_param <-
+  list(row_specific = TRUE,
+       funs = list(mean = function(x) mean(x, na.rm = TRUE),
+                   min = function(x) min(x, na.rm = TRUE))
+  )
+
+#### Parallelise param
+# We'll set inside the function.
+# cl <- NULL
+# pass2varlist = list()
+# parallelise <- "vars"
+# verbose <- TRUE
+
+#### Implement explore() for a single variable
+explore(
+  field2d = field2d,
+  dat_ls = dat_ls,
+  match_hour = data.frame(hour = 0:23, index = 1:24),
+  match_layer = NULL,
+  match_mesh_around_nodes = match_mesh_around_nodes,
+  match_mesh_around_elements = NULL,
+  corrupt = NULL,
+  read_fvcom_ls = read_fvcom_ls,
+  dir2load_ls = dir2load_ls,
+  mesh_around_nodes = dat_mesh_around_nodes,
+  mesh_around_elements = NULL,
+  make_plot = TRUE,
+  plot_param = plot_param,
+  png_param = list(),
+  compute_summary_stats = TRUE,
+  summary_stats_param = summary_stats_param,
+  parallelise = "vars",
+  cl = NULL,
+  pass2varlist = NULL,
+  verbose = TRUE
+)
 
 }
 \seealso{
