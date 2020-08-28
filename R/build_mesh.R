@@ -31,6 +31,7 @@
 #'                                 pass2varlist = list(NULL))
 #'
 #' # 3) Build a mesh around elements (based on nodes) using parallel processing
+#' \dontrun{
 #' # Define cluster object:
 #' cl <- parallel::makeCluster(2L)
 #' # Run the build_mesh algorithm in parallel by supplying a cluster:
@@ -41,6 +42,7 @@
 #'                                    pass2varlist = list("dat_nodexy", "dat_trinodes"))
 #' # Note that the connection with the cluster is closed within the function
 #' # ... so it is not necessary to use parallel::stopCluster(cl) here.
+#' }
 #'
 #' @seealso \code{\link[sp]{SpatialPolygonsDataFrame-class}} for the output class;
 #' \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example nodexy dataframe;
@@ -94,10 +96,6 @@ build_mesh <-
   # ... around elements. So this type of mesh is useful if we want to plot conditions
   # ... resolved at elements.
   if(mesh_type == "node"){
-
-    cat(paste("You will receive a warning: 'In sp::Polygon(coords, hole) : less than 4 coordinates in polygon'.",
-              "This can be safely ignored. This is because each polygon is a prism;",
-              "i.e., only comprised of three coordinates. \n"))
 
     # Define a list of SpatialPolygons, each one of which is a triangular prism
     # ... around a given element:

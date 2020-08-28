@@ -53,6 +53,7 @@ mesh_around_nodes <- build_mesh(nodexy = dat_nodexy,
                                 pass2varlist = list(NULL))
 
 # 3) Build a mesh around elements (based on nodes) using parallel processing
+\dontrun{
 # Define cluster object:
 cl <- parallel::makeCluster(2L)
 # Run the build_mesh algorithm in parallel by supplying a cluster:
@@ -63,6 +64,7 @@ mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
                                    pass2varlist = list("dat_nodexy", "dat_trinodes"))
 # Note that the connection with the cluster is closed within the function
 # ... so it is not necessary to use parallel::stopCluster(cl) here.
+}
 
 }
 \seealso{
