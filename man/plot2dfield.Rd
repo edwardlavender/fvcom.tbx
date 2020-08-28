@@ -21,7 +21,7 @@ plot2dfield(
   ncols = 50000,
   col_fn = grDevices::heat.colors,
   colour_bar_add = TRUE,
-  colour_bar_x = c(xlim[2] + c(0.01, 0.02)),
+  colour_bar_x = NULL,
   colour_bar_y = ylim,
   element_xy = NULL,
   arrow_angle = 30,
@@ -124,7 +124,7 @@ This function creates a 2 dimensional map of the environmental conditions over s
 }
 \examples{
 
-#### (3) Plot a scalar variable (e.g. surface temperature) over space at a snapshot in time.
+#### (1) Plot a scalar variable (e.g. surface temperature) over space at a snapshot in time.
 
 # This example plots temperature over space for a snapshot in time.
 # The key arguments to note here are:
@@ -173,7 +173,7 @@ WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oba
 )
 
 #### (2) Plot tidal elevation over space at a snapshot in time.
-
+\dontrun{
 # Default graphical parameters are used so we can miss those arguments out
 # ... to simplify the function
 WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oban,
@@ -187,6 +187,7 @@ WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oba
                               zlab = "Tidal Elevation (m)",
                               main = "2016-03-01"
 )
+}
 
 #### (3) Plot a vector field over space at a snapshot in time.
 

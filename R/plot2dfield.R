@@ -46,7 +46,7 @@
 #'
 #' @examples
 #'
-#' #### (3) Plot a scalar variable (e.g. surface temperature) over space at a snapshot in time.
+#' #### (1) Plot a scalar variable (e.g. surface temperature) over space at a snapshot in time.
 #'
 #' # This example plots temperature over space for a snapshot in time.
 #' # The key arguments to note here are:
@@ -95,7 +95,7 @@
 #' )
 #'
 #' #### (2) Plot tidal elevation over space at a snapshot in time.
-#'
+#' \dontrun{
 #' # Default graphical parameters are used so we can miss those arguments out
 #' # ... to simplify the function
 #' WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oban,
@@ -109,6 +109,7 @@
 #'                               zlab = "Tidal Elevation (m)",
 #'                               main = "2016-03-01"
 #' )
+#' }
 #'
 #' #### (3) Plot a vector field over space at a snapshot in time.
 #'
@@ -161,7 +162,7 @@ plot2dfield <-
            ncols = 50000,
            col_fn = grDevices::heat.colors,
            colour_bar_add = TRUE,
-           colour_bar_x = c(xlim[2] + c(0.01, 0.02)),
+           colour_bar_x = NULL,
            colour_bar_y = ylim,
            element_xy = NULL,
            arrow_angle = 30,
@@ -244,20 +245,18 @@ plot2dfield <-
       mesh$fvcom <- sqrt(mesh$udata^2 + mesh$vdata^2)
 
       #### Compute coordinates (if required) for arrow start points:
-      if(is.null(element_xy)){
-        element_xy <- sp::coordinates(mesh)
-      } # close if(is.null(element_xy)){
+      if(is.null(element_xy)) element_xy <- sp::coordinates(mesh)
 
-    } # close else{
+    }
 
 
     #### Define colour scheme:
     # Define a uniform, pretty, sequence of values across the range of the variable
     # ... with the number of colours (smoothness) user-defined:
-    pretty_vals <- pretty(range(mesh$fvcom), n = ncols)
+    pretty_vals <- pretty(range(mesh$fvcom, na.rm = TRUE), n = ncols)
     # Determine the position of each of the values of the variable
     # ... within this pretty sequence using the findInterval function
-    mesh$order = findInterval(mesh$fvcom, pretty_vals)
+    mesh$order <- findInterval(mesh$fvcom, pretty_vals)
     # Define a sequence of colours that is the same length as our regular
     # ... sequence of values for the second variable using the user-defined colour function:
     cols <- col_fn(length(pretty_vals))
@@ -270,12 +269,8 @@ plot2dfield <-
     #### Plot the map
 
     #### Define limits if required
-    if(is.null(xlim)){
-      xlim <- raster::extent(coastline)[1:2]
-    }
-    if(is.null(ylim)){
-      ylim <- raster::extent(coastline)[3:4]
-    }
+    if(is.null(xlim)) xlim <- raster::extent(coastline)[1:2]
+    if(is.null(ylim)) ylim <- raster::extent(coastline)[3:4]
 
     #### Plot the coastline
     raster::plot(coastline,
@@ -325,6 +320,8 @@ plot2dfield <-
 
       #### Add a colour bar, if specified:
       if(colour_bar_add){
+        if(is.null(colour_bar_x)) colour_bar_x <- c(xlim[2] + c(0.01, 0.02))
+        if(is.null(colour_bar_y)) colour_bar_y <- ylim
         # Add the colour bar at user defined positions, using the colour_bar() function
         TeachingDemos::subplot(x = colour_bar_x,
                        y = colour_bar_y,
@@ -360,8 +357,8 @@ plot2dfield <-
     # Define titles
     # These can be suppressed with ""
     graphics::mtext(side = 3, main, cex = cex, line = main_line, font = 2)
-    graphics::mtext(side = 1, "Longitude (dd)", cex = cex, line = xlab_line)
-    graphics::mtext(side = 2, "Latitude (dd)", cex = cex, line = ylab_line)
+    graphics::mtext(side = 1, xlab, cex = cex, line = xlab_line)
+    graphics::mtext(side = 2, ylab, cex = cex, line = ylab_line)
 
     # Define axes
     if(axes){
