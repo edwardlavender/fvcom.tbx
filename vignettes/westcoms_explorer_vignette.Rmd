@@ -561,7 +561,7 @@ It is often desirable to move beyond snapshots of spatial variation at particula
 
 To implement `WeStCOMSExploreR::explore()`, it is necessary to define `fields2d`, a dataframe which contains the environmental variables and their associated properties for which to calculate summary statistics and/or make plots. The user also needs to specify the directory from which files can be loaded, and the dates which should be loaded. If `sun_angle` has not already been calculated, this can also be achieved by defining a list of parameters to be passed to `WeStCOMSExploreR::compute_field_sun_angle()`. To calculate summary statistics, a list of essential arguments, passed to `WeStCOMSExploreR::summarise2dfield()`, needs to supplied via the `summary_stats_param` argument . Similarly, to make plots, a list of essential parameters needs to be supplied via the `plot_param` argument, but additional customisation arguments can be supplied outside of this list that are passed to `WeStCOMSExploreR::plot2dfield()`. The function can be parallelised over environmental variables or dates by specifying inputs for the `parallelise`, `cl` and `pass2varlist` arguments. If the user opts to create plots in parallel, these need to be saved to file (they will not be displayed). 
 
-```{r, fig.cap = "Maps of spatial variation in environmental conditions around Oban at multiple time points (WeStCOMSExploreR::explore() examples).", fig.height = 10, fig.width = 10}
+```{r, fig.cap = "Maps of spatial variation in environmental conditions around Oban at multiple time points (WeStCOMSExploreR::explore() examples).", fig.height = 10, fig.width = 10, eval = FALSE}
 # Define 2d covariates; associated layers; mesh_type
 field2d <- data.frame(cov2d = c("temp",
                                  "tidal_elevation",
@@ -630,7 +630,7 @@ summaries_ls
 
 You could plot these summary statistics though time for each environmental variable and/or use external software to group any saved maps into animations. (This latter activity can be done within R, but specialised software is faster and easier to use.) For example, we could create a few timeseries plots to which help demonstrate the relative magnitude of spatial versus temporal variation using the saved summary statistics (`summaries_ls`). Even through we only have computed summary statistics across four timestamps, let's do this for illustration: 
 
-````{r, fig.cap = "Example timeseries of the spatiotemporal variation in environmental conditions around Oban for three environmental variables, resolved at three time points.", fig.height = 4, fig.width = 8, fig.align = "center"}
+````{r, fig.cap = "Example timeseries of the spatiotemporal variation in environmental conditions around Oban for three environmental variables, resolved at three time points.", fig.height = 4, fig.width = 8, fig.align = "center", eval = FALSE}
 # Create some timeseries plots using summary statistics
 # ... that show the extent of spatial variation through time. 
 # Set plotting margins and other graphical parameters: 

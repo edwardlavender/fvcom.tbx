@@ -4,18 +4,20 @@
 \alias{check_dir}
 \title{Check a directory exists}
 \usage{
-check_dir(arg = deparse(substitute(input)), input)
+check_dir(arg = deparse(substitute(input)), input, check_slash = FALSE)
 }
 \arguments{
 \item{arg}{(optional) A character string which defines the argument of a parent function.}
 
 \item{input}{A character string which defines a directory.}
+
+\item{check_slash}{A logical input that defines whether or not to check the end of a string for '/'. If \code{TRUE} and a '/' is lacking, this is added to the returned directory.}
 }
 \value{
-The function checks whether or not a directory exists and, if not, returns an informative error message.
+The function checks whether or not a directory exists. If so, the function returns either the directory as inputted, or the directory with a '/' added to the end. If not, the function returns an informative error message.
 }
 \description{
-This function checks whether a directory exists and, if not, returns an informative error message.
+This function checks whether a directory exists and, if not, returns an informative error message. The inputted directory can be edited with the addition of a '/' if requested.
 }
 \author{
 Edward Lavender
