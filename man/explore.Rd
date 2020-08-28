@@ -29,9 +29,9 @@ explore(
 )
 }
 \arguments{
-\item{field2d}{A dataframe that defines the variables and their properties for which the outputs will be explored. This must contain the following columns: 'cov2d', a character vector of variable names which correspond to the names of the folders in which the model outputs are located (see \code{dir2load}, below); 'mesh_type', a character vector of the corresponding mesh type ("element" or "node" across which that variable is structured); 'extension', a character vector of the extension of the model outputs (e.g. ".mat" or ".rds" for outputs created by \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}); 'vector_field', a logical vector defining whether or not that variable is a scalar (FALSE) or vector field (TRUE). For vector fields, the letters "wind" or "current" must be within the variable name in order for the algorithm to determine whether data should be loaded from the "uwind_speed" and "vwind_speed" or "uvelocity" and "vvelocity" folders in \code{dir2load} (see below). (see \code{\link[WeStCOMSExploreR]{extract}}). may contain dir2save}
+\item{field2d}{A dataframe that defines the variables and their properties for which the outputs will be explored. This must contain the following columns: 'cov2d', a character vector of variable names for which model outputs will be explored; 'mesh_type', a character vector of the corresponding mesh type ("element" or "node") across which that variable is structured; 'extension', a character vector of the extension of the model outputs (e.g. ".mat" or ".rds" for outputs created by \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}); 'vector_field', a logical vector defining whether or not that variable is a scalar (FALSE) or vector field (TRUE). To save plots directly to file (see \code{make_plot} and \code{png_param}, the dataframe should contain a column 'dir2load' which specifies the folder in which all the plots for each variable will be saved.}
 
-\item{dat_ls}{A named list of dataframes, with one element for each \code{field2d$cov2d}. Each element should comprise a dataframe which defines the WeStCOMS file date names, hours, and mesh (node) IDs for which layer depths should be calculated (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{dat_ls}{A named list of dataframes, with one element for each \code{field2d$cov2d}. Each element should comprise a dataframe which defines the WeStCOMS file date names, hours, and mesh (node or element) IDs for model predictions will be extracted (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
 \item{match_hour}{A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
@@ -45,15 +45,15 @@ explore(
 
 \item{read_fvcom_ls}{A named list of functions, with one element for each \code{field2d$cov2d}. Each element should contain a function is used to load files for that variable (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{dir2load_ls}{A named list of directories, with one element for each \code{field2d$cov2d}. Each element should be a string or a vector of strings defines the directory from which to load WeStCOMS files (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{dir2load_ls}{A named list of directories, with one element for each \code{field2d$cov2d}. Each element should be a string (for scalar fields) or a vector of strings (for vector fields) defines the directory from which to load WeStCOMS files (see \code{\link[WeStCOMSExploreR]{extract}}). For vector fields, the first string should specify the directory of the u component files and the second string should specify the directory of the v component files.}
 
 \item{mesh_around_nodes}{A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that surrounds nodes. This is required for plotting variables that are resolved at nodes.}
 
 \item{mesh_around_elements}{A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that surrounds elements. This is required for plotting variables that are resolved at elements.}
 
-\item{make_plot}{A logical input defining whether or not to make plots.}
+\item{make_plot}{A logical input defining whether or not to make plots. Plots are either displayed or saved to file (if \code{field2d} contains a column named 'dir2save').}
 
-\item{plot_param}{A list of parameters required to make plots. These parameters either wrap around, or are passed as arguments, to \code{\link[WeStCOMSExploreR]{plot2dfield}}. The list needs to contain elements with the names: 'hours4plots', 'par_op', 'coastline', 'zlab', 'zlab_line', 'vector_scale' and 'dir2save'. 'hours4plots' is a numeric vector of all the hours for which to create plots on a given day. 'par_op' is an output from \code{\link[graphics]{par}}. 'coastline' is an object used to plot coastline (see \code{\link[WeStCOMSExploreR]{plot2dfield}}); and 'zlab', 'zlab_line' and 'vector_scale' are vectors that define the labels on the z axis, their distance from the z axis and the scale of the arrows used to plot vectors; for each inputted variable. Other graphical parameters are not variable specific and passed as additional arguments outside of this list (see below).}
+\item{plot_param}{A list of parameters required to make plots. These parameters either wrap around, or are passed as arguments, to \code{\link[WeStCOMSExploreR]{plot2dfield}}. The list needs to contain elements with the following names: 'hours4plots', 'par_op', 'coastline', 'zlab', 'zlab_line' and 'vector_scale'. 'hours4plots' is a numeric vector of all the hours for which to create plots on a given day. 'par_op' is an output from \code{\link[graphics]{par}}. 'coastline' is an object used to plot coastline (see \code{\link[WeStCOMSExploreR]{plot2dfield}}); and 'zlab', 'zlab_line' and 'vector_scale' are vectors that define the labels on the z axis, their distance from the z axis and the scale of the arrows used to plot vectors; for each inputted variable. Other graphical parameters are not variable specific and passed as additional arguments outside of this list (see below).}
 
 \item{png_param}{A named list of parameters passed to \code{\link[grDevices]{png}} to customise plots saved as .png files.}
 
@@ -72,10 +72,10 @@ explore(
 \item{...}{Additional graphical parameters that can be passed to \code{\link[WeStCOMSExploreR]{plot2dfield}} and will affect all plots.}
 }
 \value{
-If \code{make_plot = TRUE}, the function will produce plots, either saved to file or displayed (the latter is only possible if \code{cl = NULL}). If \code{compute_summary_stats = TRUE}, the function will also return a list of dataframes, with one element for each environmental variable. Each dataframe the following columns: a date, hour and a column for each summary statistic specified.
+If \code{make_plot = TRUE}, the function will produce plots, either saved to file or displayed (the latter is only possible if \code{cl = NULL}). To save plots \code{field2d} must contain a column named 'dir2save'. Plots are saved in this directory with pre-defined file names pertaining to the date and hour that they represent. The list \code{png_param} can be used to customise the saved images. If \code{compute_summary_stats = TRUE}, the function will also return a list of dataframes, with one element for each environmental variable. Each dataframe the following columns: a date, hour and a column for each summary statistic specified. This list is returned to the environment.
 }
 \description{
-This function computes summary statistics and/or maps environmental conditions for multiple environmental variables and/or timepoints. The user passes the function a dataframe specifying the variables to be included, their properties, and the directory of the WeStCOMS files from which they can be loaded. For each variable, the function loads in the WeStCOMS files for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of WeStCOMS files.
+For multiple variables, days and locations, this function extracts model predictions and computes summary statistics and/or maps of environmental conditions. The user passes the function a dataframe specifying the variables to be included and their properties, and various other arguments. For each variable, the function loads in the WeStCOMS files for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of WeStCOMS files.
 }
 \examples{
 ############################
@@ -174,6 +174,73 @@ explore(
   pass2varlist = NULL,
   verbose = TRUE
 )
+
+
+############################
+############################
+#### Example (2): Implement explore() for multiple variables
+
+#### Redefine field2d, a dataframe which defines variables and details needed for extraction.
+field2d <- data.frame(cov2d = c("temp", "tidal_elevation", "wind_velocity"),
+                      mesh_type = c("element", "element", "node"),
+                      extension = c(".mat", ".mat", ".mat"),
+                      vector_field = c(FALSE, FALSE, TRUE)
+)
+
+#### Redefine dat_ls to include appropriate mesh cells
+dat_element <- expand.grid(timestamp = timestamp, mesh_ID = dat_trinodes$element_id)
+dat_element$date_name <- date_name(dat_element$timestamp)
+dat_element$hour <- lubridate::hour(dat_element$timestamp)
+dat_element$mesh_ID <- dat_trinodes[1:nrow(dat_element), "element_id"]
+dat_ls <- list(temp = dat,
+               tidal_elevation = dat,
+               wind_velocity = dat_element)
+
+#### Update dir2load_ls and read_fvcom_ls arguments
+dir2load_ls <- list(temp = paste0(root, "temp/"),
+                    tidal_elevation = paste0(root, "tidal_elevation/"),
+                    wind_velocity = c(paste0(root, "uwind_speed/"), paste0(root, "vwind_speed/")))
+read_fvcom_ls <- list(temp = function(con) R.matlab::readMat(con)$data,
+                      tidal_elevation = function(con) R.matlab::readMat(con)$data,
+                      wind_velocity = function(con) R.matlab::readMat(con)$data)
+
+#### Additional arguments required for vector field
+match_mesh_around_elements <-
+  data.frame(mesh = dat_trinodes$element_id,
+             index = 1:length(dat_trinodes$element_id))
+
+#### Update plot_param
+plot_param = list(hours4plots = unique(dat$hour)[1],
+                  par_op = par(oma = c(3, 3, 3, 7)),
+                  coastline = dat_coast_around_oban,
+                  zlab = c(expression(paste("Temperature (", degree, ")")),
+                           "Tidal elevation (m)",
+                           expression(paste("Wind Velocity (m", s^-1, ")"))
+                  ),
+                  zlab_line = c(3, 3, 3),
+                  vector_scale = c(NA, NA, 20)
+)
+
+explore(
+  field2d = field2d,
+  dat_ls = dat_ls,
+  match_hour = data.frame(hour = 0:23, index = 1:24),
+  match_layer = NULL,
+  match_mesh_around_nodes = match_mesh_around_nodes,
+  match_mesh_around_elements = match_mesh_around_elements,
+  corrupt = NULL,
+  read_fvcom_ls = read_fvcom_ls,
+  dir2load_ls = dir2load_ls,
+  mesh_around_nodes = dat_mesh_around_nodes,
+  mesh_around_elements = dat_mesh_around_elements,
+  make_plot = TRUE,
+  plot_param = plot_param,
+  png_param = list(),
+  compute_summary_stats = TRUE,
+  summary_stats_param = summary_stats_param,
+  cl = NULL,
+  verbose = TRUE)
+
 
 }
 \seealso{
