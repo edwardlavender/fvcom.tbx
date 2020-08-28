@@ -31,7 +31,7 @@ extract(
 
 \item{read_fvcom}{A function which is used to load files (and, if necessary, extract the WeStCOMS array from the loaded object). The function should take a single single argument, the file connection, as input, and load the file. The default is \code{function(con) = R.matlab::readMat(con)$data} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).}
 
-\item{dir2load}{A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}. All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.}
+\item{dir2load}{A string which defines the directory from which to load WeStCOMS files. In this directory, WeStCOMS file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}). All files with the pattern \code{*extension}, see \code{extension} are assumed to be WeStCOMS files.}
 
 \item{extension}{A string which defines the extension of the WeStCOMS files. The default is \code{".mat"}.}
 

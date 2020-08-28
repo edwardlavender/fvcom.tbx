@@ -106,6 +106,11 @@ extract <-
     #### Exclude any dates without associated files
     dat <- exclude_unavailable(dat, dir2load, pattern = paste0("*", extension))
 
+    #### Check directory
+    dir2load <- check_dir(arg = "dir2load",
+                          input = dir2load,
+                          check_slash = TRUE)
+
 
     ########################################
     #### Implements required to load FVCOM files
