@@ -130,10 +130,13 @@ compute_field_from_fvcom <-
       cat("WeStCOMSExploreR::compute_field_from_fvcom() called...\n")
       cat("Step 1/2: Checking user inputs...\n")
     }
-    ## Files and names should be of the same length
-    if(!is.null(dir2save)) check_length(arg = "sink_file", input = sink_file, req_length = length(source_file), req_arg = "source_file")
-    ## Check directories exist
-    if(!is.null(dir2save)) check_dir(arg = "dir2save", input = dir2save)
+    ## Check dir2save
+    if(!is.null(dir2save)) {
+      # Check directory
+      dir2save <- check_dir(arg = "dir2save", input = dir2save, check_slash = TRUE)
+      # Files and names should be of the same length
+      check_length(arg = "sink_file", input = sink_file, req_length = length(source_file), req_arg = "source_file")
+    }
 
     ## Exclude corrupt files
     # dat <- exclude_corrupt(dat, corrupt)
