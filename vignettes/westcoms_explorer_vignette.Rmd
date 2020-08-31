@@ -31,23 +31,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, include = FALSE}
-library(WeStCOMSExploreR)
-```
-
 # Abstract
 
-High resolution hydrodynamic models create unprecedented opportunities to understand the spatiotemporal variation in environmental conditions in an area though time. For example, the West Scotland Coastal Ocean Modelling System (WeStCOMS) resolves environmental conditions in 3 dimensions, at resolutions of 10s to 100s of metres in the vertical and horizontal dimensions respectively, at hourly intervals. These models provide researchers working in these environments with invaluable contextual information. However, the complexity of hydrodynamic models, together with the lack of simple, open source, exploratory software -- written in a variety of widely used languages -- can make utilising their outputs a steep learning curve for researchers in other disciplines. To this end, I outline an R package designed to facilitate the exploration of outputs from WeStCOMS. This provides a gateway for the growing numbers of researchers learning and using R into the use of WeStCOMS' outputs, and those of similar hydrodynamic models, in their research. 
+High resolution hydrodynamic models create unprecedented opportunities to understand the spatiotemporal variation in environmental conditions in an area though time. For example, the West Scotland Coastal Ocean Modelling System (WeStCOMS) resolves environmental conditions in 3 dimensions, at resolutions of 10s to 100s of metres in the vertical and horizontal dimensions respectively, at hourly intervals. These models provide ecological researchers working in these environments with invaluable contextual information. However, the complexity of hydrodynamic models, together with the lack of simple, open source, exploratory software -- written in a variety of widely used languages -- can make utilising their outputs a steep learning curve for researchers in other disciplines. To this end, I outline an `R` package designed to facilitate the exploration of outputs from WeStCOMS. This provides a gateway for the growing numbers of researchers learning and using `R` into the use of WeStCOMS' outputs, and those of similar hydrodynamic models, in their research. 
 
 # Introduction
 
 Hydrodynamic models are mathematical models which, given a set of inputs, predict hydrodynamic conditions across an area based on our knowledge of physical, oceanographic processes [@Kmpf:2009:OMB:1823110]. For researchers working in environments for which hydrodynamic models are available, these may provide a wealth of information because they move beyond the point data typically collected in a small number of locations in the study area to predictions of environmental conditions across the whole study area at high resolutions. This level of information opens the door to new research opportunities in other disciplines, such as ecology. For example, in the field of animal movement, comparing the distribution of environmental conditions experienced by tagged individuals in relation to geographic variation in environmental conditions can help identify putative movement pathways and possible habitat preferences [@braun2018].
 
-However, understanding and using the outputs of hydrodynamic models is a steep learning curve for many researchers with backgrounds in other disciplines. In particular, one limiting factor is programming language: whilst MATLAB® is the preferred coding language for many oceanographers, a large portion of ecologists are much more familiar with R [@r2018]. Indeed, a recent study of 60,000 peer-reviewed articles in ecology found that that 58 % reported R to be their primary tool for data analysis [@doi:10.1002/ecs2.2567]. In this context, creating the capacity for researchers with experience in a variety of different programming environments, especially those that are open source, such as R, is likely to facilitate the (valuable) integration of hydrodynamic modelling and ecology. 
+However, understanding and using the outputs of hydrodynamic models is a steep learning curve for many researchers with backgrounds in other disciplines. In particular, one limiting factor is programming language: whilst MATLAB® is the preferred coding language for many oceanographers, a large portion of ecologists are much more familiar with `R` [@r2018]. Indeed, a recent study of 60,000 peer-reviewed articles in ecology found that that 58 % reported `R` to be their primary tool for data analysis [@doi:10.1002/ecs2.2567]. In this context, creating the capacity for researchers with experience in a variety of different programming environments, especially those that are open source, such as `R`, is likely to facilitate the integration of hydrodynamic modelling and ecology. 
 
 The West Scotland Coastal Ocean Modelling System (WeStCOMS) is a numerical, hydrostatic, hydrodynamic modelling system which can be used to resolve environmental conditions off the West Coast of Scotland [@aleynik2016]. WeStCOMS was developed at the Scottish Association for Marine Science by Dmitry Aleynik (https://www.sams.ac.uk/people/researchers/aleynik-dr-dmitry/). At the core of WeStCOMS is a finite volume community ocean model (FVCOM) module [@chen2003]. This module is forced with local atmospheric and boundary forcings, and incorporates several parameterisations (e.g. bottom roughness), tailored to the West Coast of Scotland, to estimate environmental conditions (e.g. temperature, salinity, current velocity; see Figure below). Environmental conditions are resolved across an unstructured mesh based on a system of (non-overlapping) prisms of variable size, organised into 11 vertical (Sigma) layers (layer 1 is at the surface; layer 11 is below the seabed). The unstructured mesh improves computational efficiency because resolution can be maximised in hydrodynamically complex areas and minimised elsewhere: horizontally, resolution is highest near the coast (c. 130 m resolution); vertically, resolution is highest near the surface and the seabed. Sam Jones (https://www.sams.ac.uk/people/researchers/jones-dr-sam/) provides some beautiful visualisations of the 3 dimensional mesh structure (e.g. https://www.youtube.com/watch?v=3KP4Fo2FaNk). 
 
-Some model outputs are resolved at the vertices of each prism (i.e., scalar fields, e.g. temperature), whereas other model outputs are resolved in the centroid (or 'element') of each prism (i.e., horizontal vector fields, e.g. velocity). This means that there are, in effect, two grids over which environmental conditions are resolved: one linking nodes (surrounding elements) and one linking elements (surrounding nodes). This structure has particularly important implications for researches studying benthic or demersal organisms: while the deepest model outputs for 3d scalar fields (e.g. temperature), which are resolved at prism vertices, are by the seabed, the deepest values for 3d vector fields (i.e., velocity) are resolved at the centroids of the last layer, not the vertices, which may be above the sea bottom (perhaps c. 5 - 15 m, depending on the depth). Resolving bottom velocities is an ongoing research area but their extrapolation from vertical profiles derived from WeStCOMS is one possible method. Surface conditions (e.g. sea surface temperature) are reasonably well validated for WeStCOMS, but validation of bottom conditions is more challenging [@aleynik2016].
+Some model outputs (namely, scalar fields, e.g., temperature) are resolved at the vertices (termed 'nodes') of each prism, whereas other model outputs (namely vector fields, e.g., velocity) are resolved in the centroids (termed 'elements') of each prism. This means that there are, in effect, two grids over which environmental conditions are resolved: one linking nodes (surrounding elements) and one linking elements (surrounding nodes). This structure has particularly important implications for researches studying benthic or demersal organisms: while the deepest model outputs for 3d scalar fields (e.g. temperature), which are resolved at prism vertices, are by the seabed, the deepest values for 3d vector fields (i.e., velocity) are resolved at the centroids of the last layer, not the vertices, which may be above the sea bottom (perhaps c. 5 - 15 m, depending on the depth). Resolving bottom velocities is an ongoing research area but their extrapolation from vertical profiles derived from WeStCOMS is one possible method. Surface conditions (e.g. sea surface temperature) are reasonably well validated for WeStCOMS, but validation of bottom conditions is more challenging [@aleynik2016].
 
 WeStCOMS provides a valuable resource to scientists conducting research off the West Coast of Scotland. `WeStCOMSExploreR` is an `R` package designed to facilitate the integration of WeStCOMS outputs with ecological research occurring in the same environment for researchers that are primarily familiar with `R` as their preferred programming language. This vignette outlines the use of some of these functions to explore the conditions off the West Coast of Scotland. 
 
@@ -57,25 +53,38 @@ knitr::include_graphics("westcoms_framework.png")
  
 # Set up 
 
+## Install and load `WeStCOMSExploreR`
+
+Let's begin by installing and loading the `WeStCOMSExploreR` package: 
+
+```{r}
+## Install development version of package
+# devtools::install_github("https://github.com/edwardlavender/WeStCOMSExploreR/")
+## Load package
+library(WeStCOMSExploreR)
+## View functions
+# help(package = "WeStCOMSExploreR")
+```
+
 ## FVCOM files
 
-WeStCOMS outputs are generally stored as MATLAB® (.mat) or NetCDF (.nc) files. The outputs for each day are defined in  separate files. File names contain a 6 digit code which defines the date for which that file contains outputs in the format YYMMDD. For example, a file containing the information from 1st September 2016 would contain the code 160901. Each file contains a variety of objects, including a 'mesh' object, which defines the structure of the mesh, and an 'FVCOM1' object, which includes the environmental conditions. 
+WeStCOMS outputs are generally stored as MATLAB® (.mat) or NetCDF (.nc) files. The outputs for each day are defined in  separate files. File names contain a 6 digit code which defines the date for which that file contains outputs in the format YYMMDD. For example, a file containing the information from $1^{st}$ September 2016 would contain the code 160901. Each file contains a variety of objects, including a 'mesh' object, which defines the structure of the mesh, and an 'FVCOM1' object, which includes predicted environmental conditions. Environmental conditions are stored in 2 or 3 dimensional arrays, with predictions for each hour in each mesh cell or for each hour, layer and mesh cell (see below). 
 
 ## File acquisition
 
 To use FVCOM outputs in `R`, the first step is to acquire FVCOM files. FVCOM files can be obtained from source or from a remote server. For file acquisition from a remote server, `WeStCOMSExploreR` includes the `thredds_download()` function which is designed to download the full WeStCOMS files from the SAMS thredds server.
 
-From any FVCOM file, the following outputs are essential for many `WeStCOMSExploreR` functions:
+From any FVCOM file, the following outputs -- essential for many `WeStCOMSExploreR` functions -- can be obtained:
 
 1. A dataframe that defines the nodes surrounding each element (i.e. which nodes are connected to which other nodes). For MATLAB® files, this is defined in the 'mesh.trinodes' object. A sample dataframe, `dat_trinodes`, is available in this package.
 2. A dataframe that contains the coordinates (longitude, latitude) for every node. For MATLAB® files, this is defined in the 'mesh.nodexy' object. A sample dataframe `dat_nodexy` is available in this package. 
 3. A dataframe that contains the depth of each node below mean sea level. For MATLAB® files, this is defined in the 'FVCOM1.h' object (the depth below mean sea level is constant irrespective of date). A sample dataframe, `dat_h`, is available in this package. 
 
-For each FVCOM file, we also need to extract and save the environmental arrays of interest (see below). 
+For each FVCOM file, we also need to extract and save the environmental arrays of interest prior to implementing `WeStCOMSExploreR` functions (see below). 
 
 ## Directory conventions  
 
-The size of FVCOM files makes reading them in and out of programmes challenging. For this reason, `WeStCOMSExploreR` is designed to work with environmental arrays rather than the full FVCOM files. Specifically, many functions read in/out environmental arrays to create new environmental fields or explore environmental conditions. Hence, it is generally is necessary to define a set of directories into which, for each FVCOM file, environmental arrays can be extracted and saved. For simplicity, some functions in `WeStCOMSExploreR` assume specific directory names for these environmental fields. Therefore, the following directory names are recommended: 
+The size of FVCOM files makes reading them in and out of programmes challenging. For this reason, `WeStCOMSExploreR` is designed to work with environmental arrays rather than the full FVCOM files. Specifically, many functions read in/out environmental arrays to create new environmental fields or explore environmental conditions. Hence, it is necessary to define a set of directories into which, for each FVCOM file, environmental arrays can be extracted and saved. The following directory names are recommended: 
   
   - 'tidal_elevation', to store tidal elevation (m) arrays;
   - 'uwind_speed' and 'vwind_speed', to store the $u$ and $v$ components of wind velocity ($ms^{-1}$); 
@@ -91,11 +100,9 @@ The size of FVCOM files makes reading them in and out of programmes challenging.
   
 To create an appropriate directory system in which to store outputs, `WeStCOMSExploreR` provides the `create_wcdirs()` function:
 ```{r, warning = FALSE}
-# Define a vector of environmental variables for which to create folders in which to store environmental arrays.
-# The functions in this package assume that, given a particular variable, these folders exist. 
+# Define a vector of environmental variables for which to create folders in which to store environmental arrays:
 vars <- c("tidal_elevation", "uwind_speed", "vwind_speed", "temp", "salinity", "uvelocity", "vvelocity")
-# Create a folder for each environmental variable in a a specified directory (dir), here the working directory, 
-# ... making sure not to overwrite any existing folders (overwrite = FALSE):
+# Create a folder for each environmental variable in a a specified directory (dir):
 WeStCOMSpath <- system.file("WeStCOMS_files/", package = "WeStCOMSExploreR", mustWork = TRUE)
 WeStCOMSExploreR::create_wcdirs(dir = WeStCOMSpath, 
                              vars = vars
@@ -149,29 +156,31 @@ dates2load
 
 ### Extract and save environmental arrays
 
-Now that we have a list of working FVCOM files, we can load this list into MATLAB® or another programme and export environmental arrays to our directory system. Appendix Script B provides a simple MATLAB® for this task. This script loads in the WeStCOMS file for each specified day into MATLAB® and, for each environmental variable of interest, saves another MATLAB® file which contains the information associated with that variable. This script can be adjusted as necessary (e.g. it may be suitable to only save a subset of model outputs for each environmental variable) and the user may wish to parallelise the loading/saving of files to improve computation time: this code is only provided as a simple skeleton for users unfamiliar with MATLAB® and keen to get the data into a form with which they are familiar in R. Another route to this point is to use some custom code to extract and save the environmental arrays within each FVCOM file directly, but `WeStCOMSExploreR` does not currently provide functions for direct array acquisition in this way. 
+Now that we have a list of working FVCOM files, we can load this list into MATLAB® or another programme and export environmental arrays to our directory system. Appendix Script B provides a simple MATLAB® for this task. This script loads in the WeStCOMS file for each specified day into MATLAB® and, for each environmental variable of interest, saves another MATLAB® file which contains the information associated with that variable. This script can be adjusted as necessary (e.g. it may be suitable to only save a subset of model outputs for each environmental variable) and the user may wish to parallelise the loading/saving of files to improve computation time: this code is only provided as a simple skeleton for users unfamiliar with MATLAB® and keen to get the data into a form with which they are familiar in `R`. Another route to this point is to use some custom code to extract and save the environmental arrays within each FVCOM file directly, but `WeStCOMSExploreR` does not currently provide functions for direct array acquisition in this way. 
 
 For environmental arrays, `WeStCOMSExploreR` assumes the following conventions: 
 
-* **File type**. Environmental arrays can be saved in any format (e.g., as .mat files), providing this format can be loaded into `R`. In the example MATLAB® script, environmental arrays are saved as .mat files (which occupy less space than, perhaps, more familiar (e.g. .csv) file structures.) Accordingly, in `WeStCOMSExploreR`, the default function to load files into `R` is `function(con) R.matlab::readMat(con)$data`, but this can be changed by the user as necessary. In any given directory (e.g., '/temp'), all of the environmental arrays should be of the same file type.
-* **File dimension**. In any given directory, all files should have the same dimension. or 3d variables (e.g. temperature), this saves a 3d array with the structure hours x layers x node; i.e., cell 1 x 10 x 2 is the temperature for the first hour (00:00) of that day, at layer 10, at node 2. For 2d fields, a 2d array is saved (i.e. hours x nodes).  
+* **File type**. Environmental arrays can be saved in any format (e.g., as .mat files), providing this format can be loaded into `R`. In the example MATLAB® script, environmental arrays are saved as .mat files (which occupy less space than, perhaps, more familiar (e.g. .csv) file structures). Accordingly, in `WeStCOMSExploreR`, the default function to load files into `R` is `function(con) R.matlab::readMat(con)$data`, but this can be changed by the user as necessary. In any given directory (e.g., '/temp'), all of the environmental arrays should be of the same file type.
+* **File dimension**. In any given directory, all files should have the same dimension. For 3d variables (e.g. temperature), this saves a 3d array with the structure hours x layers x node; i.e., cell 1 x 10 x 2 is the temperature for the first hour (00:00) of that day, at layer 10, at node 2. For 2d fields, a 2d array is saved (i.e. hours x nodes).  
 * **File name**. The name of each file should be the `date_name` code corresponding to that date (plus some extension). 
 
  **_The functions in this package generally assume that WeStCOMS outputs have been saved in this way (i.e., for each environmental variable, there is a folder containing files, whose names are the date names corresponding to a particular date, and each file is an array, usually with a .mat extension)_**. 
 
-This (unfortunate) complexity is necessary because the outputs of hydrodynamic models, like WeStCOMS, are so large. Typically, this means that data have to be partitioned into different samples (e.g. outputs for each day) which can be read in and out of R one (or at most a few) file(s) at a time. Extracting only the environmental arrays from each WeStCOMS' file reduces the storage space required to store these model outputs, and makes reading files into R much quicker.
+This (unfortunate) complexity is necessary because the outputs of hydrodynamic models, like WeStCOMS, are so large. Typically, this means that data have to be partitioned into different samples (e.g. outputs for each day) which can be read in and out of `R` one (or at most a few) file(s) at a time. Extracting only the environmental arrays from each WeStCOMS file reduces the storage space required to store these model outputs, and makes reading files into R much quicker.
 
 # Build unstructured mesh(es)
 
-Building the unstructured mesh is one of the first tasks a user exploring the outputs of WeStCOMS is likely to want to achieve. This can be accomplished using the `build_mesh()` function, which requires two dataframe inputs: `nodexy`, a dataframe containing the coordinates (longitude, latitude) of each node; and `trinodes`, a dataframe defining the three nodes surrounding each element. In WeStCOMS, there are effectively two types of mesh: one that links elements and surrounds nodes (`mesh_type = "element"`), and one that links nodes and surrounds elements (`mesh_type = "node"`). If you want to plot environmental conditions across space (without interpolation), then the first mesh type is appropriate for plotting environmental conditions resolved at nodes, because at the heart of each cell is a node; whereas the second mesh type is appropriate for plotting environmental conditions resolved at elements, because at the heart of each cell is an element. The process of building complex meshes may take a few minutes, but a cluster object can be supplied to the `cl` argument to speed up the process. The function only needs to be run once; then the result can be saved as a Shapefile, which can be loaded into other scripts. 
+## Use `build_mesh()`
+
+Building the unstructured mesh is one of the first tasks a user exploring the outputs of WeStCOMS is likely to want to achieve. This can be accomplished using the `build_mesh()` function, which requires two dataframe inputs: `nodexy`, a dataframe containing the coordinates (longitude, latitude) of each node; and `trinodes`, a dataframe defining the three nodes surrounding each element. In WeStCOMS, there are effectively two types of mesh: one that links elements and surrounds nodes (`mesh_type = "element"`), and one that links nodes and surrounds elements (`mesh_type = "node"`). If you want to plot environmental conditions across space (without interpolation), then the first mesh type is appropriate for plotting environmental conditions resolved at nodes, because at the heart of each cell is a node; whereas the second mesh type is appropriate for plotting environmental conditions resolved at elements, because at the heart of each cell is an element. The process of building complex meshes may take a few minutes, but a cluster object can be supplied to the `cl` argument to speed up the process. The function only needs to be run once; then the result can be saved as a shapefile, which can be loaded into other scripts. 
 
 This package includes a sample of information required to build the mesh in a small area around Oban. The full datasets are available from WeStCOMS outputs. Before we can build the mesh, we need to load these sample dataframes: 
 ```{r}
-# Examine trinodes
+# Examine dat_trinodes
 str(WeStCOMSExploreR::dat_trinodes)
 head(WeStCOMSExploreR::dat_trinodes)
 
-# Examine nodesxyz
+# Examine dat_nodexy
 str(WeStCOMSExploreR::dat_nodexy)
 head(WeStCOMSExploreR::dat_nodexy)
 ```
@@ -188,7 +197,7 @@ cl <- NULL
 # If you want to define a cluster to run build_mesh algorithm in parallel (for speed): :
 # cl <- parallel::makeCluster(12L)
 
-# Use build_mesh to define a mesh based on elements (i.e. around nodes):
+# Use build_mesh() to define a mesh based on elements (i.e. around nodes):
 # This returns a SpatialPolygonsDataFrame. 
 # The user is recommended to build the whole mesh and crop this to 
 # ... their study domain, rather than using a subset of nodexy/trinodes to construct 
@@ -202,6 +211,8 @@ dat_mesh_around_nodes <- WeStCOMSExploreR::build_mesh(nodexy = dat_nodexy,
                                                   )
 
 ```
+
+## Visualise unstructured mesh(es)
 
 You can plot the mesh using functions in the `raster` package. First, define the boundaries of the study area of interest:
 ```{r}
@@ -252,6 +263,8 @@ raster::plot(dat_coast_around_oban,
 raster::lines(dat_mesh_around_elements)
 ```
 
+## Identify specific mesh cells 
+
 It is often useful to identify the mesh cells which correspond to particular coordinates or vice versa. To find the mesh cells which enclose inputted coordinates, we can use the `find_cells()` function: 
 
 ```{r}
@@ -274,6 +287,8 @@ cells <-
 cells
 ```
 
+## Identify mesh cell coordinates 
+
 Likewise, we can use `find_xy()` to find the coordinates of specific mesh cells from a mesh or `nodexy` object:
 
 ```{r}
@@ -281,13 +296,15 @@ find_xy(mesh_ID = cells$mesh_ID, mesh = dat_mesh_around_nodes)
 find_xy(mesh_ID = cells$mesh_ID, nodexy = dat_nodexy)
 ```
 
-Note that the latter method is more accurate and faster, but only implemented for nodes. However, for elements, the extraction of coordinates from the mesh is the only implemented method.
+Note that the latter method is more accurate and faster, but only implemented for nodes. However, for elements, the extraction of coordinates from the mesh is the only method currently implemented.
 
 # Compute new fields 
 
-You may wish to define other environmental variables of interest across this mesh. For example, you may wish to simplify the $u$ and $v$ components of wind velocity into wind speed; or you may wish to use the 3d temperature outputs to define a 2d representation of thermocline parameters (e.g. thermocline strength) so that you can examine how these parameters change over space. You might also want to calculate other variables, such as sun angle, which are not resolved by WeStCOMS, but quickly calculated in R, so that spatiotemporal variation in all environmental variables of interest can be expressed over the same area in the same way. This process is facilitated by the `WeStCOMSExploreR::compute_field()` function. Before applying this function, add the necessary folders to your directory for storing new outputs: 
+You may wish to define other environmental variables of interest across this mesh. For example, you may wish to simplify the $u$ and $v$ components of wind velocity into wind speed; or you may wish to use the 3d temperature outputs to define a 2d representation of thermocline parameters (e.g. thermocline strength) so that you can examine how these parameters change over space. To do this, the `WeStCOMSExploreR::compute_field_from_fvcom()` function can be used. You might also want to calculate other variables, such as sun angle, which are not resolved by WeStCOMS, but quickly calculated in `R`, so that spatiotemporal variation in all environmental variables of interest can be expressed over the same area in the same way.
+
+Before applying computing new fields, we need to add the necessary folders to a directory for storing new outputs: 
 ```{r, warning = FALSE}
-# Define a vector of variables to derive from MATLAB outputs.
+# Define a vector of variables to derive from FVCOM outputs.
 # current_speed and current_direction are also supported, but relevant sample data are not included
 # ... in this package so they are not included here. thermocline_strength is also supported, 
 # ... but cannot be calculated with the sample data included (see below).
@@ -303,34 +320,86 @@ WeStCOMSExploreR::create_wcdirs(dir = WeStCOMSpath,
 new_vars %in% list.files(WeStCOMSpath)
 ```
 
-Then, the `WeStCOMSExploreR::compute_field()` function can be used to create files of interest. To do this, you need to specify the dates for which you want to calculate new fields. If you want to produce files for all dates between two dates, then you need to specify a `start_date` and an end `end_date`; otherwise, you can supply a custom sequence of dates via the `dates` argument. Then, you need to define the directory from which the FVCOM files required to calculate new fields and corresponding to each of these dates can be loaded (i.e. the directory containing the folders of model outputs for different environmental variables). (The directory new files are saved is forced to be the same directory.) save new files (by default, this is assumed to be the same. The new fields to be calculated from existing data are inputted in `vars`. Currently supported options are as follows:
+## Compute fields from FVCOM outputs 
 
-1. `thermocline_strength`. For each day, for each hour and in each node, the strength of the thermocline is calculated as the difference between the temperature resolved at layer 1 and layer 10 (the bottom layer at which temperatures are resolved). This metric is used instead of other metrics (e.g. the standard deviation of a temperature profile, which has been show to be reasonable metric of thermocline strength [@fiedler2010]), because a difference is so much quicker to calculate. Note that `thermocline_strength` cannot be calculated with the sample data included in this package, which only contain temperature outputs for the $1^{st}$ and $2^{nd}$ layers (to minimise package size).
-3. `wind_speed` ($ms^{-1}$). For each day, for each hour and in each node, the $u$ and $v$ components of wind velocity are used to calculate wind speed.
-4. `wind_direction` ($^\circ$). As above, but for wind direction. This is the cardinal direction of mass flow (i.e. the direction in (not from) which the wind is blowing). 
-5. `current speed` ($ms^{-1}$). For each date, for each hour, for each node, for each layer, current speed is calculated from the $u$ and $v$ vectors.
-6. `current direction` ($^\circ$). As above, but for current direction. This is the cardinal direction of mass flow (i.e. the direction in which currents are flowing).
-7. `sun angle` ($^\circ$). This is the angle of the sun relative to the horizon. It is calculated by the `WeStCOMSExploreR::compute_field_sun_angle()` function. The calculation of sun angle uses suncalc [@thieurmel2019]. 
+The `WeStCOMSExploreR::compute_field_from_fvcom()` function can be used to create new fields from existing outputs. To do this, you need to specify the environmental arrays from which new fields can be computed. These files are loaded sequentially or in parallel into R and for each array (or combination of arrays), a user-supplied function is applied to compute a new field. For the computation of commonly desired fields, a few helper functions are provided: 
 
-For each date specified, for each environmental variable, the function will save a new .RData file in the appropriate folder in the supplied directory (`dir`). (.RData files are the like the R equivalent of .mat files; they are used by WeStCOMSExploreR to maximise storage space efficiency and ensure file consistency.) For larger sequences of dates, this function can be implemented in parallel, but this is not necessary here. Note that, to calculate `sun_angle`, its necessary to include a mesh object (see above).
+1. `calc_thermocline_strength()`. This function is used to calculate thermocline strength. For each day, for each hour and in each node, the strength of the thermocline is calculated as the difference between the temperature resolved at layer 1 and layer 10 (the bottom layer at which temperatures are resolved). This metric is used instead of other metrics (e.g. the standard deviation of a temperature profile, which has been show to be reasonable metric of thermocline strength [@fiedler2010]), because a difference is so much quicker to calculate. Note that `thermocline_strength` cannot be calculated with the sample data included in this package, which only contain temperature outputs for the $1^{st}$ and $2^{nd}$ layers (to minimise package size).
+2. `calc_speed()` ($ms^{-1}$). This function is used to calculate wind or current speed from the $u$ and $v$ components of wind or current velocity. 
+3. `calc_direction()` ($^\circ$). This function is used to calculate wind or current direction. Direction is expressed as the cardinal direction of mass flow(i.e. the direction in (not from) which the force is blowing). 
+
+For each date specified, for each environmental variable, the function will save a new .rds file in the appropriate folder in the supplied directory (`dir`). (.rds files are the like the `R` equivalent of .mat files; they are used by WeStCOMSExploreR to maximise storage space efficiency and ensure file consistency.) For larger sequences of dates, this function can be implemented in parallel, but this is not necessary here. Note that, to calculate `sun_angle`, its necessary to include a mesh object (see above).
+
+Wind speed 
 ```{r}
-WeStCOMSExploreR::compute_field(vars = new_vars,
-                                    nodexy = WeStCOMSExploreR::dat_nodexy,
-                                    dir = WeStCOMSpath,
-                                    date_name = c("160301", "160302"), 
-                                    cl = NULL, 
-                                    pass2varlist = list(NULL)
-                                    )
-# List files again:
-list.files(WeStCOMSpath, recursive = TRUE)
+## Step A: Define a list of source files, with one element comprising all the files required for each day: 
+# Define the path to the u and v files:
+path_u <- paste0(WeStCOMSpath, "uwind_speed")
+path_v <- paste0(WeStCOMSpath, "vwind_speed")
+# Define the source files:
+source_u <- list.files(path_u, full.names = TRUE)
+sourve_v <- list.files(path_v, full.names = TRUE)
+# Define a list comprising u and v files with one element for each day:
+source_file   <- mapply(c, source_u, sourve_v, SIMPLIFY = FALSE)
+# Examine the list of source files
+source_file
+
+## Step B: Define a list of file names for saved files and the directory in which to save files:
+# Define date names for relevant files
+sink_file <- substr(list.files(path_u), 1, 6)
+# Define directory to save outputs
+sink_dir <- paste0(WeStCOMSpath, "wind_speed/")
+
+## Step C: Compute and save wind speeds using calc_speed() helper function: 
+wind_speed_ls <-
+  compute_field_from_fvcom(source_file = source_file,
+                           sink_file = sink_file,
+                           read_fvcom = function(con) R.matlab::readMat(con)$data,
+                           calc = calc_speed, 
+                           dir2save = sink_dir, 
+                           cl = NULL, 
+                           verbose = TRUE
+  )
+
+## Step D: List files in folder:
+list.files(sink_dir)
 ```
 
-In a similar way, we can compute the depth of the Sigma layers. 
-`compute_field_depth()` ... 
+In the same way, we could compute wind direction: `compute_field_from_fvcom()` does the work loading, processing and saving files and we simply pass the `calc_direction()` helper function to compute wind direction at the appropriate point in this process: 
 
-# Sample outputs 
+```{r}
+wind_speed_ls <-
+  compute_field_from_fvcom(source_file = source_file,
+                           sink_file = sink_file,
+                           read_fvcom = function(con) R.matlab::readMat(con)$data,
+                           calc = calc_direction, 
+                           dir2save = paste0(WeStCOMSpath, "/wind_direction/"), 
+                           cl = NULL, 
+                           verbose = TRUE
+  )
+list.files(paste0(WeStCOMSpath, "/wind_direction/"))
+```
 
-We are now in a position to start using model predictions. For each variable, environmental conditions are stored in a 2 or 3d array in a .mat file or a .RData file (if you've built these yourself using `WeStCOMSExplorer::compute_field()`). For example, for tidal elevation ($m$) and other 2d variables, the model outputs in the .mat files are contain a 2d array of hours (1:24) x nodes/elements. In contrast, for temperature and other 3d variables, model outputs are stored in a 3d array of hours x layers x nodes/elements. In this package, I have included two sample .mat files for each of the following variables: 
+## Compute other fields
+
+It may be useful to compute other environmental fields across the WeStCOMS mesh. For this, more specialised functions are required. For example, sun angle can be computed via the `suncalc` `R` package using the `WeStCOMSExploreR::compute_field_sun_angle()` function [@thieurmel2019], as follows.
+
+```{r, message = FALSE}
+compute_field_sun_angle(
+   nodexy = dat_nodexy,
+   date = as.Date(c("2016-03-01", "2016-03-02")),
+   tz = "UTC",
+   hours = 0:23,
+   units = "degrees",
+   dir2save = paste0(WeStCOMSpath, "sun_angle/"),
+   verbose = TRUE
+   )
+list.files(paste0(WeStCOMSpath, "sun_angle/"))
+```
+
+# Sample model outputs 
+
+We are now in a position to start using model predictions. For each variable, environmental conditions are stored in a 2 or 3d array in a .mat file or a .rds file (if you've built these yourself using `WeStCOMSExplorer::compute_field()`). For example, for tidal elevation ($m$) and other 2d variables, the model outputs in the .mat files are contain a 2d array of hours (1:24) x nodes/elements. In contrast, for temperature and other 3d variables, model outputs are stored in a 3d array of hours x layers x nodes/elements. In this package, I have included two sample .mat files for each of the following variables: 
 
 * uwind_speed (defined at layer = 1 and mesh elements)  
 * vwind_speed (defined at layer = 1 and mesh elements)  
@@ -377,7 +446,7 @@ dat_move$mesh_ID   <- find_cells(long = dat_move$long,
 utils::str(dat_move)
 ```
 
-Next, we need to define ensure that `extract()` understand the relationship between rows and columns in each array and corresponding hour and mesh nodes and we need to specify where extract() can find the files:
+Next, we need to define ensure that `extract()` understand the relationship between rows and columns in each array and corresponding hour and mesh nodes and we need to specify where `extract()` can find the files:
 
 ```{r}
 # Define match dataframes to provide the link between dat_move and WeStCOMS arrays:
@@ -391,25 +460,26 @@ path <- system.file("WeStCOMS_files/temp/",
 Now, we can implement `extract()` to add temperature predictions to our dataframe. Since we are working with only one file, we will implement the algorithm in sequence but, for more files, we probably want to implement the algorithm in parallel. 
 
 ```{r}
-dat_move <- extract(dat = dat_move,
-        match_hour = match_hour,
-        match_mesh = match_mesh, 
-        dir2load = path, 
-        extension = ".mat", 
-        verbose = TRUE)
+dat_move <- 
+  extract(dat = dat_move,
+          match_hour = match_hour,
+          match_mesh = match_mesh, 
+          dir2load = path, 
+          extension = ".mat", 
+          verbose = TRUE)
 ```
 
 We could now proceed to investigate whether animal movement is related to environmental temperature. If we have observations in three dimensions, we would also need to specify the layer from which to extract predictions (see the `compute_field_depth()` function), but the example outputs in the package only include the first two Sigma layers. For non-integer observations, we could either extract the predictions for the nearest hours/layers/mesh cells (i.e., nearest neighbour interpolation) or extract predictions for surrounding multiple hours/layers/mesh cells and interpolate between them (see the `interp_*()` functions). Alternatively, we could compute the exact solution using the Finite Volume method, but this approach is not currently implemented in `WeStCOMSExploreR`.  
 
 # Explore environmental conditions 
 
-More broadly, it is often instructive to examine the overall variation in environmental conditions over time or space in an area.To explore spatiotemporal conditions, we are going to begin by calculating summary statistics across the area at a given point in time by using `WeStCOMSExploreR::summarise2dfield()`. To apply this function, the user needs to load the WeStCOMS outputs into R, select the subset of information required and pass this reduced array to `WeStCOMSExploreR::summarise2dfield()`. We will then proceed to map the environmental conditions over space for a single point in time using the `WeStCOMSExploreR::plot2dfield()` function. `WeStCOMSExploreR::explore()` is a broader function which can produce these plots and/or calculate summary statistics over space at multiple time points. This function requires the directory of the WeStCOMS outputs which are loaded in sequence to create plots and/or calculate summary statistics. Sequentially loading, processing and replacing files is necessary given the size of WeStCOMS files. 
+More broadly, it is often instructive to examine the overall variation in environmental conditions over time or space in an area. To explore spatiotemporal conditions, we are going to begin by calculating summary statistics across the area at a given point in time by using `WeStCOMSExploreR::summarise2dfield()`. To apply this function, the user needs to load the WeStCOMS outputs into `R`, select the subset of information required and pass this reduced array to `WeStCOMSExploreR::summarise2dfield()`. We will then proceed to map the environmental conditions over space for a single point in time using the `WeStCOMSExploreR::plot2dfield()` function. `WeStCOMSExploreR::explore()` is a broader function which can produce these plots and/or calculate summary statistics over space at multiple time points. This function requires the directory of the WeStCOMS outputs which are loaded in sequence to create plots and/or calculate summary statistics. Sequentially loading, processing and replacing files is necessary given the size of WeStCOMS files. 
 
 ## Summarising environmental conditions at a single plot in time: `summarise2dfield()`
 
-### Loading raw WeStCOMS outputs into R
+### Loading raw WeStCOMS outputs into `R`
 
-To summarise the the environmental conditions over space at a single point in time, `WeStCOMSExploreR::summarise2dfield()` needs to be supplied with a 2d dimensional array. The first step is to load some WeStCOMS' outputs into R. In this example, we'll load in temperature outputs: 
+To summarise the the environmental conditions over space at a single point in time, `WeStCOMSExploreR::summarise2dfield()` needs to be supplied with a 2d dimensional array. The first step is to load some WeStCOMS' outputs into `R`. In this example, we'll load in temperature outputs: 
 ```{r}
 # Define directory of the folder containing temperatures:
 path <- system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE)
@@ -487,6 +557,7 @@ WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oba
                               mesh = dat_mesh_around_nodes,
                               vector_field = FALSE,
                               data = dat_temp,
+                              ncols = 50,
                               xlim = c(xlim1, xlim2),
                               ylim = c(ylim1, ylim2),
                               zlab = expression(paste("Temperature (", degree, "C)")),
@@ -500,6 +571,7 @@ WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oba
                               mesh = dat_mesh_around_nodes,
                               vector_field = FALSE,
                               data = dat_tidal_elevation,
+                              ncols = 50,
                               xlim = c(xlim1, xlim2),
                               ylim = c(ylim1, ylim2),
                               zlab = "Tidal Elevation (m)",
@@ -510,10 +582,10 @@ WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oba
 
 With a bit of extra processing, we can plot the surface describing the spatial variation in sun angle, using one of the files we created earlier: 
 ```{r, fig.cap = "A map of spatial variation in sun angle (degrees) around Oban (WeStCOMSExploreR::plot2dfield() scalar example 3).", fig.height = 10, fig.width = 10}
-# Define directory of the folder containing temperatures:
+# Define directory of the folder containing sun angles:
 path <- system.file("WeStCOMS_files/sun_angle", package = "WeStCOMSExploreR", mustWork = TRUE)
-# Define the path to the temperature file for 2016-03-01; note the .RData extension:
-pathname <- file.path(path, "160301.RData")
+# Define the path to the file for 2016-03-01; note the .rds extension:
+pathname <- file.path(path, "160301.rds")
 # Read in the file:
 sun_angle_sample <- readRDS(pathname)
 # Define a single hour for which we'll plot data: 
@@ -527,6 +599,7 @@ WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oba
                               mesh = dat_mesh_around_nodes,
                               vector_field = FALSE,
                               data = dat_sun_angle,
+                              ncols = 50,
                               xlim = c(xlim1, xlim2),
                               ylim = c(ylim1, ylim2),
                               zlab = expression(paste("Sun Angle", degree, "C)")),
@@ -541,6 +614,7 @@ WeStCOMSExploreR::plot2dfield(coastline = dat_coast_around_oban,
                               vector_field = TRUE,
                               data = list(udata = WeStCOMSExploreR::dat_uwind_speed,
                                           vdata = WeStCOMSExploreR::dat_vwind_speed),
+                              ncols = 50,
                               xlim = c(xlim1, xlim2),
                               ylim = c(ylim1, ylim2),
                               # Default graphical parameters for coastline, mesh, colour scheme
@@ -559,68 +633,115 @@ WeStCOMSExploreR::plot2dfield(coastline = dat_coast_around_oban,
 
 It is often desirable to move beyond snapshots of spatial variation at particular moments in time to consider the extent to which spatial variation changes through time. To this end, the `WeStCOMSExploreR::explore()` function provides a mechanism to move over multiple variables and/or timesteps (days and hours) to calculate summary statistics and/or create plots. After this, timeseries of summary statistics can then be plotted to examine the relative scale of spatial and temporal variation, and multiple plots can be linked into animations which map how spatial variation in environmental conditions changes through time. 
 
-To implement `WeStCOMSExploreR::explore()`, it is necessary to define `fields2d`, a dataframe which contains the environmental variables and their associated properties for which to calculate summary statistics and/or make plots. The user also needs to specify the directory from which files can be loaded, and the dates which should be loaded. If `sun_angle` has not already been calculated, this can also be achieved by defining a list of parameters to be passed to `WeStCOMSExploreR::compute_field_sun_angle()`. To calculate summary statistics, a list of essential arguments, passed to `WeStCOMSExploreR::summarise2dfield()`, needs to supplied via the `summary_stats_param` argument . Similarly, to make plots, a list of essential parameters needs to be supplied via the `plot_param` argument, but additional customisation arguments can be supplied outside of this list that are passed to `WeStCOMSExploreR::plot2dfield()`. The function can be parallelised over environmental variables or dates by specifying inputs for the `parallelise`, `cl` and `pass2varlist` arguments. If the user opts to create plots in parallel, these need to be saved to file (they will not be displayed). 
+To implement `WeStCOMSExploreR::explore()`, it is necessary to define `fields2d`, a dataframe which contains the environmental variables and their associated properties for which to calculate summary statistics and/or make plots. The user also needs to specify the directory from which files can be loaded alongside various other arguments for data extraction and to customise the summary statistics and plots that are produced.
 
-```{r, fig.cap = "Maps of spatial variation in environmental conditions around Oban at multiple time points (WeStCOMSExploreR::explore() examples).", fig.height = 10, fig.width = 10, eval = FALSE}
-# Define 2d covariates; associated layers; mesh_type
+```{r, fig.cap = "Maps of spatial variation in environmental conditions around Oban at multiple time points (WeStCOMSExploreR::explore() examples).", fig.height = 10, fig.width = 10}
+
+#### Define a dataframe which defines variables and details
 field2d <- data.frame(cov2d = c("temp",
-                                 "tidal_elevation",
+                                "tidal_elevation",
                                  "wind_velocity",
                                  "sun_angle"),
-                       dim = c("3d", "2d", "2d", "2d"),
-                       cov2dlayer =  c(1, 1, 1, 1),
-                       resolved_at = c("node", "node", "element", "node"),
                        mesh_type = c("element", "element", "node", "element"),
-                       extension = c(".mat", ".mat", ".RData", ".RData"),
+                       extension = c(".mat", ".mat", ".mat", ".rds"),
                        vector_field = c(FALSE, FALSE, TRUE, FALSE)
                        )
 
-# Define directory from which model outputs can be loaded:
-dir2load <- system.file("WeStCOMS_files/", package = "WeStCOMSExploreR", mustWork = TRUE)
+#### Define dat_ls, a list of dataframes which defines the specific FVCOM 
+# ... outputs we'll extract (see extract()): 
+## Dataframe for conditions resolved at nodes 
+timestamp <- as.POSIXct(c("2016-03-01 00:00:00", 
+                          "2016-03-01 01:00:00", 
+                          "2016-03-02 00:00:00", 
+                          "2016-03-02 01:00:00"), 
+                        tz = "UTC")
+dat_node <- expand.grid(timestamp = timestamp, mesh_ID = dat_nodexy$node_id)
+dat_node$date_name <- date_name(dat_node$timestamp)
+dat_node$hour <- lubridate::hour(dat_node$timestamp)
+dat_node$layer <- 1
+dat_node <- dat_node[, c("date_name", "hour", "layer", "mesh_ID")]
+## Dataframe for conditions resolved at elements 
+dat_element <- expand.grid(timestamp = timestamp, mesh_ID = dat_trinodes$element_id)
+dat_element$date_name <- date_name(dat_element$timestamp)
+dat_element$hour <- lubridate::hour(dat_element$timestamp)
+## Named list of dataframes 
+dat_ls <- list(temp = dat_node,
+               tidal_elevation = dat_node,
+               wind_velocity = dat_element, 
+               sun_angle = dat_node)
 
-# Use WeStCOMSExploreR::explore() to move over multiple variables and time points
-# ... and to create plots and/or calculated summary statistics for each one. Here, 
-# ... we'll save summary outputs to a list and display plots: 
-summaries_ls <- 
-WeStCOMSExploreR::explore(
-  # Define arguments relating to data input... 
-    field2d = field2d,
-    mesh_around_nodes = WeStCOMSExploreR::dat_mesh_around_nodes,
-    dataID_node = WeStCOMSExploreR::dat_nodexy$node_id,
-    mesh_around_elements = WeStCOMSExploreR::dat_mesh_around_elements,
-    dataID_element = WeStCOMSExploreR::dat_trinodes$element_id, 
-    dir2load = system.file("WeStCOMS_files/", package = "WeStCOMSExploreR", mustWork = TRUE),
-    date_name = c("160301", "160302"),
-    # We computed sun angle previously, so this is not necessary here. 
-    compute_sun_angle = FALSE,
-    sun_angle_param = list(),
-    # To make plots, you need to supply a list in the following format
-    # Just change the objects supplied to each element: 
-    makeplot = TRUE,
-    plot_param = list(hours4plots = 1,
-                      par_op = par(oma = c(3, 3, 3, 7)),
-                      coastline = WeStCOMSExploreR::dat_coast_around_oban,
-                      zlab = c(expression(paste("Temperature (", degree, ")")),
+#### Define a list of directories from which model outputs can be loaded
+# ... and an associated list of functions used to load files:
+dir2load_ls <- list(temp = paste0(WeStCOMSpath, "temp/"),
+                    tidal_elevation = paste0(WeStCOMSpath, "tidal_elevation/"),
+                    wind_velocity = c(paste0(WeStCOMSpath, "uwind_speed/"), 
+                                      paste0(WeStCOMSpath, "vwind_speed/")
+                                      ),
+                    sun_angle = paste0(WeStCOMSpath, "sun_angle/")
+                    )
+read_fvcom_ls <- list(temp = function(con) R.matlab::readMat(con)$data,
+                      tidal_elevation = function(con) R.matlab::readMat(con)$data,
+                      wind_velocity = function(con) R.matlab::readMat(con)$data, 
+                      sun_angle = readRDS
+                      )
+
+#### Define other general parameters for extract()
+match_hour <- data.frame(hour = 0:1, index = 1:2)
+# match_layer <- NULL # not needed in this example
+match_mesh <-
+  data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
+match_mesh_around_nodes <-
+  data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
+match_mesh_around_elements <- 
+  data.frame(mesh = dat_trinodes$element_id, index = 1:length(dat_trinodes$element_id))
+
+#### Define plotting and summary statistics parameters in a list
+plot_param <- list(hours4plots = 0,
+                   par_op = par(oma = c(3, 3, 3, 7)),
+                   coastline = WeStCOMSExploreR::dat_coast_around_oban,
+                   zlab = c(expression(paste("Temperature (", degree, ")")),
                                "Tidal Elevation (m)",
                                expression(paste("Wind Velocity (m", s^-1, ")")),
                                expression(paste("Sun Angle (", degree, ")"))
                                ),
-                      zlab_line = c(3, 3, 3, 3),
-                      vector_scale = c(NA, NA, 0.0002, NA),
-                      # Note that if dir2save = NULL, the plots will be displayed
-                      # ... and not saved to file. 
-                      dir2save = NULL 
-    ),
-    # To compute summary statistics, again, you need to supply the following list: 
-    compute_summary_stats = TRUE,
-    summary_stats_param = list(hours4stats = 1:2,
-                                row_specific = TRUE,
-                                funs = list(mean = mean, min = min, max =  max)),
-    # Options for parallelisation: 
-    cl = NULL, 
-    # Other graphical customisation:
+                   zlab_line = c(4, 4, 4, 4),
+                   vector_scale = c(NA, NA, 0.0002, NA)
+                   )
+summary_stats_param <- list(hours4stats = 0:1,
+                            row_specific = TRUE,
+                            funs = list(mean = mean, min = min, max =  max)
+                            )
+
+#### Implement explore()
+# Use WeStCOMSExploreR::explore() to move over multiple variables and time points
+# ... and to create plots and/or calculated summary statistics for each one. Here, 
+# ... we'll save summary outputs to a list and display plots: 
+summaries_ls <- 
+  explore(
+    # Define arguments relating to data input and extraction:
+    field2d = field2d,
+    dat_ls = dat_ls,
+    match_hour = data.frame(hour = 0:23, index = 1:24),
+    match_layer = NULL,
+    match_mesh_around_nodes = match_mesh_around_nodes,
+    match_mesh_around_elements = match_mesh_around_elements,
+    read_fvcom_ls = read_fvcom_ls,
+    dir2load_ls = dir2load_ls,
+    mesh_around_nodes = dat_mesh_around_nodes,
+    mesh_around_elements = dat_mesh_around_elements,
+    # Define parameters for plotting:
+    make_plot = TRUE,
+    plot_param = plot_param,
+    # Other graphical customisation (passed via ...):
     arrow_length = 0.05,
-    arrow_lwd = 1.3
+    arrow_lwd = 1.3,
+    ncols = 50,
+    # Define parameters for summary statistics:
+    compute_summary_stats = TRUE,
+    summary_stats_param = summary_stats_param,
+    # Parallelisation options
+    cl = NULL,
+    verbose = TRUE
   )
 
 # View summary statistics: 
@@ -628,17 +749,16 @@ summaries_ls
 
 ```
 
-You could plot these summary statistics though time for each environmental variable and/or use external software to group any saved maps into animations. (This latter activity can be done within R, but specialised software is faster and easier to use.) For example, we could create a few timeseries plots to which help demonstrate the relative magnitude of spatial versus temporal variation using the saved summary statistics (`summaries_ls`). Even through we only have computed summary statistics across four timestamps, let's do this for illustration: 
+You could plot these summary statistics though time for each environmental variable and/or use external software to group any saved maps into animations. (This latter activity can be done within `R`, but specialised software is faster and easier to use.) For example, we could create a few timeseries plots to which help demonstrate the relative magnitude of spatial versus temporal variation using the saved summary statistics (`summaries_ls`). Even through we only have computed summary statistics across four timestamps, let's do this for illustration: 
 
-````{r, fig.cap = "Example timeseries of the spatiotemporal variation in environmental conditions around Oban for three environmental variables, resolved at three time points.", fig.height = 4, fig.width = 8, fig.align = "center", eval = FALSE}
-# Create some timeseries plots using summary statistics
+````{r, fig.cap = "Example timeseries of the spatiotemporal variation in environmental conditions around Oban for three environmental variables, resolved at three time points.", fig.height = 4, fig.width = 8, fig.align = "center"}
 # ... that show the extent of spatial variation through time. 
 # Set plotting margins and other graphical parameters: 
-par(mfrow = c(1, 3))
+pp <- par(mfrow = c(1, 3), oma = c(1, 1, 1, 1))
 cex1 <- 1.5
+ylabs <- plot_param$zlab[c(1, 2, 4)]
 # Loop over every summary dataframe in summaries_ls... 
-l <- lapply(summaries_ls, function(sdf){
-  # For each summary dataframe...
+l <- mapply(summaries_ls, ylabs, FUN = function(sdf, ylab){
   # Define timestamps using dates and hour 
   sdf$date <- WeStCOMSExploreR::date_name(sdf$date_name, define = "date")
   sdf$timestamp <- as.POSIXct(sdf$date, tz = "UTC") + (sdf$hour * 60 * 60)
@@ -647,13 +767,14 @@ l <- lapply(summaries_ls, function(sdf){
   # Create blank plot:
   plot(sdf$timestamp, sdf$mean, type = "n",
        ylim = sdf_ylims,
-       xlab = "",
+       xlab = "", ylab = "",
        cex = cex1,
        cex.axis = cex1-0.2,
        cex.lab = cex1-0.2,
        las = T)
   # Add axis labels:
-  mtext(side = 1, "Time (months)", cex.axis = cex1, line = 3)
+  mtext(side = 1, "Time (hh:mm)", cex.axis = cex1, line = 3)
+  mtext(side = 2, ylab, cex.axis = cex1, line = 3.5)
   # Add a polygon which will surround a line marking the 'mean', representing the range:
   # (other polygons could be added based on other summary statistics to get a better picture
   # ... of where the 'bulk' of variation lies)
@@ -664,6 +785,7 @@ l <- lapply(summaries_ls, function(sdf){
   # Add points to emphasise that we only have 4 timepoints!
   points(sdf$timestamp, sdf$mean)
 })
+par(pp)
 ```
 
 The `prettyGraphics` package includes some additional functions for 3d, interactive visualisation of environmental conditions. 
@@ -676,7 +798,7 @@ The validation of hydrodynamic model predictions is an important area of researc
 
 Possible future developments include: 
 
-  * Relaxing directory and file naming conventions; 
+  * Relaxing file naming conventions; 
   * Improved ability to acquire FVCOM files (or specific environmental fields) from thredds servers;
   * Flexibility to define new environmental fields more easily; 
   * Exploring temperature profiles through space and time;  
@@ -691,7 +813,7 @@ This work was conducted during a PhD Studentship at the University of St Andrews
 
 ## Apendix A: A simple MATLAB® to identify corrupt files
 
-WeStCOMSExploreR is designed to provide researchers who are unfamiliar with MATLAB® but familiar with R the capacity to explore and integrate WeStCOMS outputs in their research. Consequently, while some pre-processing in MATLAB® is still necessary to check for corrupt files and to export environmental arrays, the example codes provided to do this are kept as simple as possible. Users more familiar with MATLAB® may wish to combine these two steps, read and write files in parallel and implement a `tryCatch()`-like approach to avoid errors due to corrupt files along the way. These two scripts are only provided as a very basic guide.
+WeStCOMSExploreR is designed to provide researchers who are unfamiliar with MATLAB® but familiar with `R` the capacity to explore and integrate WeStCOMS outputs in their research. Consequently, while some pre-processing in MATLAB® is still necessary to check for corrupt files and to export environmental arrays, the example codes provided to do this are kept as simple as possible. Users more familiar with MATLAB® may wish to combine these two steps, read and write files in parallel and implement a `tryCatch()`-like approach to avoid errors due to corrupt files along the way. These two scripts are only provided as a very basic guide.
 
 ```{octave, eval = FALSE}
 

@@ -289,7 +289,7 @@ plot2dfield <-
     # If its not a vector field
     if(!vector_field){
       # add the mesh, with each cell having the appropriate colour,
-      # ... with the graphical parameters of the mesh itself specifed by the user
+      # ... with the graphical parameters of the mesh itself specified by the user
       raster::plot(mesh,
                    col = mesh$colour,
                    border = mesh_border,
