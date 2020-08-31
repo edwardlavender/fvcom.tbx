@@ -18,6 +18,6 @@ Dmitry Aleynik
 dat_trinodes
 }
 \description{
-A dataset containing the nodes which surround each element in a subset of the WeStCOMS mesh around Oban.
+A dataset containing the nodes which surround each element for a subset of the WeStCOMS mesh in an area around Oban (see \code{\link[WeStCOMSExploreR]{dat_area_boundaries}}).
 }
 \keyword{datasets}

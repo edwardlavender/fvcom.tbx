@@ -1,16 +1,16 @@
-#' @title Compute sun angle across an unstructured mesh
-#' @description This function computes sun angle on a given day across an unstructured mesh on the hours supplied. To calculate sun angle, the user must specify a dataframe containing node IDs and associated coordinates across which sun angle is evaluated. (Sun angle, a scalar variable, is computed at nodes for consistency with other WeStCOMS outputs.) Next, the user must specify the date and hours on that date for which to calculate sun angle. If this function is applied iteratively, the user can also specify a pre-computed blank matrix with a row for each hour specified and a column for each mesh cell, but this is not required. Finally, the user needs to specify whether or not sun angle should be returns in degrees, the directory to save files (not required) and whether or not to print messages/progress to the console.
+#' @title Compute sun angle across an FVCOM mesh
+#' @description This function computes the sun angle across a spatial mesh on the dates/times specified. To calculate sun angle, the user must specify a dataframe containing node IDs and associated coordinates across which sun angle is evaluated. (Sun angle, a scalar variable, is computed at nodes for consistency with other FVCOM outputs.) Next, the user must specify the date and hours on that date for which to calculate sun angle. Finally, the user needs to specify whether or not sun angle should be returns in degrees or radians, the directory to save files (not required) and whether or not to print messages/progress to the console.
 #'
-#' @param nodexy A dataframe containing node ids and coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.
-#' @param date The date for which sun angle is to be calculated.
-#' @param tz A character vector specifying the time zone. The default is "UTC".
+#' @param nodexy A dataframe containing node ids and decimal coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.
+#' @param date A vector of dates (see \code{\link[base]{Date}}) for which sun angle is to be calculated.
+#' @param tz A character vector specifying the time zone. The default is \code{"UTC"}.
 #' @param sink_file (optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[WeStCOMSExploreR]{date_name}} is used to define file names from inputted dates.
 #' @param hours A integer vector specifying the hours at which you want to calculate sun angle.
-#' @param units A character input defining the units (\code{"degrees"} or \code{"radians"} in which sun angle is calculated).
+#' @param units A character input defining the units (\code{"degrees"} or \code{"radians"} of sun angle.
 #' @param dir2save (optional) A string specifying the directory in which to save sun angle files.
 #' @param verbose A logical input specifying whether or not messages and a progress bar should be printed to the console. The default is TRUE.
 #'
-#' @return For each date, the function creates a matrix of hours x mesh cells containing sun angles. Matrices are either returned as a list or  saved, with one file per day (if \code{dir2save} = TRUE).
+#' @return For each date, the function creates a matrix of hours x mesh cells containing sun angles. Matrices are either returned as a list or saved as .rds files, with one file per day (if \code{dir2save = TRUE}).
 #'
 #' @examples
 #'

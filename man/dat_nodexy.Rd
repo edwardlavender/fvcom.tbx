@@ -19,6 +19,6 @@ Dmitry Aleynik
 dat_nodexy
 }
 \description{
-A dataset containing the coordinates (longitude, latitude, in decimal degrees) for each node of a subset of the WeStCOMS mesh around Oban.
+A dataset containing the coordinates (longitude, latitude, in decimal degrees) for each node in a subset of the WeStCOMS mesh in an area around Oban (see \code{\link[WeStCOMSExploreR]{dat_area_boundaries}}).
 }
 \keyword{datasets}

@@ -2,32 +2,32 @@
 % Please edit documentation in R/interps.R
 \name{interp_btw_hours}
 \alias{interp_btw_hours}
-\title{Interpolate a WeStCOMS predictions between hours}
+\title{Interpolate an FVCOM prediction between hours}
 \usage{
 interp_btw_hours(x, h1, h2, p1, p2)
 }
 \arguments{
 \item{x}{A number which specifies the fractional hour for which a prediction is desired.}
 
-\item{h1}{An integer which specifies the hour of the first WeStCOMS prediction.}
+\item{h1}{An integer which specifies the hour of the first FVCOM prediction.}
 
-\item{h2}{An integer which specifies the hour of the surrounding WeStCOMS prediction.}
+\item{h2}{An integer which specifies the hour of the surrounding FVCOM prediction.}
 
-\item{p1}{A number which specifies the WeStCOMS prediction at \code{h1}.}
+\item{p1}{A number which specifies the FVCOM prediction at \code{h1}.}
 
-\item{p2}{A number which specifies the WeStCOMS prediction at \code{h2}.}
+\item{p2}{A number which specifies the FVCOM prediction at \code{h2}.}
 }
 \value{
-The function returns an interpolated WeStCOMS prediction for a time between two hours at which WeStCOMS predictions are available.
+The function returns an interpolated FVCOM prediction for a time between two hours at which FVCOM predictions are available.
 }
 \description{
-This function linearly interpolates a WeStCOMS prediction between hours.
+This function linearly interpolates an FVCOM prediction between hours.
 }
 \examples{
 
 #### Example (1): Interpolate environmental conditions between hours
-# Imagine we want to know the pedicted temperature at 10:10 am on a given day.
-# WeStCOMS outputs the predictions on every hour, so we have predictions for
+# Imagine we want to know the predicted temperature at 10:10 am on a given day.
+# FVCOM outputs the predictions on every hour, so we have predictions for
 # ... 10 am and 11 am of 12 and 13 dg C respectively. Then, the interpolated
 # ... temperature at 10:10 am is
 interp_btw_hours(10+10/60, 10, 11, 12, 13)

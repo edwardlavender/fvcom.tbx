@@ -17,29 +17,29 @@ compute_field_from_fvcom(
 )
 }
 \arguments{
-\item{source_file}{A list. Each element should comprise a vector of complete file paths (including the directory path, the file name and extension) containing all environmental arrays containing predictions for a given day that are required to compute a new field. Often, only one file is required to compute a new field (e.g., thermocline strength can be computed from temperature predictions). However, sometimes, multiple files may be required in each list element (e.g., current direction is computed from u and v component vector arrays).}
+\item{source_file}{A list. Each element should comprise a vector of complete file paths (including the directory path, the file name and extension) containing all of the environmental arrays for a given day that are required to compute a new field. Often, only one file is required to compute a new field (e.g., thermocline strength can be computed from temperature predictions). However, sometimes, multiple files may be required in each list element (e.g., current direction is computed from u and v component vector arrays).}
 
 \item{sink_file}{(optional) A vector of names (excluding file extensions) for the arrays that are derived for each source file/file combination. This is required if files are to be saved (see \code{dir2save}).}
 
-\item{read_fvcom}{A function which is used to load files (and, if necessary, extract the WeStCOMS array from the loaded object). The function should take a single single argument, the file connection, as input, and load the file. The default is \code{function(con) = R.matlab::readMat(con)$data} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).}
+\item{read_fvcom}{A function which is used to load environmental arrays (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
 \item{calc}{A function which, as input, takes a list of the array(s) that are required to compute a new field for a particular day and computes this new field. See \code{\link[WeStCOMSExploreR]{calc_thermocline}}, \code{\link[WeStCOMSExploreR]{calc_speed}} and \code{\link[WeStCOMSExploreR]{calc_direction}} for examples. A custom function can be provided in the same vein.}
 
 \item{cl}{(optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.}
 
-\item{varlist}{A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}.}
+\item{varlist}{A character vector of names of objects to export. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This may be required if \code{cl} is supplied. Exported objects must be located in the global environment.}
 
-\item{dir2save}{(optional) A string which defines the directory in which to save files. If provided, the function will save a .rds file with the specified name in the specified directory (see \code{\link[base]{saveRDS}}). If not provided, the function will return a list of arrays, with one element for each file/file combination.}
+\item{dir2save}{(optional) A string which defines the directory in which to save files. If provided, for each source file/file combination, the function will save a .rds file with the specified name in the specified directory (see \code{\link[base]{saveRDS}}). If not provided, the function will return a list of arrays, with one element for each file/file combination.}
 
 \item{verbose}{A logical input which defines whether or not to display messages to the console detailing function progress.}
 
 \item{...}{Other arguments passed to the user-supplied \code{calc} function.}
 }
 \value{
-For each file/file combination, the function computes a new field comprising predictions for each cell in the original file(s). Arrays are either returned in a list to the workspace (with one element for each file) or, if \code{dir2save} is provided, saved to a user-supplied directory as a .rds file.
+For each file/file combination, the function computes a new field comprising predictions for each cell in the original file(s). Arrays are either returned in a list to the workspace (with one element for each file) or, if \code{dir2save} is provided, saved to a user-supplied directory as .rds file(s).
 }
 \description{
-This function computes new hydrodynamic fields from FVCOM outputs, such as thermocline strength. To compute new fields, the user must specify a list of file names, each file consisting of an environmental array from which new fields can be computed. These are loaded sequentially or in parallel into R by the function. For each array or combination of arrays, a user-supplied function is applied to compute a new field. The resultant field is either returned or saved.
+This function computes new hydrodynamic fields from FVCOM outputs, such as thermocline strength. To compute new fields, the user must specify a list of source files, each file consisting of an environmental array from which new fields can be computed. These are loaded sequentially or in parallel into R by the function. For each array or combination of arrays, a user-supplied function is applied to compute a new field. The resultant field is either returned or saved.
 }
 \examples{
 #### Define overall path from which to load FVCOM files

@@ -1,5 +1,5 @@
 #' @title The siglev constants for each Sigma layer
-#' @description A dataset defining the siglev constants of each Sigma layer. These constants, combined with tidal elevation (m) and depth below mean sea level, can be used to compute the depths of Sigma layers at a given location and time.
+#' @description A dataset defining the siglev constants of each Sigma layer in WeStCOMS. These constants, combined with tidal elevation (m) and depth below mean sea level, can be used to compute the depths of Sigma layers at a given location and time.
 #'
 #' @format A data frame with 11 rows and 2 variables:
 #' \describe{

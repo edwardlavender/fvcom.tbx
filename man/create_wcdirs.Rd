@@ -2,17 +2,17 @@
 % Please edit documentation in R/create_wcdirs.R
 \name{create_wcdirs}
 \alias{create_wcdirs}
-\title{Create folders in which to save WeStCOMS outputs}
+\title{Create folders in which to save environmental arrays}
 \usage{
 create_wcdirs(dir = getwd(), vars = "temp")
 }
 \arguments{
-\item{dir}{A string specifying the directory in which you want to create a folder for each environmental variable.}
+\item{dir}{A string specifying the directory in which to create a folder for each environmental variable.}
 
-\item{vars}{A character vector specifying the names of the folders to create in dir. Folders that already exist will not be overwritten; in this case, the function simply returns a warning.}
+\item{vars}{A character vector specifying the names of the folders to create in \code{dir}. Folders that already exist will not be overwritten; in this case, the function simply returns a warning.}
 }
 \description{
-This function creates a set of folders in the specified working directory in which WeStCOMS outputs (one file for each day) can be stored.
+This function creates a set of folders in the specified directory in which environmental arrays (one file for each day) can be stored.
 }
 \examples{
 

@@ -1,5 +1,5 @@
 #' @title The nodes which surround each element
-#' @description A dataset containing the nodes which surround each element in a subset of the WeStCOMS mesh around Oban.
+#' @description A dataset containing the nodes which surround each element for a subset of the WeStCOMS mesh in an area around Oban (see \code{\link[WeStCOMSExploreR]{dat_area_boundaries}}).
 #'
 #' @format A data frame with 474 rows and 4 variables:
 #' \describe{

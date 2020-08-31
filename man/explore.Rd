@@ -2,7 +2,7 @@
 % Please edit documentation in R/explore.R
 \name{explore}
 \alias{explore}
-\title{Explore WeStCOMS model outputs in 2d}
+\title{Explore 2-dimensional FVCOM fields}
 \usage{
 explore(
   field2d,
@@ -29,9 +29,9 @@ explore(
 )
 }
 \arguments{
-\item{field2d}{A dataframe that defines the variables for which model outputs will be explored. This must contain the following columns: 'cov2d', a character vector of variable names; 'mesh_type', a character vector of the mesh type ("element" or "node") across which each variable is structured; 'extension', a character vector which defines the extension of model files (see \code{\link[WeStCOMSExploreR]{extract}}); and 'vector_field', a logical vector defining whether or not that variable is a scalar (FALSE) or vector field (TRUE). To save plots directly to file (see \code{make_plot} and \code{png_param}), the dataframe should contain a column 'dir2load' which specifies the folder in which all the plots for each variable will be saved.}
+\item{field2d}{A dataframe that defines the variables for which model outputs will be explored. This must contain the following columns: 'cov2d', a character vector of variable names; 'mesh_type', a character vector of the mesh type ("element" or "node") across which each variable is structured; 'extension', a character vector which defines the extension of the FVCOM arrays for that variable (see \code{\link[WeStCOMSExploreR]{extract}}); and 'vector_field', a logical vector defining whether or not that variable is a scalar (FALSE) or vector field (TRUE). To save plots directly to file (see \code{make_plot} and \code{png_param}, below), the dataframe should contain a column 'dir2save' which specifies the folder in which all the plots for each variable will be saved.}
 
-\item{dat_ls}{A named list of dataframes, with one element for each \code{field2d$cov2d}. Each element should comprise a dataframe which defines the WeStCOMS file date names, hours, and mesh (node or element) IDs for model predictions will be extracted (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{dat_ls}{A named list of dataframes, with one element for each \code{field2d$cov2d}. Each element should comprise a dataframe which defines the FVCOM file date names, hours, and mesh (node or element) IDs for model predictions will be extracted (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
 \item{match_hour}{A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
@@ -43,7 +43,7 @@ explore(
 
 \item{corrupt}{A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{read_fvcom_ls}{A named list of functions, with one element for each \code{field2d$cov2d}. Each element should contain a function is used to load files for that variable (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{read_fvcom_ls}{A named list of functions, with one element for each \code{field2d$cov2d}. Each element should contain a function that is used to load files for that variable (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
 \item{dir2load_ls}{A named list of directories, with one element for each \code{field2d$cov2d}. Each element should be a string (for scalar fields) or a vector of strings (for vector fields) that defines the directory from which to load model files (see \code{\link[WeStCOMSExploreR]{extract}}, which is used to load files). For vector fields, the first string should specify the directory of the u component files and the second string should specify the directory of the v component files.}
 
@@ -61,7 +61,7 @@ explore(
 
 \item{summary_stats_param}{A list of parameters necessary to calculate summary statistics. This list should contain elements with the following names: 'hours4stats', 'row_specific' and 'funs' (see \code{\link[WeStCOMSExploreR]{summarise2dfield}}).}
 
-\item{parallelise}{A character specifying whether or not to parallelise the algorithm over variables \code{"vars"} or dates, \code{"date_name"}. This is only applicable if a cluster is supplied (see below).}
+\item{parallelise}{A character specifying whether or not to parallelise the algorithm over variables (\code{"vars"}) or dates (\code{"date_name"}). This is only applicable if a cluster is supplied (see below).}
 
 \item{cl}{(optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.}
 
@@ -69,13 +69,13 @@ explore(
 
 \item{verbose}{A logical input which defines whether or not to display messages to the console detailing function progress.}
 
-\item{...}{Additional graphical parameters that can be passed to \code{\link[WeStCOMSExploreR]{plot2dfield}} and will affect all plots.}
+\item{...}{Additional graphical parameters that can be passed to \code{\link[WeStCOMSExploreR]{plot2dfield}}. These affect all plots.}
 }
 \value{
-If \code{make_plot = TRUE}, the function will produce plots, either saved to file or displayed (the latter is only possible if \code{cl = NULL}). To save plots \code{field2d} must contain a column named 'dir2save'. Plots are saved in this directory with pre-defined file names pertaining to the date and hour that they represent. The list \code{png_param} can be used to customise the saved images. If \code{compute_summary_stats = TRUE}, the function will also return a list of dataframes, with one element for each environmental variable. Each dataframe the following columns: a date, hour and a column for each summary statistic specified. This list is returned to the environment.
+If \code{make_plot = TRUE}, the function will produce plots, which are either saved to file or displayed (the latter is only possible if \code{cl = NULL}). To save plots, \code{field2d} must contain a column named 'dir2save'. Plots are saved in this directory with pre-defined file names pertaining to the date and hour that they represent. The list \code{png_param} can be used to customise the saved images. If \code{compute_summary_stats = TRUE}, the function will also return a list of dataframes, with one element for each environmental variable. Each dataframe the following columns: a date, hour and a column for each summary statistic specified. This list is returned to the environment.
 }
 \description{
-For multiple variables, days and locations, this function extracts model predictions and computes summary statistics and/or creates maps of environmental conditions. The user passes the function a dataframe specifying the variables to be included and their properties alongside various other arguments for data extraction and to customise the summary statistics and plots that are produced. For each variable, the function loads in the WeStCOMS files for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of WeStCOMS files.
+For multiple variables, days and locations, this function extracts model predictions and computes summary statistics and/or creates maps of environmental conditions. The user passes the function a dataframe specifying the variables to be included and their properties alongside various other arguments for data extraction and to customise the summary statistics and plots that are produced. For each variable, the function loads in the FVCOM arrays for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of WeStCOMS files.
 }
 \examples{
 ############################

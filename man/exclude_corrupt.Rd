@@ -2,20 +2,20 @@
 % Please edit documentation in R/excludes.R
 \name{exclude_corrupt}
 \alias{exclude_corrupt}
-\title{Exclude any rows in a dataframe associated with corrupt WeStCOMS files}
+\title{Exclude any rows in a dataframe associated with corrupt FVCOM files}
 \usage{
 exclude_corrupt(dat, corrupt = NULL)
 }
 \arguments{
-\item{dat}{A dataframe (e.g. containing information necessary to extract WeStCOMS outputs). The only requirement is an integer column named 'date_name' which contains the 6 digit code of WeStCOMS file names (see \code{\link[WeStCOMSExploreR]{date_name}}).}
+\item{dat}{A dataframe (e.g. containing information necessary to extract FVCOM predictions). The only requirement is an integer column named 'date_name' which contains the 6 digit code of FVCOM file names (see \code{\link[WeStCOMSExploreR]{date_name}}).}
 
-\item{corrupt}{A vector of integers which define the 6 digit code of any corrupt WeStCOMS files.}
+\item{corrupt}{A vector of integers which define the 6 digit code of any corrupt FVCOM files.}
 }
 \value{
-A dataframe, as inputted, but in which any rows associated with corrupt WeStCOMS files have been excluded. If rows have been excluded, the function returns a warning.
+A dataframe, as inputted, but in which any rows associated with corrupt FVCOM files have been excluded. If rows have been excluded, the function returns a warning.
 }
 \description{
-This function screens vector of WeStCOMS file names in a dataframe and removes any rows which refer to the names of known, corrupt files (as defined by the user). This is an important check prior to loading multiple WeStCOMS files into R.
+This function screens vector of FVCOM file names in a dataframe and removes any rows which refer to the names of known corrupt files (as defined by the user). This is an important check prior to loading multiple FVCOM files into R.
 }
 \examples{
 

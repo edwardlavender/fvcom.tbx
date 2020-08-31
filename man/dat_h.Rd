@@ -18,6 +18,6 @@ Dmitry Aleynik
 dat_h
 }
 \description{
-A dataset defining the depth of each node below mean sea level for a subset of the WeStCOMS mesh around Oban.
+A dataset defining the depth of each node below mean sea level for a subset of the WeStCOMS mesh in an area around Oban (see \code{\link[WeStCOMSExploreR]{dat_area_boundaries}}).
 }
 \keyword{datasets}

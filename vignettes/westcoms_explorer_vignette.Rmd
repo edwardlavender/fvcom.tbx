@@ -537,16 +537,16 @@ dat_temp <- data.frame(ID = WeStCOMSExploreR::dat_nodexy$node_id, fvcom = sample
 head(dat_temp)
 ```
 
-These two steps can be combined into a single step using `WeStCOMSExploreR::WeStCOMSarray2df()`, which takes a raw WeStCOMS array and returns a dataframe for plotting: 
+These two steps can be combined into a single step using `WeStCOMSExploreR::fvcom_array_to_df()`, which takes a raw WeStCOMS array and returns a dataframe for plotting: 
 ```{r}
 # Note that this function uses indexing to extract model outputs for selected dimensions. 
 # In this case, with sample data comprising a subset of nodes, 
 # ... it's necessary to flip between indexing and true IDs. 
 # The user is recommend to avoid this where possible by using the full WeStCOMS arrays. 
-dat_temp <- WeStCOMSExploreR::WeStCOMSarray2df(data = sample, 
-                                               hour = 1, 
-                                               layer = 1, 
-                                               ID = 1:length(WeStCOMSExploreR::dat_nodexy$node_id))
+dat_temp <- WeStCOMSExploreR::fvcom_array_to_df(data = sample, 
+                                                hour = 1, 
+                                                layer = 1, 
+                                                ID = 1:length(WeStCOMSExploreR::dat_nodexy$node_id))
 dat_temp$ID <- WeStCOMSExploreR::dat_nodexy$node_id
 head(dat_temp)
 ```

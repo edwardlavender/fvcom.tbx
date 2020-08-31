@@ -19,7 +19,7 @@ This function calculates wind or current direction from u and v component vector
 Wind or current direction are expressed as the direction (degrees) of mass flow.
 }
 \examples{
-#### Read example u and v files into a list
+#### Step 1: Read example u and v files into a list
 # Define the path to the u and v files:
 path <- system.file("WeStCOMS_files/",
                     package = "WeStCOMSExploreR", mustWork = TRUE)
@@ -33,9 +33,9 @@ l <- lapply(list(source_u, source_v), function(source){
               R.matlab::readMat(source)$data
            })
 
-#### Compute wind direction
+#### Step 2: Compute wind direction
 wind_direction <- calc_direction(l)
-hist(wind_direction)
+graphics::hist(wind_direction)
 
 }
 \seealso{

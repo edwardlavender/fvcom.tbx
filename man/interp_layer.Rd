@@ -2,7 +2,7 @@
 % Please edit documentation in R/interps.R
 \name{interp_layer}
 \alias{interp_layer}
-\title{Interpolate a fractional layer number for an observation between WeStCOMS layers}
+\title{Interpolate a fractional layer number for an observation between Sigma layers}
 \usage{
 interp_layer(x, l1, l2, b1, b2)
 }
@@ -21,13 +21,13 @@ interp_layer(x, l1, l2, b1, b2)
 The function returns a (fractional) layer number for an observation that lies between two layers.
 }
 \description{
-This function linearly interpolates the layer number for an observation of a specified depth, depending on the depths of the nearest layers (see Examples). This approach is used in \code{compute_depth_layer} to define fractional layer numbers.
+This function linearly interpolates the layer number for an observation of a specified depth, depending on the depths of the nearest layers (see Examples). This approach is used in \code{\link[WeStCOMSExploreR]{depth_layer_compute}} to define fractional layer numbers.
 }
 \examples{
 
 #### Example (1): Interpolate fractional layer numbers
 # Imagine we have made an observation at 22 m deep. To compare this observation to
-# ... WeStCOMS predictions we might want to define the layer number of that observation.
+# ... FVCOM predictions we might want to define the layer number of that observation.
 # Imagine we know that the observation lies between layers 2 and 3, which are 21 and 33 m deep
 # ... respectively. We can interpolate the layer number of our observation between layers 2 and
 # ... 3:

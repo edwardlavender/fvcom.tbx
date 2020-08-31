@@ -1,14 +1,14 @@
-#' @title Convert a WeStCOMS array to a dataframe for \code{plot2dfield}
-#' @description This function converts a WeStCOMS array to a dataframe that, for a snapshot in time, contains the values of the cell at each specified ID; i.e, a 2d field that can be plotted using \code{plot2dfield}.
+#' @title Convert an FVCOM array to a dataframe for \code{\link[WeStCOMSExploreR]{plot2dfield}}
+#' @description This function converts an FVCOM array to a dataframe that, for a snapshot in time, contains the values of the cell at each specified ID; i.e, a 2d field that can be plotted using \code{\link[WeStCOMSExploreR]{plot2dfield}}.
 #'
-#' @param data A 2 or 3d array outputted by WeStCOMS for an environmental variable.
+#' @param data A 2 or 3d array outputted by FVCOM for an environmental variable.
 #' @param hour An integer specifying single hour (i.e. row) for which to extract model outputs.
 #' @param layer An integer specifying a single layer for which to extract inputs. This is only required for 3d variables.
 #' @param ID A numerical vector of columns (i.e. mesh IDs) for which to extract data.
 #'
-#' @return A dataframe with two columns: ID (a unique identifier for each node) and fvcom, the value resolved by WeStCOMS for the snapshot in time and, if applicable, the layer specified.
+#' @return A dataframe with two columns: ID (a unique identifier for each node) and fvcom, the value resolved by FVCOM for the snapshot in time and, if applicable, the layer specified.
 #'
-#' @note The function extracts the values for the hours, layers and mesh IDs supplied from the array using indexing (since raw WeStCOMS outputs do not have column names defining mesh IDs). This means that a full array must be supplied for the outputs for the correct cells to be extracted: if the array is subsetted before being passed to this function, then the value at row 1, layer 1 and sheet 1 may not be reflective of hour, layer and mesh cell 1.
+#' @note The function extracts the values for the hours, layers and mesh IDs supplied from the array using indexing (since FVCOM outputs may not have column names defining mesh IDs). This means that a full array must be supplied for the outputs for the correct cells to be extracted: if the array is subsetted before being passed to this function, then the value at row 1, layer 1 and sheet 1 may not be reflective of hour, layer and mesh cell 1.
 #'
 #' @examples
 #'
@@ -24,11 +24,11 @@
 #' # Examine the structure of the array:
 #' str(sample)
 #' #### Step 2: Convert sample matrix to a dataframe for plotting...
-#' dat_temp <- WeStCOMSExploreR::WeStCOMSarray2df(data = sample,
-#' hour = 1,
-#' layer = 1,
-#' ID = 1:length(WeStCOMSExploreR::dat_nodexy$node_id)
-#' )
+#' dat_temp <- fvcom_array_to_df(data = sample,
+#'                               hour = 1,
+#'                               layer = 1,
+#'                               ID = 1:length(dat_nodexy$node_id)
+#'                               )
 #' #### Step 3: Examine dataframe
 #' head(dat_temp)
 #'
@@ -36,10 +36,7 @@
 #' @export
 #'
 
-#######################################
-#### WeStCOMSarray2df
-
-WeStCOMSarray2df <- function(data,
+fvcom_array_to_df <- function(data,
                              hour,
                              layer = NULL,
                              ID){
@@ -72,6 +69,7 @@ WeStCOMSarray2df <- function(data,
   return(d)
 
 } # close function
+
 
 #### End of code.
 #######################################

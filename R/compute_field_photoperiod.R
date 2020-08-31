@@ -1,10 +1,10 @@
-#' @title Compute photoperiod across the WeStCOMS mesh
-#' @description This function computes photoperiod across the WeStCOMS mesh.
-#' @param date A vector of dates (\code{\link[base]{Date}}) for which photoperiod will be calculated.
-#' @param nodexy A dataframe containing coordinates (in latitude/longitude) at which photoperiod is calculated. The dataframe should have two columns: 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.
-#' @param interval A character vector with two elements which define the sunrise and sunset times (n that order) between which photoperiod is calculated. This is passed to the \code{keep} argument of \code{\link[suncalc]{getSunlightTimes}} where further details are provided. The default option is to calculate the duration between dawn and dusk in each location on each day.
+#' @title Compute photoperiod across an FVCOM mesh
+#' @description This function computes photoperiod as an environmental field across an spatial mesh.
+#' @param date A vector of dates (see \code{\link[base]{Date}}) for which photoperiod will be calculated.
+#' @param nodexy A dataframe containing decimal coordinates (in latitude/longitude) at which photoperiod is calculated. The dataframe should have two columns: 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.
+#' @param interval A character vector with two elements which define the specific sunrise and sunset phases (in that order) between which photoperiod is calculated. This is passed to the \code{keep} argument of \code{\link[suncalc]{getSunlightTimes}} where further details are provided. The default option is to calculate the duration between dawn and dusk in each location on each day.
 #' @param units A character input which defines the units of the time difference. This is passed to \code{\link[base]{difftime}}. Options are: "auto", "secs", "mins", "hours", "days" or "weeks".
-#' @details At specified locations, taken from \code{nodexy} and on specified dates, taken from \code{date}, photoperiod is calculated as the number of time units (e.g. hours) between two discrete sunlight times (e.g. dawn and dusk), defined by the user and calculated by \code{\link[suncalc]{getSunlightTimes}}. For very vectors sequences of dates/locations, the function may take several minutes.
+#' @details At specified locations (taken from \code{nodexy}) and on specified dates (taken from \code{date}), photoperiod is calculated as the number of time units (e.g. hours) between two discrete sunlight times (e.g. dawn and dusk), defined by the user and calculated by \code{\link[suncalc]{getSunlightTimes}}. For very long sequences of dates/locations, the function may take several minutes.
 #' @return Unlike other \code{compute_field_*()} functions, photoperiod is only defined on each day (not for each hour of the day). Therefore, rather than returning an array, the function returns a dataframe with the date ('date'), the location ('lat' and 'lon'), the times of the user-specified interval (e.g., 'dawn' and 'dusk') and the photoperiod ('photoperiod') in user-specified units. The dataframe is ordered by date.
 #' @examples
 #' #### Example (1): Compute photoperiod as the number of hours between dawn and dusk:

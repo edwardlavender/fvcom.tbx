@@ -19,7 +19,7 @@ This function calculates wind or current speed from u and v component vector arr
 In each cell, speed (m/s) is given by Pythagoras' Theorem.
 }
 \examples{
-#### Read example u and v files into a list
+#### Step 1: Read example u and v files into a list
 # Define the path to the u and v files:
 path <- system.file("WeStCOMS_files/",
                     package = "WeStCOMSExploreR", mustWork = TRUE)
@@ -32,7 +32,8 @@ source_v <- list.files(path_v, full.names = TRUE)[1]
 l <- lapply(list(source_u, source_v), function(source){
               R.matlab::readMat(source)$data
            })
-#### Compute wind speed
+
+#### Step 2: Compute wind speed
 wind_speed <- calc_speed(l)
 hist(wind_speed)
 

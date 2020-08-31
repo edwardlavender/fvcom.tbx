@@ -2,13 +2,13 @@
 ##############################################
 #### exclude_corrupt()
 
-#' @title Exclude any rows in a dataframe associated with corrupt WeStCOMS files
-#' @description This function screens vector of WeStCOMS file names in a dataframe and removes any rows which refer to the names of known, corrupt files (as defined by the user). This is an important check prior to loading multiple WeStCOMS files into R.
+#' @title Exclude any rows in a dataframe associated with corrupt FVCOM files
+#' @description This function screens vector of FVCOM file names in a dataframe and removes any rows which refer to the names of known corrupt files (as defined by the user). This is an important check prior to loading multiple FVCOM files into R.
 #'
-#' @param dat A dataframe (e.g. containing information necessary to extract WeStCOMS outputs). The only requirement is an integer column named 'date_name' which contains the 6 digit code of WeStCOMS file names (see \code{\link[WeStCOMSExploreR]{date_name}}).
-#' @param corrupt A vector of integers which define the 6 digit code of any corrupt WeStCOMS files.
+#' @param dat A dataframe (e.g. containing information necessary to extract FVCOM predictions). The only requirement is an integer column named 'date_name' which contains the 6 digit code of FVCOM file names (see \code{\link[WeStCOMSExploreR]{date_name}}).
+#' @param corrupt A vector of integers which define the 6 digit code of any corrupt FVCOM files.
 #'
-#' @return A dataframe, as inputted, but in which any rows associated with corrupt WeStCOMS files have been excluded. If rows have been excluded, the function returns a warning.
+#' @return A dataframe, as inputted, but in which any rows associated with corrupt FVCOM files have been excluded. If rows have been excluded, the function returns a warning.
 #'
 #' @examples
 #'
@@ -42,14 +42,14 @@ exclude_corrupt <- function(dat, corrupt = NULL){
 ##############################################
 #### exclude_unavailable()
 
-#' @title Exclude any rows in a dataframe associated with unavailable WeStCOMS files
-#' @description  This function screens vector of WeStCOMS file names in a dataframe and removes any rows which refer to WeStCOMS files that are unavailable in a specified directory. This is an important check prior to loading multiple WeStCOMS files into R.
+#' @title Exclude any rows in a dataframe associated with unavailable FVCOM files
+#' @description  This function screens vector of FVCOM file names in a dataframe and removes any rows which refer to FVCOM files that are unavailable in a specified directory. This is an important check prior to loading multiple FVCOM files into R.
 #'
-#' @param dat A dataframe (e.g. containing information necessary to extract WeStCOMS outputs). The only requirement is an integer column named 'date_name' which contains the 6 digit code of WeStCOMS file names (see \code{\link[WeStCOMSExploreR]{date_name}}).
-#' @param dir2load A string which defines the directory from which WeStCOMS files are loaded. The function identifies all files in this directory (with necessary properties, see \code{...}) to determine whether any of the date names in \code{dat} are not found \code{dir2load}. If this is the case, these rows which refer to unavailable files in \code{dat} are removed.
+#' @param dat A dataframe (e.g. containing information necessary to extract FVCOM outputs). The only requirement is an integer column named 'date_name' which contains the 6 digit code of FVCOM file names (see \code{\link[WeStCOMSExploreR]{date_name}}).
+#' @param dir2load A string which defines the directory from which FVCOM files are loaded. The function identifies all files in this directory (with necessary properties, see \code{...}) to determine whether any of the date names in \code{dat} are not found \code{dir2load}. If this is the case, these rows which refer to unavailable files in \code{dat} are removed.
 #' @param ... Additional arguments passed to \code{\link[base]{list.files}}, such as \code{pattern}.
 #'
-#' @return A dataframe, as inputted, but in which any rows which refer to the names of unavailable WeStCOMS files have been excluded. If rows have been excluded, the function returns a warning.
+#' @return A dataframe, as inputted, but in which any rows which refer to the names of unavailable FVCOM files have been excluded. If rows have been excluded, the function returns a warning.
 #'
 #' @examples
 #'

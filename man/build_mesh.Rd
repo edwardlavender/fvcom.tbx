@@ -10,27 +10,27 @@ build_mesh(
   mesh_type = "element",
   proj4string = sp::CRS(as.character("+init=epsg:4326")),
   cl = NULL,
-  pass2varlist = list(NULL)
+  pass2varlist = NULL
 )
 }
 \arguments{
-\item{nodexy}{A dataframe containing node ids and coordinates. The dataframe should have three columns: node_id, x and y. See \code{?WeStCOMSExploreR::dat_nodexy} for the dataset included in WeStCOMSExploreR as a guide.}
+\item{nodexy}{A dataframe containing node IDs and coordinates. The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.}
 
-\item{trinodes}{A dataframe containing element ids and the surrounding nodes (i.e. which nodes are linked to which other nodes). The dataframe should have four columns: element_id, node1, node2 and node3. See \code{?WeStCOMSExploreR::dat_trinodes} for the dataset included in WeStCOMSExploreR as a guide.}
+\item{trinodes}{A dataframe containing element IDs and the surrounding nodes (i.e. which nodes are linked to which other nodes). The dataframe should have four columns: 'element_id', 'node1', 'node2' and 'node3'. See \code{\link[WeStCOMSExploreR]{dat_trinodes}} for an example}
 
-\item{mesh_type}{A character specifying the mesh type you want to build. There are two options: "node" or "element". \code{mesh_type = "node"} builds a mesh based on nodes (i.e. around elements). This is useful for plotting conditions resolved at elements. \code{mesh_type = "element"} builds a mesh around nodes based on elements. This is useful for plotting conditions resolved at nodes.}
+\item{mesh_type}{A character specifying the mesh type to be built. There are two options: \code{"node"} or \code{"element"}. \code{mesh_type = "node"} builds a mesh based on nodes (i.e. around elements). This is useful for plotting conditions resolved at elements. \code{mesh_type = "element"} builds a mesh around nodes based on elements. This is useful for plotting conditions resolved at nodes.}
 
 \item{proj4string}{A projection string of class \code{\link[sp]{CRS-class}}. The World Geodetic System 84 (WGS84), i.e. \code{proj4string = sp::CRS(as.character("+init=epsg:4326"))}, is the default.}
 
-\item{cl}{A cluster object created by \code{\link[parallel]{makeCluster}}. This is required if you want to run the algorithm in parallel, which can improve computation time (especially for large meshes). The default is NULL (i.e. the algorithm is run on a single processor: see examples). If supplied, the connection to the cluster is stopped within the function.}
+\item{cl}{A cluster object created by \code{\link[parallel]{makeCluster}}. This is required if you want to run the algorithm in parallel, which can improve computation time (especially for large meshes). If supplied, the connection to the cluster is stopped within the function.}
 
-\item{pass2varlist}{A list containing a character vector of names of objects to export, to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This is required if \code{cl} is supplied and you specify some function arguments via objects, rather than directly. (See the use of \code{WeStCOMSExploreR::dat_nodexy} and \code{WeStCOMSExploreR::dat_trinodes} in the examples.) These objects must be located in the global environment.}
+\item{pass2varlist}{A character vector of names of objects to export. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This may be required if \code{cl} is supplied. Exported objects must be located in the global environment.}
 }
 \value{
 An SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}). Each polygon has an ID corresponding to the ID of the node or element which is surrounds, as supplied by the nodexy or trinodes dataframe respectively.
 }
 \description{
-This function is used to build an unstructured mesh (around nodes or elements) from node coordinates and connections as a SpatialPolygonsDataFrame in R. This function was designed with the WeStCOMS unstructured mesh in mind.
+This function is used to build an unstructured mesh (around nodes or elements) from node coordinates and connections as a SpatialPolygonsDataFrame. This function was designed with the WeStCOMS unstructured mesh in mind.
 }
 \examples{
 
@@ -43,14 +43,14 @@ mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
                                    trinodes = dat_trinodes,
                                    mesh_type = "node",
                                    cl = NULL,
-                                   pass2varlist = list(NULL))
+                                   pass2varlist = NULL)
 
 # 2) Build a mesh around nodes (based on elements) on a single processor
 mesh_around_nodes <- build_mesh(nodexy = dat_nodexy,
                                 trinodes = dat_trinodes,
                                 mesh_type = "element",
                                 cl = NULL,
-                                pass2varlist = list(NULL))
+                                pass2varlist = NULL)
 
 # 3) Build a mesh around elements (based on nodes) using parallel processing
 \dontrun{
@@ -61,9 +61,8 @@ mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
                                    trinodes = dat_trinodes,
                                    mesh_type = "node",
                                    cl = cl,
-                                   pass2varlist = list("dat_nodexy", "dat_trinodes"))
-# Note that the connection with the cluster is closed within the function
-# ... so it is not necessary to use parallel::stopCluster(cl) here.
+                                   pass2varlist = c("dat_nodexy", "dat_trinodes"))
+# Note that the connection with the cluster is closed within the function.
 }
 
 }

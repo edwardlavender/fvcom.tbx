@@ -1,12 +1,12 @@
-#' @title  Create a dataframe that specified which WeStCOMS files to load
-#' @description This function creates a dataframe that can be used to load WeStCOMS files into R or MATLAB.
+#' @title  Create a dataframe that specifies which FVCOM files to load
+#' @description This function creates a dataframe that can be used to load FVCOM files into R or MATLAB.
 #'
-#' @param start_date A date object specifying the earliest date for which you have a WeStCOMS file.
-#' @param end_date A date object specifying the latest date for which you have a WeStCOMS file. Specifying \code{start_date} and \code{end_date} is appropriate if you want to load all dates between a start and end date. If not, see \code{custom_dates}.
+#' @param start_date A date object specifying the earliest date for which you have a FVCOM file.
+#' @param end_date A date object specifying the latest date for which you have a FVCOM file. Specifying \code{start_date} and \code{end_date} is appropriate if you want to load all dates between a start and end date. If not, see \code{custom_dates}.
 #' @param custom_dates A vector of dates, for which to create the dataframe. This is an alternative to specifying \code{start_date} and \code{end_date} (see above).
-#' @param corrupt_dates A vector of dates for which WeStCOMS files are corrupt and should not be included in the dataframe.
+#' @param corrupt_dates A vector of dates for which FVCOM files are corrupt and should not be included in the dataframe.
 #'
-#' @return A dataframe with three columns: date (Date object), year (2 digits, a numeric object) and date_name (6 digits, a numeric object).
+#' @return A dataframe with three columns: date (a Date object), year (2 digits, a numeric object) and date_name (6 digits, a numeric object).
 #'
 #' @author Edward Lavender
 #'

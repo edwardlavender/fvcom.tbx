@@ -2,14 +2,14 @@
 % Please edit documentation in R/depth_layer_calc.R
 \name{depth_layer_calc}
 \alias{depth_layer_calc}
-\title{Calculate the depths of WeStCOMS layers with known inputs}
+\title{Calculate the depths of Sigma layers with known inputs}
 \usage{
 depth_layer_calc(siglev, h, el)
 }
 \arguments{
-\item{siglev}{A number or numeric vectors of siglev values.}
+\item{siglev}{A number or numeric vector of siglev values.}
 
-\item{h}{A number or numeric vectors of depth below mean sea level.}
+\item{h}{A number or numeric vector of depth below mean sea level.}
 
 \item{el}{A number of numeric vector of tidal elevation.}
 }
@@ -17,7 +17,7 @@ depth_layer_calc(siglev, h, el)
 The function returns a number/numeric vector of Sigma layer depths calculated from user inputs.
 }
 \description{
-The depth of WeStCOMS layers can be computed from the depth of the seabed below mean sea level (in a given location), the tidal elevation (at a given time and in a given location) and a vector of constants which adjusts for the relative position of each layer. If these values are known, \code{\link[WeStCOMSExploreR]{depth_layer_calc}} can be implemented to calculate the depth of Sigma layers. If these values are unknown, the function \code{\link[WeStCOMSExploreR]{depth_layer_compute}} should be used instead: this function first computes the appropriate values for specified times/locations and then uses these values to calculate depths.
+The depth of Sigma layers can be calculated from the depth of the seabed below mean sea level (in a given location), the tidal elevation (at a given time and in a given location) and a vector of constants which adjusts for the relative position of each layer. If these values are known, \code{\link[WeStCOMSExploreR]{depth_layer_calc}} can be implemented to calculate the depth of Sigma layers. If these values are unknown, the function \code{\link[WeStCOMSExploreR]{depth_layer_compute}} should be used instead: this function first computes the appropriate values for specified times/locations and then uses these values to calculate depths.
 }
 \examples{
 

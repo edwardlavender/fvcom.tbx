@@ -10,22 +10,23 @@ calc_thermocline(l)
 \item{l}{A list composed of a single environmental array (comprising temperature predictions for hours x layers x nodes) for a particular day.}
 }
 \value{
-The function returns a 2 d array comprising the thermocline strength for each hour for each node in the original array.
+The function returns a 2-dimensional array of the thermocline strength for each hour and each node in the original array.
 }
 \description{
-This function calculates thermocline strength FVCOM temperature predictions.
+This function calculates thermocline strength from FVCOM temperature predictions.
 }
 \details{
-Thermocline strength is approximated as the difference in temperature between the surface and the bottom. This is computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Positive numbers indicate the temperature at the surface is higher than at the bottom. Note that this means that the thermocline strength option cannot be applied properly to the data supplied with this package, which is a small subset of the temperature predictions that does not include the full 10 layers.
+Thermocline strength is approximated as the difference in temperature between the shallowest and the deepest Sigma layers. This is computationally faster than calculating other metrics (e.g. the standard deviation in temperature across layers). Positive numbers indicate the temperature at the surface is higher than at the bottom. This function cannot be applied properly to the data supplied with this package, which is a small subset of the temperature predictions including only the top two layers.
 }
 \examples{
-# Read example temperature file into a list
+#### Step 1: Read example temperature file into a list
 path <- system.file("WeStCOMS_files/temp/",
                     package = "WeStCOMSExploreR", mustWork = TRUE)
 file <- list.files(path, full.names = TRUE)[1]
 l <- list(R.matlab::readMat(file)$data)
 str(l)
-# Compute thermocline strength
+
+#### Step 2: Compute thermocline strength
 # (Note this is only for demonstration purposes:
 # ... example package temperature predictions only include layers 1 and 2!)
 thermocline_strength <- calc_thermocline(l)
