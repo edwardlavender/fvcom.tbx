@@ -97,7 +97,6 @@ timestamp <- as.POSIXct(c("2016-03-01", "2016-03-02"), tz = "UTC")
 dat <- expand.grid(timestamp = timestamp, mesh_ID = dat_nodexy$node_id)
 dat$date_name <- date_name(dat$timestamp)
 dat$hour <- lubridate::hour(dat$timestamp)
-dat$mesh_ID <- dat_nodexy[1:nrow(dat), "node_id"]
 dat$layer <- 1
 dat <- dat[, c("date_name", "hour", "layer", "mesh_ID")]
 dat_ls <- list(temp = dat)
@@ -191,7 +190,6 @@ field2d <- data.frame(cov2d = c("temp", "tidal_elevation", "wind_velocity"),
 dat_element <- expand.grid(timestamp = timestamp, mesh_ID = dat_trinodes$element_id)
 dat_element$date_name <- date_name(dat_element$timestamp)
 dat_element$hour <- lubridate::hour(dat_element$timestamp)
-dat_element$mesh_ID <- dat_trinodes[1:nrow(dat_element), "element_id"]
 dat_ls <- list(temp = dat,
                tidal_elevation = dat,
                wind_velocity = dat_element)

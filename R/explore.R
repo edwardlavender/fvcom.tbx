@@ -47,7 +47,6 @@
 #' dat <- expand.grid(timestamp = timestamp, mesh_ID = dat_nodexy$node_id)
 #' dat$date_name <- date_name(dat$timestamp)
 #' dat$hour <- lubridate::hour(dat$timestamp)
-#' dat$mesh_ID <- dat_nodexy[1:nrow(dat), "node_id"]
 #' dat$layer <- 1
 #' dat <- dat[, c("date_name", "hour", "layer", "mesh_ID")]
 #' dat_ls <- list(temp = dat)
@@ -141,7 +140,6 @@
 #' dat_element <- expand.grid(timestamp = timestamp, mesh_ID = dat_trinodes$element_id)
 #' dat_element$date_name <- date_name(dat_element$timestamp)
 #' dat_element$hour <- lubridate::hour(dat_element$timestamp)
-#' dat_element$mesh_ID <- dat_trinodes[1:nrow(dat_element), "element_id"]
 #' dat_ls <- list(temp = dat,
 #'                tidal_elevation = dat,
 #'                wind_velocity = dat_element)
@@ -298,7 +296,7 @@ explore <-
       )
       for(i in 1:length(dat_ls)){
         if(!all(plot_param$hours4plots %in% dat_ls[[i]]$hour)){
-          stop(paste0("All plot_param$hours4plots values should be within dat_ls[[,", i, "]]$hour."))
+          stop(paste0("All plot_param$hours4plots values should be within dat_ls[[", i, "]]$hour."))
         }
       }
       check_class(input = png_param, to_class = "list", type = "stop")
@@ -494,7 +492,7 @@ explore <-
                       })
                     }
 
-                    #### Bind all summary statistics for the current day into one dataframe
+                    #### Bind all summary statistics (mean, min etc.) for the current day into one dataframe
                     sry <- dplyr::bind_cols(sry_ls)
                   }
                 }
@@ -520,7 +518,6 @@ explore <-
                     } else{
                       data <- list(udata = data.frame(ID = udat_sbt$mesh_ID, fvcom = udat_sbt$wc),
                                    vdata = data.frame(ID = vdat_sbt$mesh_ID, fvcom = vdat_sbt$wc))
-                      print(data)
                     }
 
                     #### Set up plot to save (in appropriate directory)
@@ -550,18 +547,23 @@ explore <-
                 }
 
                 #### Return list of summary statistics for that day.
-                if(compute_summary_stats & !vector_field) return(sry)
+                if(compute_summary_stats & !vector_field) return(sry) else return(NULL)
 
-              })
+              }) # close loop over each day
 
 
           ################################################
           #### Outputs for each environmental variables
 
           #### Bind summary statistics computed for each day
-          sry <- dplyr::bind_rows(sdf)
-          return(sry)
+          # sdf is a list of summary statistics, one for each dat
 
+          if(compute_summary_stats & !vector_field){
+            sry <- dplyr::bind_rows(sdf)
+            return(sry)
+          } else{
+            return(NULL)
+          }
 
         }) # close pblapply over environmental variables
 
