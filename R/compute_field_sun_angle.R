@@ -4,26 +4,26 @@
 #' @param nodexy A dataframe containing node ids and coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.
 #' @param date The date for which sun angle is to be calculated.
 #' @param tz A character vector specifying the time zone. The default is "UTC".
-#' @param date_name (optional) A character specifying the WeStCOMS date_name code that corresponds to the date supplied. This is only required if \code{dir2save = TRUE} (see below) because it is used to define the file name of the object saved. If \code{date_name} is not supplied, then it is calculated from the \code{date} supplied (with a small computational cost if the function is applied many times.)
+#' @param sink_file (optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[WeStCOMSExploreR]{date_name}} is used to define file names from inputted dates.
 #' @param hours A integer vector specifying the hours at which you want to calculate sun angle.
-#' @param sun_angle_mat (optional) A blank matrix with a row for each hour and a column for each cell, into which sun angles will be added. This is is not required. However, if the function is applied iteratively, supplying a pre-computed matrix will improve computation time.
-#' @param degrees A logical input defining whether or not sun angles should be returned in degrees (TRUE) or radians (FALSE).
+#' @param units A character input defining the units (\code{"degrees"} or \code{"radians"} in which sun angle is calculated).
 #' @param dir2save (optional) A string specifying the directory in which to save sun angle files.
 #' @param verbose A logical input specifying whether or not messages and a progress bar should be printed to the console. The default is TRUE.
+#'
+#' @return For each date, the function creates a matrix of hours x mesh cells containing sun angles. Matrices are either returned as a list or  saved, with one file per day (if \code{dir2save} = TRUE).
 #'
 #' @examples
 #'
 #' #### (1) Compute sun angle across a sample of WeStCOMS nodes
-#' sun_angle <- compute_field_sun_angle(nodexy = WeStCOMSExploreR::dat_nodexy,
-#' date = as.character("2016-01-01"),
-#' date_name = 160101,
-#' tz = "UTC",
-#' hours = 1:24,
-#' degrees = TRUE,
-#' dir2save = NULL,
-#' verbose = TRUE)
-#' # Examine sun angle matrix produced:
-#' str(sun_angle)
+#' sun_angle <- WeStCOMSExploreR::compute_field_sun_angle(
+#'   nodexy = WeStCOMSExploreR::dat_nodexy,
+#'   date = as.character("2016-01-01"),
+#'   tz = "UTC",
+#'   hours = 0:23,
+#'   units = "degrees",
+#'   dir2save = NULL,
+#'   verbose = TRUE
+#'   )
 #'
 #' @author Edward Lavender
 #' @source This function is a wrapper for \code{\link[suncalc]{getSunlightPosition}} function.
@@ -37,82 +37,66 @@
 compute_field_sun_angle <-
   function(nodexy,
            date,
-           date_name = NULL,
            tz = "UTC",
-           hours = 1:24,
-           sun_angle_mat = NULL,
-           degrees = TRUE,
-           dir2save,
+           hours = 0:23,
+           units = "degrees",
+           sink_file = NULL,
+           dir2save = NULL,
            verbose = TRUE
   ){
 
-    #### Define IDxy dataframe
-    ID <- nodexy$node_id
-    IDxy <- data.frame(ID = ID, x = nodexy$x, y = nodexy$y)
+    #### Checks
+    if(!is.null(dir2save)) dir2save <- check_dir(input = dir2save, check_slash = TRUE)
 
-    #### Define matrix in which to store sun angles, if not supplied:
-    if(is.null(sun_angle_mat)){
-      # calculate the number of cells for which we'll compute sun angle
-      lID <- length(ID)
-      # calculate the number of hours
-      lhours <- length(hours)
-      # create a blank matrix with rows for hours and columns for each cell
-      sun_angle_mat <- matrix(NA, nrow = lhours, ncol = lID)
-      # add rownames and column names to aid intepreation
-      colnames(sun_angle_mat) <- sort(as.numeric(as.character(ID)))
-      rownames(sun_angle_mat) <- hours
-      }
+    #### Define dataframe to calculate sun_angle:
+    if(verbose) cat("WeStCOMSExploreR::compute_field_sun_angle() called...\n")
+    nodexy$index <- 1:nrow(nodexy)
+    date <- as.POSIXct(date, tz = tz)
+    secs <- hours*60*60
+    timestamp <- lapply(date, function(day) day + secs)
+    timestamp <- sort(do.call(c, timestamp))
+    lubridate::tz(timestamp) <- tz
+    dat <- expand.grid(timestamp, nodexy$node_id)
+    colnames(dat) <- c("date", "mesh_ID")
+    dat$nodexy_index <- nodexy$index[match(dat$mesh_ID, nodexy$node_id)]
+    dat$lat <- nodexy$y[match(dat$mesh_ID, nodexy$node_id)]
+    dat$lon <- nodexy$x[match(dat$mesh_ID, nodexy$node_id)]
+    dat$hour <- lubridate::hour(dat$date)
+    dat <- dat[order(dat$date, dat$mesh_ID), ]
 
-    #### define timestamps at which to calculate sun_angle:
-    suncalc_timestamp <- as.POSIXct(date, tz = "UTC") + hours*60*60
+    #### Compute sun angle
+    if(verbose) cat("Computing sun angle...\n")
+    dat$altitude <- suncalc::getSunlightPosition(data = dat[, c("date", "lon", "lat")], keep = c("altitude"))$altitude
+    check_value(arg = "units", input = units, supp = c("degrees", "radians"), warn = TRUE, default = "degrees")
+    if(units == "degrees") dat$altitude <- dat$altitude * (180/pi)
 
-    ##### Display a helpful message...
-    if(verbose){
-      cat(paste("Calculating sun angle at all nodes on day:", date, "...\n"))
-      pb_sun_angle <- utils::txtProgressBar(min = 0, max = lID, style = 3)
-      } # close if(verbose)
+    #### Define matrices
+    if(verbose) cat("Defining sun angle arrays...\n")
+    dat_by_date <- split(dat, f = as.Date(dat$date))
+    nrw <- length(hours)
+    ncl <- max(nodexy$index)
+    sun_angle_mat_ls <- lapply(dat_by_date, function(d){
+      mat <- matrix(d$altitude, nrow = nrw, ncol = ncl, byrow = TRUE)
+      colnames(mat) <- nodexy$node_id
+      rownames(mat) <- hours
+      return(mat)
+    })
 
-    #### For every mesh cell, we'll calculate sun angle
-    for(xy in 1:length(ID)){
-      # obtain the coordinates of that cell from IDxy
-      # note the importance of IDxy being in the same order as IDs.
-      cellxy <- IDxy[xy, c("x", "y")]
-      # calculate sun angle for that node:
-      angles <- suncalc::getSunlightPosition(date = suncalc_timestamp,
-                                             lat = cellxy$y,
-                                             lon = cellxy$x,
-                                             keep = "altitude")$altitude
-      # Add to matrix in appropriate position:
-      sun_angle_mat[, xy] <- angles
-      # Update messages:
-      if(verbose){
-        # Update progress bar...
-        utils::setTxtProgressBar(pb_sun_angle, xy)
-      } # close if(verbose)
-    } # close for(xy in ID){
-
-    #### Convert angles to degrees, if requested
-    if(degrees){
-      sun_angle_mat <- sun_angle_mat * (180/pi)
-      } # close if(degrees)
-
-    #### save file for specified date in appropriate location, if specified:
+    #### Save file for specified date in appropriate location, if specified:
     # If the user has supplied a dir2save...
     if(!is.null(dir2save)){
-      # If the user hasn't provided a date name, then we'll define this:
-      if(is.null(date_name)){
-        date_name(date, define = "date_name")
-      }
-      # Define a path/filename to save based on datename:
-      sun_angle_file_name <- paste0(dir2save, date_name, ".RData")
-      # save the file:
-      saveRDS(sun_angle_mat, file = sun_angle_file_name)
+      if(verbose) cat("Saving sun angle arrays... \n")
+      # Define file names, if not provided
+      if(is.null(sink_file)) sink_file <- date_name(date, define = "date_name")
+      # Save each file
+      out <- mapply(sun_angle_mat_ls, sink_file, FUN = function(sun_angle_mat, file){
+        saveRDS(sun_angle_mat, paste0(dir2save, file, ".rds"))
+      })
+    } else{
+      return(sun_angle_mat_ls)
     }
+  }
 
-    # Also return the computed matrix:
-    return(sun_angle_mat)
-
-  } # close function
 
 #### End of code.
 ################################################

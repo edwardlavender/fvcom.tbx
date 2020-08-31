@@ -10,12 +10,11 @@ This function is a wrapper for \code{\link[suncalc]{getSunlightPosition}} functi
 compute_field_sun_angle(
   nodexy,
   date,
-  date_name = NULL,
   tz = "UTC",
-  hours = 1:24,
-  sun_angle_mat = NULL,
-  degrees = TRUE,
-  dir2save,
+  hours = 0:23,
+  units = "degrees",
+  sink_file = NULL,
+  dir2save = NULL,
   verbose = TRUE
 )
 }
@@ -24,19 +23,20 @@ compute_field_sun_angle(
 
 \item{date}{The date for which sun angle is to be calculated.}
 
-\item{date_name}{(optional) A character specifying the WeStCOMS date_name code that corresponds to the date supplied. This is only required if \code{dir2save = TRUE} (see below) because it is used to define the file name of the object saved. If \code{date_name} is not supplied, then it is calculated from the \code{date} supplied (with a small computational cost if the function is applied many times.)}
-
 \item{tz}{A character vector specifying the time zone. The default is "UTC".}
 
 \item{hours}{A integer vector specifying the hours at which you want to calculate sun angle.}
 
-\item{sun_angle_mat}{(optional) A blank matrix with a row for each hour and a column for each cell, into which sun angles will be added. This is is not required. However, if the function is applied iteratively, supplying a pre-computed matrix will improve computation time.}
+\item{units}{A character input defining the units (\code{"degrees"} or \code{"radians"} in which sun angle is calculated).}
 
-\item{degrees}{A logical input defining whether or not sun angles should be returned in degrees (TRUE) or radians (FALSE).}
+\item{sink_file}{(optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[WeStCOMSExploreR]{date_name}} is used to define file names from inputted dates.}
 
 \item{dir2save}{(optional) A string specifying the directory in which to save sun angle files.}
 
 \item{verbose}{A logical input specifying whether or not messages and a progress bar should be printed to the console. The default is TRUE.}
+}
+\value{
+For each date, the function creates a matrix of hours x mesh cells containing sun angles. Matrices are either returned as a list or  saved, with one file per day (if \code{dir2save} = TRUE).
 }
 \description{
 This function computes sun angle on a given day across an unstructured mesh on the hours supplied. To calculate sun angle, the user must specify a dataframe containing node IDs and associated coordinates across which sun angle is evaluated. (Sun angle, a scalar variable, is computed at nodes for consistency with other WeStCOMS outputs.) Next, the user must specify the date and hours on that date for which to calculate sun angle. If this function is applied iteratively, the user can also specify a pre-computed blank matrix with a row for each hour specified and a column for each mesh cell, but this is not required. Finally, the user needs to specify whether or not sun angle should be returns in degrees, the directory to save files (not required) and whether or not to print messages/progress to the console.
@@ -44,16 +44,15 @@ This function computes sun angle on a given day across an unstructured mesh on t
 \examples{
 
 #### (1) Compute sun angle across a sample of WeStCOMS nodes
-sun_angle <- compute_field_sun_angle(nodexy = WeStCOMSExploreR::dat_nodexy,
-date = as.character("2016-01-01"),
-date_name = 160101,
-tz = "UTC",
-hours = 1:24,
-degrees = TRUE,
-dir2save = NULL,
-verbose = TRUE)
-# Examine sun angle matrix produced:
-str(sun_angle)
+sun_angle <- WeStCOMSExploreR::compute_field_sun_angle(
+  nodexy = WeStCOMSExploreR::dat_nodexy,
+  date = as.character("2016-01-01"),
+  tz = "UTC",
+  hours = 0:23,
+  units = "degrees",
+  dir2save = NULL,
+  verbose = TRUE
+  )
 
 }
 \author{
