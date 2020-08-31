@@ -17,30 +17,29 @@ research, and the need to link hydrodynamic model outputs with
 ecological analyses implemented in `R`. To this end, the package
 includes functions which facilitate the following operations:
 
-  - Acquiring WeStCOMS outputs from the Scottish Association of Marine
+  - Acquiring FVCOM outputs from the Scottish Association of Marine
     Sciences (SAMS) thredds server;
-  - Processing WeStCOMS outputs for integration with `R`;
-  - Computing new fields;
-  - Building the WeStCOMS unstructured mesh(es) as spatial objects and
-    locating cells and coordinates;
+  - Processing FVCOM outputs for integration with `R`;
+  - Computing new hydrodynamic/environmental fields;
+  - Building unstructured mesh(es) as spatial objects and locating cells
+    and coordinates;
   - Extracting and interpolating model predictions;
   - Exploring environmental conditions through space and time with
     statistical summaries and maps;
-  - Validating WeStCOMS predictions with observations, including from
+  - Validating FVCOM predictions with observations, including from
     diverse animal movement datasets;
 
 This README file outlines the steps that are required to set up FVCOM
 outputs for integration with `R` via `WeStCOMSExploreR` and some of the
 main functionality of the package. For further details, please consult
-the vignette.
+the vignette and the reference manual.
 
 ## Installation
 
-You can install the development version of WeStCOMSExploreR from
+You can install the development version of `WeStCOMSExploreR` from
 [GitHub](https://github.com) with:
 
 ``` r
-#### install the development version from github
 devtools::install_github("edwardlavender/WeStCOMSExploreR")
 ```
 
@@ -54,8 +53,8 @@ or 3 dimensional arrays. To integrate these files with `R`, via
 `WeStCOMSExploreR`, follow the workflow detailed below:
 
 1.  Acquire FVCOM files.
-2.  Define an appropriate directory system in which to store
-    environmental arrays extracted from FVCOM files.
+2.  Define a directory system in which to store environmental arrays
+    extracted from FVCOM files.
 3.  Extract and save environmental arrays from FVCOM files into this
     directory system.
 
@@ -64,8 +63,8 @@ or 3 dimensional arrays. To integrate these files with `R`, via
 The first step is to acquire FVCOM files. FVCOM files can be obtained
 from source or from a remote server. For file acquisition from a remote
 server, `WeStCOMSExploreR` includes the `thredds_download()` function
-which is designed to download the full WeStCOMS files from the SAMS
-thredds server.
+which is designed to download WeStCOMS files from the SAMS thredds
+server.
 
 From any FVCOM file, it is necessary to obtain the following:
 
@@ -87,10 +86,7 @@ arrays of interest (see below).
 `WeStCOMSExploreR` is step up to work with environmental arrays rather
 than the full FVCOM files. Hence, it is necessary to define a set of
 directories into which, for each FVCOM file, environmental arrays can be
-extracted and saved. For simplicity, some functions in
-`WeStCOMSExploreR` assume specific directory names for these
-environmental fields. Therefore, the following directory names are
-recommended:
+extracted and saved. The following directory names are recommended:
 
   - ‘tidal\_elevation’, to store tidal elevation (m) arrays;
   - ‘temp’, to store temperature (\(^\circ C\)) arrays;
@@ -100,9 +96,9 @@ recommended:
   - ‘ucurrent\_speed’ and ‘vcurrent\_speed’, to store the \(u\) and
     \(v\) components of current velocity;
   - ‘sun\_angle’, to store sun angle (an optional field which can be
-    computed across a domain by `WeStCOMSExploreR`)
+    computed by `WeStCOMSExploreR`);
 
-To create an appropriate directory system in which to store outputs,
+To create a directory system in which to store outputs,
 `WeStCOMSExploreR` provides the `create_wcdirs()` function.
 
 ### Environmental array conventions
@@ -124,7 +120,7 @@ system. If you have already obtained the full FVCOM files\* (e.g., via
     set of directories (see above). The vignette provides an example
     MATLAB® script to do this.
 
-\*An alternative workflow, rather than obtaining the full WeStCOMS files
+\*An alternative workflow, rather than obtaining the full FVCOM files
 and then extracting environmental arrays, is to directly extract and
 only download specific environmental arrays of interest, which may be
 faster. `WeStCOMSExploreR` may include functionality via `thredds_url()`
@@ -137,23 +133,24 @@ conventions:
     .mat files), providing this format can be loaded into `R`. The
     vignette provides a sample MATLAB® script in which full FVCOM files
     are loaded into MATLAB®, environmental arrays extracted and then
-    into a pre-defined directory system as .mat files. Accordingly, in
-    `WeStCOMSExploreR`, the default function to load files into `R` is
-    `function(con) R.matlab::readMat(con)$data`, but this can be changed
-    by the user as necessary. In any given directory (e.g., ‘/temp’),
-    all of the environmental arrays should be of the same file type.
-  - File dimension. In any given directory, all files should have the
+    saved into a pre-defined directory system as .mat files.
+    Accordingly, in `WeStCOMSExploreR`, the default function to load
+    files into `R` is `function(con) R.matlab::readMat(con)$data`, but
+    this can be changed by the user as necessary. In any given directory
+    (e.g., ‘/temp’), all of the environmental arrays should be of the
+    same file type.
+  - File dimension. In any given directory, all arrays should have the
     same dimension.
   - File name. In each directory, each file is named by a 6 digit code
     (hereafter termed the ‘date\_name’) which provides a unique
     identifier of the date to which that file pertains in the format
-    YYMMDD. The function `date_name()` is used to click between dates
+    YYMMDD. The function `date_name()` is used to flick between dates
     and WeStCOMS file names.
 
-Armed with standard FVCOM objects and environmental arrays, we can now
-proceed to implement functions in WeStCOMSExploreR to build model
-mesh(es), compute new fields, extract model predictions, explore
-environmental conditions and validate model predictions with
+Armed with the necessary standard FVCOM objects and environmental
+arrays, we can now proceed to implement functions in `WeStCOMSExploreR`
+to build model mesh(es), compute new fields, extract model predictions,
+explore environmental conditions and validate model predictions with
 observations.
 
 ## Build unstructured mesh(es)
@@ -163,7 +160,7 @@ unstructured meshes. These include:
 
   - `build_mesh()` - build an unstructured mesh (around nodes or
     elements) from node coordinates and connections as a
-    `SpatialPolygonsDataFrame` in R;
+    `SpatialPolygonsDataFrame`;
   - `find_cells()` - find the mesh cells (for nodes or elements) which
     enclose inputted coordinates;
   - `find_xy()` - find the coordinates of mesh cells (for nodes or
@@ -198,8 +195,8 @@ Some functions are designed to facilitate the extraction of model
 predictions from source files. These include the following:
 
   - `exclude_corrupt()` and `exclude_unavailable()` exclude corrupt and
-    unavailable files from file names vectors;
-  - `extract()` - extract WeStCOMS predictions for multiple
+    unavailable files from file names vector;
+  - `extract()` - extract model predictions for multiple
     dates/hours/layers/mesh cells;
   - `depth_layer_calc()` - calculate the depth of Sigma layers using
     known parameters;
@@ -217,12 +214,12 @@ Some functions are designed to facilitate exploration of environmental
 conditions through space and/or time. These include the following:
 
   - `summarise2dfield()` - compute statistical summaries of
-    environmental conditions across a WeStCOMS layer (through time for a
-    given WeStCOMS file, if applicable);
-  - `plot2dfield()` - visualise environmental conditions across a
-    WeStCOMS layer through space at a specified point in time;
+    environmental conditions across a Sigma layer (through time for a
+    given file, if applicable);
+  - `plot2dfield()` - visualise environmental conditions across a Sigma
+    layer through space at a specified point in time;
   - `explore()` - implement `summarise2dfield()` and `plot2dfield()`
-    across multiple timepoints and/or WeStCOMS files;
+    across multiple timepoints and/or model files;
   - Additional plotting functions are available in the `prettyGraphics`
     package, including `pretty_scape_3d()` and `vis_scape_3d()` which
     produce interactive, 3-dimensional visualisations of
@@ -234,18 +231,18 @@ conditions through space and/or time. These include the following:
 
 `validate()` facilitates the comparison of observed conditions
 (including those from animal movement datasets) with predicted
-conditions to evaluate WeStCOMS skill.
+conditions to evaluate model skill.
 
 ## Future functionality
 
 Future developments to `WeStCOMSExploreR` may include developing the
 following functionality:
 
-  - Relaxing directory and file naming conventions;
+  - Relaxing file naming conventions;
   - Acquiring specific environmental fields from thredds’ servers;
   - Exploring temperature profiles through space and time;
   - Exploring spatiotemporal variation in environmental conditions in
-    3d;
+    3-dimensions;
   - Estimating bottom velocity from vertical profiles;
 
 ## Disclaimer
