@@ -171,7 +171,8 @@ explore_field_2d(
   parallelise = "vars",
   cl = NULL,
   pass2varlist = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  ncols = 50
 )
 
 
@@ -237,8 +238,83 @@ explore_field_2d(
   compute_summary_stats = TRUE,
   summary_stats_param = summary_stats_param,
   cl = NULL,
-  verbose = TRUE)
+  verbose = TRUE,
+  ncols = 50)
 
+
+############################
+############################
+#### Example (3): Parallelise Example (2) over variables:
+
+#### These examples take a bit longer to run (a few seconds)
+\dontrun{
+
+#### Define 'dir2save' to save figures
+# ... which cannot be displayed in parallel.
+field2d$dir2save <- paste0(tempdir(), "/")
+
+#### Implement algorithm
+explore_field_2d(
+  field2d = field2d,
+  dat_ls = dat_ls,
+  match_hour = data.frame(hour = 0:23, index = 1:24),
+  match_layer = NULL,
+  match_mesh_around_nodes = match_mesh_around_nodes,
+  match_mesh_around_elements = match_mesh_around_elements,
+  corrupt = NULL,
+  read_fvcom_ls = read_fvcom_ls,
+  dir2load_ls = dir2load_ls,
+  mesh_around_nodes = dat_mesh_around_nodes,
+  mesh_around_elements = dat_mesh_around_elements,
+  make_plot = TRUE,
+  plot_param = plot_param,
+  png_param = list(),
+  compute_summary_stats = TRUE,
+  summary_stats_param = summary_stats_param,
+  verbose = TRUE,
+  # Add parallelisation arguments:
+  parallelise = "vars",
+  cl = parallel::makeCluster(2L),
+  pass2varlist = list("dat_mesh_around_nodes",
+                      "dat_mesh_around_elements",
+                      "match_mesh_around_nodes",
+                      "match_mesh_around_elements")
+)
+
+#### Examine .png files saved by function
+list.files(field2d$dir2save, "*.png")
+}
+
+
+############################
+############################
+#### Example (4): Parallelise example (3) over dates:
+
+\dontrun{
+explore_field_2d(
+  field2d = field2d,
+  dat_ls = dat_ls,
+  match_hour = data.frame(hour = 0:23, index = 1:24),
+  match_layer = NULL,
+  match_mesh_around_nodes = match_mesh_around_nodes,
+  match_mesh_around_elements = match_mesh_around_elements,
+  corrupt = NULL,
+  read_fvcom_ls = read_fvcom_ls,
+  dir2load_ls = dir2load_ls,
+  mesh_around_nodes = dat_mesh_around_nodes,
+  mesh_around_elements = dat_mesh_around_elements,
+  make_plot = TRUE,
+  plot_param = plot_param,
+  png_param = list(),
+  compute_summary_stats = TRUE,
+  summary_stats_param = summary_stats_param,
+  verbose = TRUE,
+  # Add parallelisation arguments:
+  parallelise = "date_name",
+  cl = parallel::makeCluster(2L),
+  pass2varlist = list()
+)
+}
 
 }
 \seealso{

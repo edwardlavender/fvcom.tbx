@@ -44,15 +44,16 @@ This function computes the sun angle across a spatial mesh on the dates/times sp
 \examples{
 
 #### (1) Compute sun angle across a sample of WeStCOMS nodes
-sun_angle <- fvcom.tbx::compute_field_sun_angle(
-  nodexy = fvcom.tbx::dat_nodexy,
-  date = as.character("2016-01-01"),
-  tz = "UTC",
-  hours = 0:23,
-  units = "degrees",
-  dir2save = NULL,
-  verbose = TRUE
-  )
+sun_angle <-
+  compute_field_sun_angle(
+    nodexy = dat_nodexy,
+    date = as.character("2016-01-01"),
+    tz = "UTC",
+    hours = 0:23,
+    units = "degrees",
+    dir2save = NULL,
+    verbose = TRUE
+    )
 
 }
 \author{

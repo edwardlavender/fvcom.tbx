@@ -133,61 +133,38 @@ This function creates a map of the environmental conditions over space, as resol
 # vector_field = FALSE; this is necessary because temperature is a scalar field.
 # data = dat_temp; this is a pre-processed dataframe which provides a snapshot of
 # ... of surface temperatures for a single timepoint.
-fvcom.tbx::plot_field_2d(coastline = fvcom.tbx::dat_coast_around_oban,
-                              mesh = fvcom.tbx::dat_mesh_around_nodes,
-                              vector_field = FALSE,
-                              data = fvcom.tbx::dat_temp,
-                              xlim = c(fvcom.tbx::dat_area_boundaries$xlim1,
-                                       fvcom.tbx::dat_area_boundaries$xlim2),
-                              ylim = c(fvcom.tbx::dat_area_boundaries$ylim1,
-                                       fvcom.tbx::dat_area_boundaries$ylim2),
-                              #### Use default graphical parameters for the coastline:
-                              # coastline_col = "white",
-                              # coastline_border = "black",
-                              # coastline_lwd = 1,
-                              # coastline_lty = 1,
-                              #### Use default graphical parameters for the mesh
-                              # mesh_border = "lightgrey",
-                              # mesh_lwd = 0.5,
-                              # mesh_lty = 1,
-                              #### Use default graphical parameters for the colour scheme/bar
-                              # ncols = 5000,
-                              # col_fn = viridis::viridis,
-                              # colour_bar_add = TRUE,
-                              # colour_bar_x = c(xlim[2] + c(0.01, 0.02)),
-                              # colour_bar_y = ylim,
-                              #### Default xlab and ylab labels
-                              # xlab = "Longitude (dd)",
-                              # ylab = "Latitude (dd)",
-                              zlab = expression(paste("Temperature (", degree, "C)")),
-                              main = "2016-03-01" #,
-                              #### Default parameters for axes and label positioning
-                              # xlab_line = 2.5,
-                              # ylab_line = -3.5,
-                              # zlab_line = 5,
-                              # main_line = 1,
-                              # axes = TRUE,
-                              # nticks = 10,
-                              # cex = 1.2,
-                              # cex.axis = 1
-)
+xlim <- c(dat_area_boundaries$xlim1,
+          dat_area_boundaries$xlim2)
+ylim <- c(dat_area_boundaries$ylim1,
+          dat_area_boundaries$ylim2)
+plot_field_2d(coastline = dat_coast_around_oban,
+              mesh = dat_mesh_around_nodes,
+              vector_field = FALSE,
+              data = dat_temp,
+              xlim = xlim,
+              ylim = ylim,
+              ncols = 50,
+              colour_bar_add = TRUE,
+              colour_bar_x = c(xlim[2] + c(0.01, 0.02)),
+              colour_bar_y = ylim,
+              zlab = expression(paste("Temperature (", degree, "C)")),
+              main = "2016-03-01"
+              )
 
 #### (2) Plot tidal elevation over space at a snapshot in time.
 ## Example not run simply to minimise CPU required for examples
 \dontrun{
-# Default graphical parameters are used so we can miss those arguments out
-# ... to simplify the function
-fvcom.tbx::plot_field_2d(coastline = fvcom.tbx::dat_coast_around_oban,
-                              mesh = fvcom.tbx::dat_mesh_around_nodes,
-                              vector_field = FALSE,
-                              data = fvcom.tbx::dat_tidal_elevation,
-                              xlim = c(fvcom.tbx::dat_area_boundaries$xlim1,
-                                       fvcom.tbx::dat_area_boundaries$xlim2),
-                              ylim = c(fvcom.tbx::dat_area_boundaries$ylim1,
-                                       fvcom.tbx::dat_area_boundaries$ylim2),
-                              zlab = "Tidal Elevation (m)",
-                              main = "2016-03-01"
-)
+plot_field_2d(coastline = dat_coast_around_oban,
+              mesh = dat_mesh_around_nodes,
+              vector_field = FALSE,
+              data = dat_tidal_elevation,
+              xlim = c(dat_area_boundaries$xlim1,
+                       dat_area_boundaries$xlim2),
+              ylim = c(dat_area_boundaries$ylim1,
+              dat_area_boundaries$ylim2),
+              zlab = "Tidal Elevation (m)",
+              main = "2016-03-01"
+              )
 }
 
 #### (3) Plot a vector field over space at a snapshot in time.
@@ -196,24 +173,23 @@ fvcom.tbx::plot_field_2d(coastline = fvcom.tbx::dat_coast_around_oban,
 # ... we need a mesh around elements. Also note vector_field = TRUE.
 # Note also that the data needs to be supplied as a list comprising udata and vdata
 # ... (i.e. dataframes of the u and v vector components respectively).
-fvcom.tbx::plot_field_2d(coastline = fvcom.tbx::dat_coast_around_oban,
-                              mesh = fvcom.tbx::dat_mesh_around_elements,
-                              vector_field = TRUE,
-                              data = list(udata = fvcom.tbx::dat_uwind_speed,
-                                         vdata = fvcom.tbx::dat_vwind_speed),
-                              xlim = c(fvcom.tbx::dat_area_boundaries$xlim1,
-                                       fvcom.tbx::dat_area_boundaries$xlim2),
-                              ylim = c(fvcom.tbx::dat_area_boundaries$ylim1,
-                                       fvcom.tbx::dat_area_boundaries$ylim2),
-                              # Default graphical parameters for coastline, mesh, colour scheme
-                              # You can adjust the properties of the arrows for vector fields:
-                              arrow_angle = 30,
-                              arrow_scale = 0.0001,
-                              arrow_length = 0.01,
-                              arrow_lwd = 0.5,
-                              arrow_lty = 1,
-                              zlab = "Wind Speed (m)",
-                              main = "2016-03-01"
+plot_field_2d(coastline = dat_coast_around_oban,
+              mesh = dat_mesh_around_elements,
+              vector_field = TRUE,
+              data = list(udata = dat_uwind_speed,
+                           vdata = dat_vwind_speed),
+              xlim = c(dat_area_boundaries$xlim1,
+                       dat_area_boundaries$xlim2),
+              ylim = c(dat_area_boundaries$ylim1,
+                       dat_area_boundaries$ylim2),
+              # You can adjust the properties of the arrows for vector fields:
+              arrow_angle = 30,
+              arrow_scale = 0.0001,
+              arrow_length = 0.01,
+              arrow_lwd = 0.5,
+              arrow_lty = 1,
+              zlab = "Wind Speed (m)",
+              main = "2016-03-01"
 )
 
 }
