@@ -7,15 +7,15 @@
 
 <!-- badges: end -->
 
-`fvcom.tbx` is an `R` package which provides tools for the
-exploration of unstructured, prism-based hydrodynamic model outputs
-(i.e. from the Finite Coastal Ocean Volume Model, FVCOM) in `R`. The
-package has been designed specifically for the West Coast of Scotland
-Coastal Modelling System (WeStCOMS), which implements FVCOM. Package
-development has been motivated by the requirements of ecological
-research, and the need to link hydrodynamic model outputs with
-ecological analyses implemented in `R`. To this end, the package
-includes functions which facilitate the following operations:
+`fvcom.tbx` is an `R` toolbox for the exploration of unstructured,
+prism-based hydrodynamic model outputs (i.e. from the Finite Coastal
+Ocean Volume Model, FVCOM) in `R`. The package has been designed
+specifically for the West Coast of Scotland Coastal Modelling System
+(WeStCOMS), which implements FVCOM. Package development has been
+motivated by the requirements of ecological research, and the need to
+link hydrodynamic model outputs with ecological analyses implemented in
+`R`. To this end, the package includes functions which facilitate the
+following operations:
 
   - Acquiring FVCOM outputs from the Scottish Association of Marine
     Sciences (SAMS) thredds server;
@@ -30,9 +30,9 @@ includes functions which facilitate the following operations:
     diverse animal movement datasets;
 
 This README file outlines the steps that are required to set up FVCOM
-outputs for integration with `R` via `fvcom.tbx` and some of the
-main functionality of the package. For further details, please consult
-the vignette and the reference manual.
+outputs for integration with `R` via `fvcom.tbx` and some of the main
+functionality of the package. For further details, please consult the
+vignette and the reference manual.
 
 ## Installation
 
@@ -62,9 +62,8 @@ or 3-dimensional arrays. To integrate these files with `R`, via
 
 The first step is to acquire FVCOM files. FVCOM files can be obtained
 from source or from a remote server. For file acquisition from a remote
-server, `fvcom.tbx` includes the `thredds_download()` function
-which is designed to download WeStCOMS files from the SAMS thredds
-server.
+server, `fvcom.tbx` includes the `thredds_download()` function which is
+designed to download WeStCOMS files from the SAMS thredds server.
 
 From any FVCOM file, it is necessary to obtain the following:
 
@@ -83,10 +82,10 @@ arrays of interest (see below).
 
 ### Directory conventions
 
-`fvcom.tbx` is step up to work with environmental arrays rather
-than the full FVCOM files. Hence, it is necessary to define a set of
-directories into which, for each FVCOM file, environmental arrays can be
-extracted and saved. The following directory names are recommended:
+`fvcom.tbx` is step up to work with environmental arrays rather than the
+full FVCOM files. Hence, it is necessary to define a set of directories
+into which, for each FVCOM file, environmental arrays can be extracted
+and saved. The following directory names are recommended:
 
   - ‘tidal\_elevation’, to store tidal elevation (m) arrays;
   - ‘temp’, to store temperature (\(^\circ C\)) arrays;
@@ -98,8 +97,8 @@ extracted and saved. The following directory names are recommended:
   - ‘sun\_angle’, to store sun angle (an optional field which can be
     computed by `fvcom.tbx`);
 
-To create a directory system in which to store outputs,
-`fvcom.tbx` provides the `create_wcdirs()` function.
+To create a directory system in which to store outputs, `fvcom.tbx`
+provides the `create_wcdirs()` function.
 
 ### Environmental array conventions
 
@@ -123,22 +122,21 @@ system. If you have already obtained the full FVCOM files\* (e.g., via
 \*An alternative workflow, rather than obtaining the full FVCOM files
 and then extracting environmental arrays, is to directly extract and
 only download specific environmental arrays of interest, which may be
-faster. `fvcom.tbx` may include functionality via `thredds_url()`
-and `thredds_extract()` functions to implement this approach in future.
+faster. `fvcom.tbx` may include functionality via `thredds_url()` and
+`thredds_extract()` functions to implement this approach in future.
 
-For environmental arrays, `fvcom.tbx` assumes the following
-conventions:
+For environmental arrays, `fvcom.tbx` assumes the following conventions:
 
   - File type. Environmental arrays can be saved in any format (e.g., as
     .mat files), providing this format can be loaded into `R`. The
     vignette provides a sample MATLAB® script in which full FVCOM files
     are loaded into MATLAB®, environmental arrays extracted and then
     saved into a pre-defined directory system as .mat files.
-    Accordingly, in `fvcom.tbx`, the default function to load
-    files into `R` is `function(con) R.matlab::readMat(con)$data`, but
-    this can be changed by the user as necessary. In any given directory
-    (e.g., ‘/temp’), all of the environmental arrays should be of the
-    same file type.
+    Accordingly, in `fvcom.tbx`, the default function to load files into
+    `R` is `function(con) R.matlab::readMat(con)$data`, but this can be
+    changed by the user as necessary. In any given directory (e.g.,
+    ‘/temp’), all of the environmental arrays should be of the same
+    file type.
   - File dimension. In any given directory, all arrays should have the
     same dimension.
   - File name. In each directory, each file is named by a 6 digit code
@@ -148,8 +146,8 @@ conventions:
     and WeStCOMS file names.
 
 Armed with the necessary standard FVCOM objects and environmental
-arrays, we can now proceed to implement functions in `fvcom.tbx`
-to build model mesh(es), compute new fields, extract model predictions,
+arrays, we can now proceed to implement functions in `fvcom.tbx` to
+build model mesh(es), compute new fields, extract model predictions,
 explore environmental conditions and validate model predictions with
 observations.
 
@@ -235,8 +233,8 @@ conditions to evaluate model skill.
 
 ## Future functionality
 
-Future developments to `fvcom.tbx` may include developing the
-following functionality:
+Future developments to `fvcom.tbx` may include developing the following
+functionality:
 
   - Relaxing file naming conventions;
   - Acquiring specific environmental fields from thredds’ servers;
@@ -247,8 +245,8 @@ following functionality:
 
 ## Disclaimer
 
-`fvcom.tbx` is a new package at an early stage of evolution.
-Please report issues, comments or suggestions\!
+`fvcom.tbx` is a new package at an early stage of evolution. Please
+report issues, comments or suggestions\!
 
 ## Links
 
