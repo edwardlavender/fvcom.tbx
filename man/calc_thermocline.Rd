@@ -20,8 +20,9 @@ Thermocline strength is approximated as the difference in temperature between th
 }
 \examples{
 #### Step 1: Read example temperature file into a list
-path <- system.file("WeStCOMS_files/temp/",
+path <- system.file("WeStCOMS_files/temp",
                     package = "fvcom.tbx", mustWork = TRUE)
+
 file <- list.files(path, full.names = TRUE)[1]
 l <- list(R.matlab::readMat(file)$data)
 str(l)

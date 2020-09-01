@@ -62,8 +62,9 @@ dat$mesh_ID <- dat_nodexy[1:nrow(dat), "node_id"]
 match_hour <- data.frame(hour = 0:1, index = 1:2)
 match_mesh <- data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
 # Define path
-path <- system.file("WeStCOMS_files/tidal_elevation/",
+path <- system.file("WeStCOMS_files/tidal_elevation",
                     package = "fvcom.tbx", mustWork = TRUE)
+path <- paste0(path, "/")
 # Implement extract() for a 2-dimensional variable
 ext <- extract(dat = dat,
                match_hour = match_hour,
@@ -77,8 +78,9 @@ ext <- extract(dat = dat,
 dat$layer <- 1
 # Define match_layer if necessary
 # Define path
-path <- system.file("WeStCOMS_files/temp/",
+path <- system.file("WeStCOMS_files/temp",
                     package = "fvcom.tbx", mustWork = TRUE)
+path <- paste0(path, "/")
 # Implement extract()
 ext <- extract(dat = dat,
                match_hour = match_hour,

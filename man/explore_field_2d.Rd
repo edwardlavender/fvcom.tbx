@@ -114,8 +114,9 @@ match_mesh_around_elements <- NULL # not needed in this example
 read_fvcom_ls <- list(temp = function(con) R.matlab::readMat(con)$data)
 
 #### Define a NAMED list of directories used to load files
-root <- system.file("WeStCOMS_files/",
+root <- system.file("WeStCOMS_files",
                      package = "fvcom.tbx", mustWork = TRUE)
+root <- paste0(root, "/")
 dir2load_ls <- list(temp = paste0(root, "temp/"))
 
 #### Define mesh(es)

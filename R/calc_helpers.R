@@ -5,8 +5,9 @@
 #' @return The function returns a 2-dimensional array of the thermocline strength for each hour and each node in the original array.
 #' @examples
 #' #### Step 1: Read example temperature file into a list
-#' path <- system.file("WeStCOMS_files/temp/",
+#' path <- system.file("WeStCOMS_files/temp",
 #'                     package = "fvcom.tbx", mustWork = TRUE)
+#'
 #' file <- list.files(path, full.names = TRUE)[1]
 #' l <- list(R.matlab::readMat(file)$data)
 #' str(l)
@@ -42,8 +43,9 @@ calc_thermocline <- function(l){
 #' @examples
 #' #### Step 1: Read example u and v files into a list
 #' # Define the path to the u and v files:
-#' path <- system.file("WeStCOMS_files/",
+#' path <- system.file("WeStCOMS_files",
 #'                     package = "fvcom.tbx", mustWork = TRUE)
+#' path <- paste0(path, "/")
 #' path_u <- paste0(path, "uwind_speed")
 #' path_v <- paste0(path, "vwind_speed")
 #' # Define the source files:
@@ -83,8 +85,9 @@ calc_speed <- function(l){
 #' @examples
 #' #### Step 1: Read example u and v files into a list
 #' # Define the path to the u and v files:
-#' path <- system.file("WeStCOMS_files/",
+#' path <- system.file("WeStCOMS_files",
 #'                     package = "fvcom.tbx", mustWork = TRUE)
+#' path <- paste0(path, "/")
 #' path_u <- paste0(path, "uwind_speed")
 #' path_v <- paste0(path, "vwind_speed")
 #' # Define the source files:

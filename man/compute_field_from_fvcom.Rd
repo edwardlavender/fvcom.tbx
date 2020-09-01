@@ -43,8 +43,9 @@ This function computes new hydrodynamic fields from FVCOM outputs, such as therm
 }
 \examples{
 #### Define overall path from which to load FVCOM files
-path <- system.file("WeStCOMS_files/",
+path <- system.file("WeStCOMS_files",
                     package = "fvcom.tbx", mustWork = TRUE)
+path <- paste0(path, "/")
 
 #### Example (1): Compute a new field derived from only one type of FVCOM file
 # ... using default options.

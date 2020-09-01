@@ -43,8 +43,9 @@
 #' #### Define other function inputs
 #' h <- dat_h; colnames(h) <- c("ID", "h")
 #' match_mesh <- data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
-#' dir2load <- system.file("WeStCOMS_files/tidal_elevation/",
+#' dir2load <- system.file("WeStCOMS_files/tidal_elevation",
 #'                         package = "fvcom.tbx", mustWork = TRUE)
+#' dir2load <- paste0(dir2load, "/")
 #'
 #' #### Example (1) Compute layer depths for all layers using default options
 #' dol1 <- depth_from_unknown(dat = dat,

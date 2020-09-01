@@ -52,8 +52,9 @@
 #' raster::crs(dat_mesh_around_nodes) <- proj
 #'
 #' #### Define path from which to load predictions:
-#' path <-
-#'  paste0(system.file("WeStCOMS_files/temp", package = "fvcom.tbx", mustWork = TRUE), "/")
+#' path <- system.file("WeStCOMS_files/temp",
+#'                     package = "fvcom.tbx", mustWork = TRUE)
+#' path <- paste0(path, "/")
 #'
 #' #### Implement validation:
 #' validation <-

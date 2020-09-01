@@ -54,7 +54,7 @@ exclude_corrupt <- function(dat, corrupt = NULL){
 #' @examples
 #'
 #' \dontrun{
-#' path <- system.file("WeStCOMS_files/tidal_elevation/",
+#' path <- system.file("WeStCOMS_files/tidal_elevation",
 #'                     package = "fvcom.tbx", mustWork = TRUE)
 #' exclude_unavailable(data.frame(date_name = c(160301, 160302, 160303)), path)
 #' exclude_unavailable(data.frame(date_name = c(160301, 160302, 160303), depth = c(60,  65, 90)), path)

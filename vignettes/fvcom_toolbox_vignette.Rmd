@@ -102,13 +102,19 @@ The size of FVCOM files makes reading them in and out of programmes challenging.
   
 To create an appropriate directory system in which to store outputs, `fvcom.tbx` provides the `create_wcdirs()` function:
 ```{r, warning = FALSE}
-# Define a vector of environmental variables for which to create folders in which to store environmental arrays:
-vars <- c("tidal_elevation", "uwind_speed", "vwind_speed", "temp", "salinity", "uvelocity", "vvelocity")
-# Create a folder for each environmental variable in a a specified directory (dir):
-WeStCOMSpath <- system.file("WeStCOMS_files/", package = "fvcom.tbx", mustWork = TRUE)
+# Define directory in which to store folders with environmental arrays:
+WeStCOMSpath <- system.file("WeStCOMS_files", package = "fvcom.tbx", mustWork = TRUE)
+WeStCOMSpath <- paste0(WeStCOMSpath, "/")
+# These folders are already present with example datasets:
+list.files(WeStCOMSpath)
+
+# Define a vector of other environmental variables for which to create folders; e.g.: 
+vars <- c("salinity", "uvelocity", "vvelocity")
+
+# Create additional folders:
 fvcom.tbx::create_wcdirs(dir = WeStCOMSpath, 
-                             vars = vars
-                             )
+                         vars = vars
+                         )
 # Check that we have successfully created new folders in the specified path for each variable:
 vars %in% list.files(WeStCOMSpath)
 ```
@@ -249,12 +255,12 @@ In the same way, we can build and plot the mesh around elements. This should be 
 ```{r, warning = FALSE, fig.cap = "A sample of the WeStCOMS mesh around elements.", fig.height = 8, fig.width = 8}
 # Use build_mesh to define a mesh around elements (i.e. based on nodes): 
 dat_mesh_around_elements <- fvcom.tbx::build_mesh(nodexy = dat_nodexy, 
-                                                     trinodes = dat_trinodes,
-                                                     mesh_type = "node",
-                                                     proj4string = proj, 
-                                                     cl = cl,
-                                                     pass2varlist = list("dat_nodexy", "dat_trinodes", "proj")
-                                                     )
+                                                  trinodes = dat_trinodes,
+                                                  mesh_type = "node",
+                                                  proj4string = proj, 
+                                                  cl = cl,
+                                                  pass2varlist = list("dat_nodexy", "dat_trinodes", "proj")
+                                                  )
 
 # Crop mesh to study area: 
 dat_mesh_around_elements <- raster::crop(dat_mesh_around_elements, extent_study_site)
@@ -453,8 +459,9 @@ Next, we need to define ensure that `extract()` understands the relationship bet
 match_hour <- data.frame(hour = 0:1, index = 1:2)
 match_mesh <- data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
 # Define path from which to load files 
-path <- system.file("WeStCOMS_files/temp/",
+path <- system.file("WeStCOMS_files/temp",
                     package = "fvcom.tbx", mustWork = TRUE)
+path <- paste0(path, "/")
 ```
 
 Now, we can implement `extract()` to add temperature predictions to our dataframe. Since we are working with only one file, we will implement the algorithm in sequence but, for more files, we probably want to implement the algorithm in parallel. 
