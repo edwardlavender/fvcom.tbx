@@ -1,36 +1,36 @@
 #' @title Explore 2-dimensional FVCOM fields
-#' @description For multiple variables, days and locations, this function extracts model predictions and computes summary statistics and/or creates maps of environmental conditions. The user passes the function a dataframe specifying the variables to be included and their properties alongside various other arguments for data extraction and to customise the summary statistics and plots that are produced. For each variable, the function loads in the FVCOM arrays for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of WeStCOMS files.
+#' @description For multiple variables, days and locations, this function extracts model predictions and computes summary statistics and/or creates maps of environmental conditions. The user passes the function a dataframe specifying the variables to be included and their properties alongside various other arguments for data extraction and to customise the summary statistics and plots that are produced. For each variable, the function loads in the FVCOM arrays for each date in turn, computes summary statistics and/or plots a map for the hours specified. Iterative loading in of the files is necessary given the size/memory requirements of FVCOM arrays.
 #'
 #' @param field2d A dataframe that defines the variables for which model outputs will be explored. This must contain the following columns: 'cov2d', a character vector of variable names; 'mesh_type', a character vector of the mesh type ("element" or "node") across which each variable is structured; 'extension', a character vector which defines the extension of the FVCOM arrays for that variable (see \code{\link[WeStCOMSExploreR]{extract}}); and 'vector_field', a logical vector defining whether or not that variable is a scalar (FALSE) or vector field (TRUE). To save plots directly to file (see \code{make_plot} and \code{png_param}, below), the dataframe should contain a column 'dir2save' which specifies the folder in which all the plots for each variable will be saved.
 #' @param dat_ls A named list of dataframes, with one element for each \code{field2d$cov2d}. Each element should comprise a dataframe which defines the FVCOM file date names, hours, and mesh (node or element) IDs for model predictions will be extracted (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in WeStCOMS files (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in WeStCOMS files (i.e. the column) which corresponds to each layer (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param match_mesh_around_nodes A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each node cell (see \code{\link[WeStCOMSExploreR]{extract}}). This may be required if \code{field2d} contains variables that are resolved at nodes.
-#' @param match_mesh_around_elements A dataframe with two columns named 'mesh' and 'index' which defines the index in WeStCOMS files (columns or sheets for 2d and 3d arrays respectively) which corresponds to each element cell (see \code{\link[WeStCOMSExploreR]{extract}}). This is may be required if \code{field2d} contains variables that are resolved at elements.
+#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param match_mesh_around_nodes A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2- and 3-dimensional arrays respectively) which corresponds to each node cell (see \code{\link[WeStCOMSExploreR]{extract}}). This may be required if \code{field2d} contains variables that are resolved at nodes.
+#' @param match_mesh_around_elements A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2- and 3-dimensional arrays respectively) which corresponds to each element cell (see \code{\link[WeStCOMSExploreR]{extract}}). This is may be required if \code{field2d} contains variables that are resolved at elements.
 #' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param read_fvcom_ls A named list of functions, with one element for each \code{field2d$cov2d}. Each element should contain a function that is used to load files for that variable (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param dir2load_ls A named list of directories, with one element for each \code{field2d$cov2d}. Each element should be a string (for scalar fields) or a vector of strings (for vector fields) that defines the directory from which to load model files (see \code{\link[WeStCOMSExploreR]{extract}}, which is used to load files). For vector fields, the first string should specify the directory of the u component files and the second string should specify the directory of the v component files.
 #' @param mesh_around_nodes A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that surrounds nodes. This is required for plotting variables that are resolved at nodes.
 #' @param mesh_around_elements A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that surrounds elements. This is required for plotting variables that are resolved at elements.
 #' @param make_plot A logical input defining whether or not to make plots. Plots are either displayed or saved to file (if \code{field2d} contains a column named 'dir2save').
-#' @param plot_param A list of parameters required to make plots. These parameters either wrap around, or are passed as arguments, to \code{\link[WeStCOMSExploreR]{plot2dfield}}. The list needs to contain elements with the following names: 'hours4plots', 'par_op', 'coastline', 'zlab', 'zlab_line' and 'vector_scale'. 'hours4plots' is a numeric vector of all the hours for which to create plots on a given day. 'par_op' is an output from \code{\link[graphics]{par}}. 'coastline' is an object used to plot coastline (see \code{\link[WeStCOMSExploreR]{plot2dfield}}); and 'zlab', 'zlab_line' and 'vector_scale' are vectors that define the labels on the z axis, their distance from the z axis and the scale of the arrows used to plot vectors, for each inputted variable. Other graphical parameters are not variable specific and passed as additional arguments outside of this list (see \code{...}).
+#' @param plot_param A list of parameters required to make plots. These parameters either wrap around, or are passed as arguments, to \code{\link[WeStCOMSExploreR]{plot_field_2d}}. The list needs to contain elements with the following names: 'hours4plots', 'par_op', 'coastline', 'zlab', 'zlab_line' and 'vector_scale'. 'hours4plots' is a numeric vector of all the hours for which to create plots on a given day. 'par_op' is an output from \code{\link[graphics]{par}}. 'coastline' is an object used to plot coastline (see \code{\link[WeStCOMSExploreR]{plot_field_2d}}); and 'zlab', 'zlab_line' and 'vector_scale' are vectors that define the labels on the z axis, their distance from the z axis and the scale of the arrows used to plot vectors, for each inputted variable. Other graphical parameters are not variable specific and passed as additional arguments outside of this list (see \code{...}).
 #' @param png_param A named list of parameters passed to \code{\link[grDevices]{png}} to customise plots saved as .png files.
 #' @param compute_summary_stats A logical input defining whether or not summary statistics should be calculated.
-#' @param summary_stats_param A list of parameters necessary to calculate summary statistics. This list should contain elements with the following names: 'hours4stats', 'row_specific' and 'funs' (see \code{\link[WeStCOMSExploreR]{summarise2dfield}}).
+#' @param summary_stats_param A list of parameters necessary to calculate summary statistics. This list should contain elements with the following names: 'hours4stats', 'row_specific' and 'funs' (see \code{\link[WeStCOMSExploreR]{summarise_field_2d}}).
 #' @param parallelise A character specifying whether or not to parallelise the algorithm over variables (\code{"vars"}) or dates (\code{"date_name"}). This is only applicable if a cluster is supplied (see below).
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
-#' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This is required if you specify some function arguments via objects, rather than directly. These objects must be located in the global environment.
+#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
-#' @param ... Additional graphical parameters that can be passed to \code{\link[WeStCOMSExploreR]{plot2dfield}}. These affect all plots.
+#' @param ... Additional graphical parameters that can be passed to \code{\link[WeStCOMSExploreR]{plot_field_2d}}. These affect all plots.
 #'
 #' @return If \code{make_plot = TRUE}, the function will produce plots, which are either saved to file or displayed (the latter is only possible if \code{cl = NULL}). To save plots, \code{field2d} must contain a column named 'dir2save'. Plots are saved in this directory with pre-defined file names pertaining to the date and hour that they represent. The list \code{png_param} can be used to customise the saved images. If \code{compute_summary_stats = TRUE}, the function will also return a list of dataframes, with one element for each environmental variable. Each dataframe the following columns: a date, hour and a column for each summary statistic specified. This list is returned to the environment.
 #'
-#' @seealso \code{\link[WeStCOMSExploreR]{build_mesh}}, \code{\link[WeStCOMSExploreR]{extract}}, \code{\link[WeStCOMSExploreR]{summarise2dfield}}, \code{\link[WeStCOMSExploreR]{plot2dfield}}
+#' @seealso \code{\link[WeStCOMSExploreR]{build_mesh}}, \code{\link[WeStCOMSExploreR]{extract}}, \code{\link[WeStCOMSExploreR]{summarise_field_2d}}, \code{\link[WeStCOMSExploreR]{plot_field_2d}}
 #'
 #' @examples
 #' ############################
 #' ############################
-#' #### Example (1): Implement explore() with a single variable
+#' #### Example (1): Implement explore_field_2d() with a single variable
 #'
 #' #### Define field2d, a dataframe which defines variables and details
 #' # ... needed for extraction.
@@ -100,8 +100,8 @@
 #' # parallelise <- "vars"
 #' # verbose <- TRUE
 #'
-#' #### Implement explore() for a single variable
-#' explore(
+#' #### Implement explore_field_2d() for a single variable
+#' explore_field_2d(
 #'   field2d = field2d,
 #'   dat_ls = dat_ls,
 #'   match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -127,7 +127,7 @@
 #'
 #' ############################
 #' ############################
-#' #### Example (2): Implement explore() for multiple variables
+#' #### Example (2): Implement explore_field_2d() for multiple variables
 #'
 #' #### Redefine field2d, a dataframe which defines variables and details needed for extraction.
 #' field2d <- data.frame(cov2d = c("temp", "tidal_elevation", "wind_velocity"),
@@ -169,7 +169,7 @@
 #'                   vector_scale = c(NA, NA, 20)
 #' )
 #'
-#' explore(
+#' explore_field_2d(
 #'   field2d = field2d,
 #'   dat_ls = dat_ls,
 #'   match_hour = data.frame(hour = 0:23, index = 1:24),
@@ -195,9 +195,9 @@
 
 ################################################
 ################################################
-#### explore
+#### explore_field_2d
 
-explore <-
+explore_field_2d <-
   function(
     field2d,
     dat_ls,
@@ -229,7 +229,7 @@ explore <-
     #### Initialisation
     if(verbose) {
       t1 <- Sys.time()
-      cat("WeStCOMSExploreR::explore() called...\n")
+      cat("WeStCOMSExploreR::explore_field_2d() called...\n")
       cat("Step 1: Set up...\n")
     }
 
@@ -334,7 +334,7 @@ explore <-
     # Define varlist
     if(!is.null(cl1) | !is.null(cl2)){
       varlist_fns <- list("extract",
-                          "plot2dfield")
+                          "plot_field_2d")
       varlist <- append(varlist_fns, pass2varlist)
     }
     # Cluster export
@@ -509,7 +509,7 @@ explore <-
                     if(verbose) cat(paste0("On hour ", hour, "...\n"))
 
                     #### Extract data required (i.e. for specific hour)
-                    # ... and create 'data' object for plot2dfield function.
+                    # ... and create 'data' object for plot_field_2d function.
 
                     # Note that we have already ensured that mesh ids and datsbt
                     # ... correspond to each other by using cols2extract
@@ -532,7 +532,7 @@ explore <-
                     plot_param$par_op
 
                     # Plot graph
-                    plot2dfield(coastline = plot_param$coastline,
+                    plot_field_2d(coastline = plot_param$coastline,
                                 mesh = mesh,
                                 vector_field = vector_field,
                                 data = data,
@@ -586,7 +586,7 @@ explore <-
     if(verbose){
       t2 <- Sys.time()
       tdiff <- round(difftime(t2, t1))
-      cat(paste0("WeStCOMSExploreR::explore() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+      cat(paste0("WeStCOMSExploreR::explore_field_2d() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
     }
 
     #### Return outputs

@@ -17,11 +17,11 @@
 #' @param file_name A character vector of file name(s) which specify the files to be downloaded. These should contain a unique identifier for each file (for example, a date_name, see \code{\link[WeStCOMSExploreR]{date_name}}) but they do not need to match file names precisely.
 #' @param pattern A character string containing a regular expression which is matched to identify files (e.g., \code{".nc"}).
 #' @param server_catalog A character that defines the URL of the catalog.
-#' @param destfile A character that defines the directory in which to save file(s).
+#' @param dest_file A character that defines the directory in which to save file(s).
 #' @param verbose A logical input that defines whether or not to print messages to the console. These can be useful for monitoring progress.
 #' @param prompt A logical input that defines whether or not to prompt the user before each download.
 #' @param ... Additional arguments passed to \code{\link[utils]{download.file}}.
-#' @details To download files, the function first identifies all files on \code{server_catelog} that match \code{pattern}. For each inputted \code{file_name}, the function identifies the full file name and the necessary URL to download that file from the server (a different URL from the catalog) and then downloads the file. If any files cannot be downloaded, the function will print an error message but continue to attempt to download the next file, until there are no remaining files. Note the following: (a) the function is only designed to query a single catalog at a time (i.e., is not recursive, so it will not identify all files on a thredds server, only the specific files in \code{server_catalog}; (b) files are large (usually ~ 700 Mb) and are downloaded in sequence; and (c) the function requires the xml2 and rvest package to be installed.
+#' @details To download files, the function first identifies all files on \code{server_catalog} that match \code{pattern}. For each inputted \code{file_name}, the function identifies the full file name and the necessary URL to download that file from the server (a different URL from the catalog) and then downloads the file. If any files cannot be downloaded, the function will print an error message but continue to attempt to download the next file, until there are no remaining files. Note the following: (a) the function is only designed to query a single catalog at a time (i.e., is not recursive, so it will not identify all files on a thredds server, only the specific files in \code{server_catalog}; (b) files are large (usually ~ 700 Mb) and are downloaded in sequence; and (c) the function requires the xml2 and rvest package to be installed.
 #' @return The function downloads specified files from the SAMS thredds server (https://thredds.sams.ac.uk/thredds/) where WeStCOMS outputs are located.
 #' @examples
 #' \dontrun{
@@ -32,7 +32,7 @@
 #'                       server = paste0("https://thredds.sams.ac.uk/thredds/",
 #'                                       "catalog/scoats-westcoms1/Archive/",
 #'                                       "netcdf_2019/catalog.html"),
-#'                                       destfile = tempdir(),
+#'                                       dest_file = tempdir(),
 #'                                       verbose = TRUE,
 #'                                       prompt = TRUE)
 #' }
@@ -46,7 +46,7 @@ thredds_download <-
     file_name,
     pattern = ".nc",
     server_catalog,
-    destfile,
+    dest_file,
     verbose = TRUE,
     prompt = FALSE,...){
 
@@ -64,9 +64,9 @@ thredds_download <-
                         "https://thredds.sams.ac.uk/thredds/fileServer",
                         server_file)
 
-    ## Check destfile is a directory
-    if(!dir.exists(destfile)) stop("Input to 'destfile' is not a directory in existence.")
-    if(substr(destfile, nchar(destfile), nchar(destfile)) != "/") destfile <- paste0(destfile, "/")
+    ## Check dest_file is a directory
+    if(!dir.exists(dest_file)) stop("Input to 'dest_file' is not a directory in existence.")
+    if(substr(dest_file, nchar(dest_file), nchar(dest_file)) != "/") dest_file <- paste0(dest_file, "/")
 
     #### Extract all file names and html links from server_catalog
     if(verbose) cat("Step 1: Querying server_catalog to identify files... \n")
@@ -112,7 +112,7 @@ thredds_download <-
         ## Attempt to download file
         try_download <-
           tryCatch(utils::download.file(url = url,
-                                        destfile = paste0(destfile, name)),
+                                        dest_file = paste0(dest_file, name)),
                    error = function(e) return(e)
           )
 

@@ -6,7 +6,7 @@
 #' @param mesh_type A character specifying the mesh type to be built. There are two options: \code{"node"} or \code{"element"}. \code{mesh_type = "node"} builds a mesh based on nodes (i.e. around elements). This is useful for plotting conditions resolved at elements. \code{mesh_type = "element"} builds a mesh around nodes based on elements. This is useful for plotting conditions resolved at nodes.
 #' @param proj4string A projection string of class \code{\link[sp]{CRS-class}}. The World Geodetic System 84 (WGS84), i.e. \code{proj4string = sp::CRS(as.character("+init=epsg:4326"))}, is the default.
 #' @param cl A cluster object created by \code{\link[parallel]{makeCluster}}. This is required if you want to run the algorithm in parallel, which can improve computation time (especially for large meshes). If supplied, the connection to the cluster is stopped within the function.
-#' @param pass2varlist A character vector of names of objects to export. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This may be required if \code{cl} is supplied. Exported objects must be located in the global environment.
+#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.
 #'
 #' @return An SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}). Each polygon has an ID corresponding to the ID of the node or element which is surrounds, as supplied by the nodexy or trinodes dataframe respectively.
 #'

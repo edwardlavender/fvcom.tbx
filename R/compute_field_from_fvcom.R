@@ -6,7 +6,7 @@
 #' @param read_fvcom A function which is used to load environmental arrays (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param calc A function which, as input, takes a list of the array(s) that are required to compute a new field for a particular day and computes this new field. See \code{\link[WeStCOMSExploreR]{calc_thermocline}}, \code{\link[WeStCOMSExploreR]{calc_speed}} and \code{\link[WeStCOMSExploreR]{calc_direction}} for examples. A custom function can be provided in the same vein.
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
-#' @param varlist A character vector of names of objects to export. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This may be required if \code{cl} is supplied. Exported objects must be located in the global environment.
+#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.
 #' @param dir2save (optional) A string which defines the directory in which to save files. If provided, for each source file/file combination, the function will save a .rds file with the specified name in the specified directory (see \code{\link[base]{saveRDS}}). If not provided, the function will return a list of arrays, with one element for each file/file combination.
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
 #' @param ... Other arguments passed to the user-supplied \code{calc} function.
@@ -84,7 +84,7 @@
 #'                            read_fvcom = function(con) R.matlab::readMat(con)$data,
 #'                            calc = calc_thermocline_strength_helper,
 #'                            cl = parallel::makeCluster(2L),
-#'                            varlist = "calc_thermocline_strength_helper")
+#'                            pass2varlist = "calc_thermocline_strength_helper")
 #' utils::str(thermoline_ls)
 #'
 #' #### Example (4) Compute fields requiring multiple input files for each day
@@ -121,7 +121,7 @@ compute_field_from_fvcom <-
     read_fvcom = function(con) R.matlab::readMat(con)$data,
     calc,
     cl = NULL,
-    varlist = NULL,
+    pass2varlist = NULL,
     dir2save = NULL,
     verbose = TRUE,...){
 
@@ -147,12 +147,12 @@ compute_field_from_fvcom <-
     #### Loop over every file, load, define new field and save (if requested):
     if(verbose){
       if(is.null(dir2save)){
-        cat("Step 2/2: Computing and returning thermocline fields...\n")
+        cat("Step 2/2: Computing and returning environmental arrays...\n")
       } else {
-        cat("Step 2/2: Computing and saving thermocline fields...\n")
+        cat("Step 2/2: Computing and saving environmental arrays...\n")
       }
     }
-    if(!is.null(cl)) parallel::clusterExport(cl = cl, varlist = varlist)
+    if(!is.null(cl)) parallel::clusterExport(cl = cl, varlist = pass2varlist)
     lout <-
       pbapply::pblapply(1:length(source_file), cl = cl, function(i){
 

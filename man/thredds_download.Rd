@@ -8,7 +8,7 @@ thredds_download(
   file_name,
   pattern = ".nc",
   server_catalog,
-  destfile,
+  dest_file,
   verbose = TRUE,
   prompt = FALSE,
   ...
@@ -21,7 +21,7 @@ thredds_download(
 
 \item{server_catalog}{A character that defines the URL of the catalog.}
 
-\item{destfile}{A character that defines the directory in which to save file(s).}
+\item{dest_file}{A character that defines the directory in which to save file(s).}
 
 \item{verbose}{A logical input that defines whether or not to print messages to the console. These can be useful for monitoring progress.}
 
@@ -36,7 +36,7 @@ The function downloads specified files from the SAMS thredds server (https://thr
 This function is used to download FVCOM outputs from the SAMS thredds server.
 }
 \details{
-To download files, the function first identifies all files on \code{server_catelog} that match \code{pattern}. For each inputted \code{file_name}, the function identifies the full file name and the necessary URL to download that file from the server (a different URL from the catalog) and then downloads the file. If any files cannot be downloaded, the function will print an error message but continue to attempt to download the next file, until there are no remaining files. Note the following: (a) the function is only designed to query a single catalog at a time (i.e., is not recursive, so it will not identify all files on a thredds server, only the specific files in \code{server_catalog}; (b) files are large (usually ~ 700 Mb) and are downloaded in sequence; and (c) the function requires the xml2 and rvest package to be installed.
+To download files, the function first identifies all files on \code{server_catalog} that match \code{pattern}. For each inputted \code{file_name}, the function identifies the full file name and the necessary URL to download that file from the server (a different URL from the catalog) and then downloads the file. If any files cannot be downloaded, the function will print an error message but continue to attempt to download the next file, until there are no remaining files. Note the following: (a) the function is only designed to query a single catalog at a time (i.e., is not recursive, so it will not identify all files on a thredds server, only the specific files in \code{server_catalog}; (b) files are large (usually ~ 700 Mb) and are downloaded in sequence; and (c) the function requires the xml2 and rvest package to be installed.
 }
 \examples{
 \dontrun{
@@ -47,7 +47,7 @@ thredds_download(file_name = "20190702",
                       server = paste0("https://thredds.sams.ac.uk/thredds/",
                                       "catalog/scoats-westcoms1/Archive/",
                                       "netcdf_2019/catalog.html"),
-                                      destfile = tempdir(),
+                                      dest_file = tempdir(),
                                       verbose = TRUE,
                                       prompt = TRUE)
 }

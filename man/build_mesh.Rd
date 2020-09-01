@@ -24,7 +24,7 @@ build_mesh(
 
 \item{cl}{A cluster object created by \code{\link[parallel]{makeCluster}}. This is required if you want to run the algorithm in parallel, which can improve computation time (especially for large meshes). If supplied, the connection to the cluster is stopped within the function.}
 
-\item{pass2varlist}{A character vector of names of objects to export. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This may be required if \code{cl} is supplied. Exported objects must be located in the global environment.}
+\item{pass2varlist}{A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.}
 }
 \value{
 An SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}). Each polygon has an ID corresponding to the ID of the node or element which is surrounds, as supplied by the nodexy or trinodes dataframe respectively.

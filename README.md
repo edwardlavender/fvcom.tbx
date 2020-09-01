@@ -48,8 +48,8 @@ devtools::install_github("edwardlavender/WeStCOMSExploreR")
 Hydrodynamic model outputs are typically stored as MATLAB® or Network
 Common Data Form (NetCDF) files. Each file contains information on the
 model structure (e.g., the model mesh) and all of the model predictions
-for a specific day. Within each file, model predictions are stored as 2
-or 3 dimensional arrays. To integrate these files with `R`, via
+for a specific day. Within each file, model predictions are stored as 2-
+or 3-dimensional arrays. To integrate these files with `R`, via
 `WeStCOMSExploreR`, follow the workflow detailed below:
 
 1.  Acquire FVCOM files.
@@ -198,9 +198,9 @@ predictions from source files. These include the following:
     unavailable files from file names vector;
   - `extract()` - extract model predictions for multiple
     dates/hours/layers/mesh cells;
-  - `depth_layer_calc()` - calculate the depth of Sigma layers using
+  - `depth_from_known()` - calculate the depth of Sigma layers using
     known parameters;
-  - `depth_layer_compute()` - compute the depth of Sigma layers using
+  - `depth_from_unknown()` - compute the depth of Sigma layers using
     unknown (i.e., extracted) parameters and/or assign the depths of
     Sigma layers to a dataframe using nearest neighbour or bilinear
     interpolation;
@@ -213,13 +213,13 @@ predictions from source files. These include the following:
 Some functions are designed to facilitate exploration of environmental
 conditions through space and/or time. These include the following:
 
-  - `summarise2dfield()` - compute statistical summaries of
+  - `summarise_field_2d()` - compute statistical summaries of
     environmental conditions across a Sigma layer (through time for a
     given file, if applicable);
-  - `plot2dfield()` - visualise environmental conditions across a Sigma
-    layer through space at a specified point in time;
-  - `explore()` - implement `summarise2dfield()` and `plot2dfield()`
-    across multiple timepoints and/or model files;
+  - `plot_field_2d()` - visualise environmental conditions across a
+    Sigma layer through space at a specified point in time;
+  - `explore_field_2d()` - implement `summarise_field_2d()` and
+    `plot_field_2d()` across multiple timepoints and/or model files;
   - Additional plotting functions are available in the `prettyGraphics`
     package, including `pretty_scape_3d()` and `vis_scape_3d()` which
     produce interactive, 3-dimensional visualisations of
@@ -249,3 +249,9 @@ following functionality:
 
 `WeStCOMSExploreR` is a new package at an early stage of evolution.
 Please report issues, comments or suggestions\!
+
+## Links
+
+WeStCOMS was developed at the [Scottish Association for Marine
+Sciences](https://www.sams.ac.uk/) by [Dmitry
+Aleynik](https://www.sams.ac.uk/people/researchers/aleynik-dr-dmitry/).

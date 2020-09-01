@@ -1,26 +1,26 @@
-#' @title Map environmental conditions over (2d) space
-#' @description This function creates a 2 dimensional map of the environmental conditions over space, as resolved across the nodes or elements of an unstructured grid, for a given depth/altitude, and time. Scalar fields are shown as a coloured surface, with the colour of a grid cell corresponding to the value of that cell. Vector fields are shown as coloured arrows ontop of the unstructured grid which point in the direction of mass flow and whose colour corresponds to the total magnitude of the vector, derived from the two (u and v) vector components
+#' @title Map 2-dimensional fields
+#' @description This function creates a map of the environmental conditions over space, as resolved across the nodes or elements of an unstructured grid, for a given depth/altitude, and time. Scalar fields are shown as a coloured surface, with the colour of a grid cell corresponding to the value of that cell. Vector fields are shown as coloured arrows ontop of the unstructured grid which point in the direction of mass flow and whose colour corresponds to the total magnitude of the vector, derived from the two (u and v) vector components
 #'
 #' @param coastline A spatial object, such as a shapefile (i.e. SpatialPolygonsDataFrame), that delineates the coastline in the study area. This is assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below).
 #' @param mesh A SpatialPolygonsDataFrame, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that defines the unstructured mesh in the study area across which environmental conditions have been resolved. This is also assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below). For conditions resolved at the nodes of an unstructured grid, a mesh around nodes (i.e. based on elements) is required. In contrast, for conditions resolved at the elements of an unstructured grid, a mesh around elements (i.e. based on nodes) is required.
 #' @param vector_field A logical object defining whether the data to be plotted across the mesh are a scalar field (e.g. temperature), in which case \code{vector_field = FALSE} or a vector field (e.g. wind speed), in which case \code{vector_field = TRUE}.
-#' @param data The data to be plotted across the mesh ID. For scalar fields, i.e., \code{vector_field = FALSE}, this is a single dataframe with two columns: ID, a numeric/factor/character column specifying the ID of each mesh cell, i.e., a unique reference to each element or node that matches that in \code{"mesh"}; and fvcom, a numeric column specifying the value assigned to that cell by the hydrodynamic model. For vector fields, this should be a list with two elements: one called "udata" and one called "vdata"; each element in the list should contain a dataframe, as described above, that contain the u and v vector components resolved at each element respectively.
+#' @param data The data to be plotted across the mesh ID. For scalar fields, i.e., \code{vector_field = FALSE}, this is a single dataframe with two columns: ID, a numeric/factor/character column specifying the ID of each mesh cell, i.e., a unique reference to each element or node that matches that in \code{mesh}; and fvcom, a numeric column specifying the value assigned to that cell by the hydrodynamic model. For vector fields, this should be a named list with two elements: one called "udata" and one called "vdata"; each element in the list should contain a dataframe, as described above, that contain the u and v vector components resolved at each element respectively.
 #' @param xlim A numeric pair of numbers which define the lower and upper x limits of the study region respectively. These should be on the same scale as the coordinate system used for the coastline and mesh.
 #' @param ylim A numeric pair of numbers which define the lower and upper y limits of the study region respectively. These should be on the same scale as the coordinate system used for the coastline and mesh.
-#' @param coastline_col The colour of the coastline (i.e. land). This can be specified as a character or numeric value. "white" is the default.
-#' @param coastline_border The colour of the coastline border. "black" is the default.
-#' @param coastline_lwd The thickness of the coastline border. 1 is the default.
-#' @param coastline_lty The line type of the coastline border. 1 is the default.
-#' @param mesh_border The colour of the unstructured mesh grid lines. "lightgrey" is the default.
-#' @param mesh_lwd The thickness of the mesh grid lines. 1 is the default.
-#' @param mesh_lty The line type of the mesh grid lines. 1 is the default.
-#' @param ncols The number of colours used to define the spectrum of colours that are used to colour either mesh cells (for scalar fields) or arrows (for vector fields) according to the value of the environmental variable resolved in that cell. Larger numbers result in smoother scales, which look as if they are continuous, which is desirable, but processing takes longer. 50000 is the default.
-#' @param col_fn A function used to created colours. \code{\link[grDevices]{heat.colors}} is the default colour scheme.
-#' @param colour_bar_add A logical input defining whether or not to add a colour bar to the map. TRUE is the default.
+#' @param coastline_col The colour of the coastline (i.e. land). This can be specified as a character or numeric value. \code{"white"} is the default.
+#' @param coastline_border The colour of the coastline border. \code{"black"} is the default.
+#' @param coastline_lwd The thickness of the coastline border. \code{1} is the default.
+#' @param coastline_lty The line type of the coastline border. \code{1} is the default.
+#' @param mesh_border The colour of the unstructured mesh grid lines. \code{"lightgrey"} is the default.
+#' @param mesh_lwd The thickness of the mesh grid lines. \code{1} is the default.
+#' @param mesh_lty The line type of the mesh grid lines. \code{1} is the default.
+#' @param ncols The number of colours in a spectrum that is used to colour either mesh cells (for scalar fields) or arrows (for vector fields) according to the value of the environmental variable resolved in that cell. Larger numbers result in smoother scales, which look as if they are continuous, which is desirable, but processing takes longer. \code{50000} is the default.
+#' @param col_fn A function used to create colours. \code{\link[grDevices]{heat.colors}} is the default colour scheme.
+#' @param colour_bar_add A logical input defining whether or not to add a colour bar to the map. \code{TRUE} is the default.
 #' @param colour_bar_x A pair of numeric values defining the lower and upper x coordinates of the colour bar respectively.
-#' @param colour_bar_y A pair of numeric values defining the lower and upper y coordinates of the colour bar respectively. ylim is the default.
+#' @param colour_bar_y A pair of numeric values defining the lower and upper y coordinates of the colour bar respectively.
 #'
-#' @param element_xy (optional) For vector fields only, element_xy is matrix containing the coordinates of each element in the mesh. If this is not supplied, then these are obtained from the mesh object. However, if you are applying this function in a custom iterative procedure, supplying this matrix will improve computational performance (especially for large meshes) because it does not have to be recalculated every time.
+#' @param element_xy (optional) For vector fields only, \code{element_xy} is matrix containing the coordinates of each element in the mesh. If this is not supplied, then these are obtained from the mesh object. However, if you are applying this function in a custom iterative procedure, supplying this matrix will improve computational performance (especially for large meshes) because it does not have to be recalculated every time.
 #' @param arrow_angle For vector fields only, a numeric value specifying the angle between the two sides of the arrow head in degrees (see \code{\link[graphics]{arrows}}).
 #' @param arrow_scale For vector fields only, a numeric value which scales the length of the arrows. Smaller numbers produce smaller arrows.
 #' @param arrow_length For vector fields only, a numeric value which specifies the length of the arrow head.
@@ -55,7 +55,7 @@
 #' # vector_field = FALSE; this is necessary because temperature is a scalar field.
 #' # data = dat_temp; this is a pre-processed dataframe which provides a snapshot of
 #' # ... of surface temperatures for a single timepoint.
-#' WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oban,
+#' WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_oban,
 #'                               mesh = WeStCOMSExploreR::dat_mesh_around_nodes,
 #'                               vector_field = FALSE,
 #'                               data = WeStCOMSExploreR::dat_temp,
@@ -95,10 +95,11 @@
 #' )
 #'
 #' #### (2) Plot tidal elevation over space at a snapshot in time.
+#' ## Example not run simply to minimise CPU required for examples
 #' \dontrun{
 #' # Default graphical parameters are used so we can miss those arguments out
 #' # ... to simplify the function
-#' WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oban,
+#' WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_oban,
 #'                               mesh = WeStCOMSExploreR::dat_mesh_around_nodes,
 #'                               vector_field = FALSE,
 #'                               data = WeStCOMSExploreR::dat_tidal_elevation,
@@ -117,7 +118,7 @@
 #' # ... we need a mesh around elements. Also note vector_field = TRUE.
 #' # Note also that the data needs to be supplied as a list comprising udata and vdata
 #' # ... (i.e. dataframes of the u and v vector components respectively).
-#' WeStCOMSExploreR::plot2dfield(coastline = WeStCOMSExploreR::dat_coast_around_oban,
+#' WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_oban,
 #'                               mesh = WeStCOMSExploreR::dat_mesh_around_elements,
 #'                               vector_field = TRUE,
 #'                               data = list(udata = WeStCOMSExploreR::dat_uwind_speed,
@@ -143,9 +144,9 @@
 
 ##############################################
 ##############################################
-#### plot.2dfield
+#### plot_field_2d
 
-plot2dfield <-
+plot_field_2d <-
   function(coastline,
            mesh,
            vector_field = FALSE,

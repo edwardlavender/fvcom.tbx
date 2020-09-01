@@ -1,25 +1,25 @@
-#' @title Calculate summary statistics over (2d) space and time
+#' @title Calculate summary statistics over 2-dimensional fields
 #' @description This function produces summary statistics of the variation in environmental conditions across a mesh on a given day. These statistics can be computed either separately for each specified hour, if the inputted array has a row corresponding to those hours, across all hours, or for a single hour if the inputted array contains a single row.
 #'
 #' @param data An n x m matrix, in which n are the hours and m are the mesh cells across which you want to calculate summary statistics.
 #' @param row_specific A logical input specifying whether summary statistics should be calculated for every row (i.e. hour) in the matrix (\code{row_specific = TRUE}), or all rows (\code{row_specific = FALSE}).
-#' @param funs A list of functions that you want to evaluate across all mesh cells for each of the specified hours. Each element in the list should be named with a name that corresponds to the function applied (see Examples).
+#' @param funs A named list of functions that you want to evaluate across all mesh cells for each of the specified hours. Each element in the list should be named with a name that corresponds to the function applied (see Examples).
 #'
 #' @return A dataframe with a row for each hour across which statistics were calculated and a column for each summary statistic. The column names correspond to the names provided in the \code{funs} argument.
 #'
 #' @examples
 #'
-#' #### Load in WeStCOMS data and process data as required into a 2d field:
+#' #### Load in WeStCOMS data and process data as required into a 2-dimensional field:
 #' path <- system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE)
 #' # Define the path to the temperature file for 2016-03-01:
 #' pathname <- file.path(path, "160301.mat")
 #' # Read in the file using the R.matlab package:
 #' sample <- R.matlab::readMat(pathname)
-#' # Extract the model output (i.e. the 3d array) from the list using $data
+#' # Extract the model output (i.e. the 3-dimensional array) from the list using $data
 #' sample <- sample$data
 #' # Examine the structure of the array:
 #' str(sample)
-#' # For a 3d variable, define a specific layer across which to calculate summary statistics
+#' # For a 3-dimensional variable, define a specific layer across which to calculate summary statistics
 #' sample <- sample[, 1, ]
 #' str(sample)
 #'
@@ -27,7 +27,7 @@
 #' # We have a 2 x 802 matrix; rows 1, 2, correspond to hours 1 and 2 in this case
 #' # ... so to calculate summary statistics across all mesh cells for each hour
 #' # ... apply the summarise2sfields as follows:
-#' ls <- summarise2dfield(data = sample,
+#' ls <- summarise_field_2d(data = sample,
 #'                        row_specific = TRUE,
 #'                        funs = list(mean = mean, min = min, max = max, sd = stats::sd)
 #'                        )
@@ -35,7 +35,7 @@
 #' ls
 #'
 #' #### 2) Calculate summary statistics across all rows (hours) and mesh cells:
-#' ls <- summarise2dfield(data = sample,
+#' ls <- summarise_field_2d(data = sample,
 #'                        row_specific = FALSE,
 #'                        funs = list(mean = mean, min = min, max = max, sd = stats::sd)
 #'                        )
@@ -47,9 +47,9 @@
 
 ##############################################
 ##############################################
-#### summarise2dfield
+#### summarise_field_2d
 
-summarise2dfield <-
+summarise_field_2d <-
   function(
     data,
     row_specific = TRUE,

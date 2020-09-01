@@ -3,22 +3,22 @@
 #'
 #' @param dat A dataframe which defines the FVCOM arrays date names, hours, layers (if applicable) and mesh cell IDs for which FVCOM predictions should be extracted from FVCOM arrays. Columns should be named 'date_name', 'hour', 'layer' and 'mesh_ID' respectively.
 #' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour. The default dataframe is usually appropriate, if FVCOM arrays have not been subsetted. However, if FVCOM arrays have been subsetted (e.g. by selecting rows corresponding to hours 12 and 13), then rows 1 and 2 in FVCOM arrays now represent hours 12 and 13, not hours 0 and 1. \code{match_hour} provides the link which ensures that data for specified hours (e.g. hours 12 and 13) are correctly extracted from an FVCOM array (see Examples). All FVCOM arrays are assumed to have the same structure.
-#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer. This is only necessary if you are working with 3d fields and if you are working with subsetted of FVCOM arrays: if FVCOM arrays have been subsetted (e.g. by selecting layers corresponding to columns 2 and 3), then columns 1 and 2 in FVCOM arrays now represent layers 2 and 3, not hours 1 and 2. \code{match_layer} provides this link which ensures that FVCOM predictions are extracted correctly (see Examples). All FVCOM arrays are assumed to have the same structure.
-#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of FVCOM arrays: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in FVCOM arrays. \code{match_mesh} provides the link which ensures that FVCOM predictions are extracted correctly (see Examples). All FVCOM arrays are assumed to have the same structure.
+#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer. This is only necessary if you are working with 3-dimensional fields and if you are working with subsetted of FVCOM arrays: if FVCOM arrays have been subsetted (e.g. by selecting layers corresponding to columns 2 and 3), then columns 1 and 2 in FVCOM arrays now represent layers 2 and 3, not hours 1 and 2. \code{match_layer} provides this link which ensures that FVCOM predictions are extracted correctly (see Examples). All FVCOM arrays are assumed to have the same structure.
+#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2-dimensional and 3-dimensional arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of FVCOM arrays: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in FVCOM arrays. \code{match_mesh} provides the link which ensures that FVCOM predictions are extracted correctly (see Examples). All FVCOM arrays are assumed to have the same structure.
 #' @param corrupt A vector of numbers, representing FVCOM date names, which define corrupt files. These will not be loaded.
 #' @param read_fvcom A function which is used to load files (and, if necessary, extract the FVCOM array from the loaded object). The function should take a single single argument, the file connection, as input, and load the file. The default is \code{function(con) = R.matlab::readMat(con)$data} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).
 #' @param dir2load A string which defines the directory from which to load FVCOM arrays. In this directory, FVCOM file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}). All files with the pattern \code{*extension}, see \code{extension} are assumed to be FVCOM arrays.
 #' @param extension A string which defines the extension of the FVCOM arrays. The default is \code{".mat"}.
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
-#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}.
+#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
 #'
-#' @details The function is designed to extract FVCOM predictions for only one variable at a time. This is because FVCOM outputs different variables should be located in different files, may be different in dimension (2d versus 3d variables) and file type (usually files are .mat but WeStCOMSExploreR can compute and save outputs as .rds files). To implement the function for multiple variables, implement the function sequentially or in parallel for each variable. Non integer hours or layers are not currently implemented. If you require predictions for non integer hours or layers, include each the lower and upper hour or layer in \code{dat} and then interpolate predictions after these are provided. It is important to emphasise that FVCOM outputs are saved in multiple files (one for each day) by necessity: they contain a lot of data. Therefore, there are memory limitations which constrain the amount of data that can be extracted and returned by \code{\link[WeStCOMSExploreR]{extract}}. If you need to extract many predictions to compute summary statistics or plots, use \code{\link[WeStCOMSExploreR]{explore}} which implements an iterative approach which avoids this issue by loading files iteratively and only saving outputs computed from each file, rather than all the predictions for each file. In other cases, \code{\link[WeStCOMSExploreR]{extract}} can be implemented iteratively, with the outputs saved after every iteration in separate files.
+#' @details The function is designed to extract FVCOM predictions for only one variable at a time. This is because FVCOM outputs different variables should be located in different files, may be different in dimension (2-dimensional versus 3-dimensional variables) and file type (usually files are .mat but WeStCOMSExploreR can compute and save outputs as .rds files). To implement the function for multiple variables, implement the function sequentially or in parallel for each variable. Non integer hours or layers are not currently implemented. If you require predictions for non integer hours or layers, include each the lower and upper hour or layer in \code{dat} and then interpolate predictions after these are provided. It is important to emphasise that FVCOM outputs are saved in multiple files (one for each day) by necessity: they contain a lot of data. Therefore, there are memory limitations which constrain the amount of data that can be extracted and returned by \code{\link[WeStCOMSExploreR]{extract}}. If you need to extract many predictions to compute summary statistics or plots, use \code{\link[WeStCOMSExploreR]{explore_field_2d}} which implements an iterative approach which avoids this issue by loading files iteratively and only saving outputs computed from each file, rather than all the predictions for each file. In other cases, \code{\link[WeStCOMSExploreR]{extract}} can be implemented iteratively, with the outputs saved after every iteration in separate files.
 #'
 #' @return The function returns a dataframe which includes FVCOM predictions for specified dates/hours/layers and mesh cells.
 #'
 #' @examples
-#' #### Example (1) Implement extract() for a 2d variable
+#' #### Example (1) Implement extract() for a 2-dimensional variable
 #' # Define dataframe specifying the dates/hours and locations for which we want predictions:
 #' timestamp <- as.POSIXct(c("2016-03-01", "2016-03-02"), tz = "UTC")
 #' dat <- data.frame(timestamp = timestamp)
@@ -31,7 +31,7 @@
 #' # Define path
 #' path <- system.file("WeStCOMS_files/tidal_elevation/",
 #'                     package = "WeStCOMSExploreR", mustWork = TRUE)
-#' # Implement extract() for a 2d variable
+#' # Implement extract() for a 2-dimensional variable
 #' ext <- extract(dat = dat,
 #'                match_hour = match_hour,
 #'                match_mesh = match_mesh,
@@ -39,7 +39,7 @@
 #'                extension = ".mat",
 #'                verbose = TRUE)
 #'
-#' #### Example (2) Implement extract for a 3d variable
+#' #### Example (2) Implement extract for a 3-dimensional variable
 #' # Define dat$layer
 #' dat$layer <- 1
 #' # Define match_layer if necessary
@@ -117,7 +117,7 @@ extract <-
     if(verbose) cat("... extract() step 2: Getting ready to load in FVCOM files...\n")
 
     #### Define indices to extract predictions
-    # Define whether or not we're dealing with a 2d or 3d field:
+    # Define whether or not we're dealing with a 2-dimensional or 3-dimensional field:
     field3d <- ifelse(rlang::has_name(dat, "layer"), TRUE, FALSE)
     # Define indices
     if(!is.null(match_hour)){
@@ -160,14 +160,14 @@ extract <-
       if(verbose) cat(paste0("\n Loading file ", df$date_name[1], extension, "...\n"))
       wc <- read_fvcom(con)
 
-      #### Extract values from fvcom depending on whether or not the inputted variable is 2d or 3d
+      #### Extract values from fvcom depending on whether or not the inputted variable is 2-dimensional or 3-dimensional
       if(length(dim(wc)) == 3){
         stopifnot(!is.null(df$layer))
         df$wc <- wc[cbind(df$index_hour, df$index_layer, df$index_mesh)]
       } else if(length(dim(wc)) == 2){
         df$wc <- wc[cbind(df$index_hour, df$index_mesh)]
       } else{
-        stop("2d or 3d matrix should be supplied")
+        stop("2-dimensional or 3-dimensional matrix should be supplied")
       }
 
       #### Return predictions

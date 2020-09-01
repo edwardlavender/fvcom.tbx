@@ -14,7 +14,7 @@
 #' @param dir2load A string which defines the directory from which to load FVCOM arrays containing predictions (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param extension A string which defines the extension of the FVCOM arrays (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param cl (optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param pass2varlist A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}} (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[WeStCOMSExploreR]{extract}}).
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
 #'
 #' @details To use this function, the user must supply a dataframe (\code{dat_obs1}) which contains the locations(s) , layer(s) and time(s) (in a column named 'timestamp'). These columns must be named 'long' and 'lat', 'layer' and 'timestamp' respectively. A column, 'key', may also need to be included (see below). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe (\code{dat_obs2}) with columns 'timestamp', 'obs' and 'key'. One situation where this latter option is useful is for animal movement data when the location of the animal is known from one tag type (e.g. passive acoustic telemetry) and observations are recorded by another tag type (e.g. an archival tag), possibly at a different resolution. In this scenario, both dataframes should contain a column, 'key', which connects the factor level(s) (e.g. individuals) for which locations observations have been made in the first dataframe with the factor level(s) for which environmental observations (which will be used to validate the model) have been made. In this case, a nearest neighbour matching approach is used to add observations into the first dataframe (\code{dat_obs1}) from the second dataframe (\code{dat_obs2}) by selecting those that occurred closest in time to the timestamps stipulated in the first dataframe (this is why is is important to have a 'key' to distinguish among factor levels). The function uses a mesh supplied by the user to determine the FVCOM mesh nodes/elements within which each location lies (i.e. nearest neighbour interpolation). With this information, the function loads in each FVCOM file from a user-defined directory, extracts the relevant model predictions from this file, and then returns the original dataframe with predictions added. FVCOM files can be loaded in parallel via \code{cl} and \code{pass2varlist} arguments.
@@ -149,7 +149,7 @@
 
 ################################################
 ################################################
-#### validate_2dfield
+#### validate()
 
 validate <-
   function(dat_obs1,

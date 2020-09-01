@@ -10,7 +10,7 @@ compute_field_from_fvcom(
   read_fvcom = function(con) R.matlab::readMat(con)$data,
   calc,
   cl = NULL,
-  varlist = NULL,
+  pass2varlist = NULL,
   dir2save = NULL,
   verbose = TRUE,
   ...
@@ -27,7 +27,7 @@ compute_field_from_fvcom(
 
 \item{cl}{(optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.}
 
-\item{varlist}{A character vector of names of objects to export. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. This may be required if \code{cl} is supplied. Exported objects must be located in the global environment.}
+\item{pass2varlist}{A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.}
 
 \item{dir2save}{(optional) A string which defines the directory in which to save files. If provided, for each source file/file combination, the function will save a .rds file with the specified name in the specified directory (see \code{\link[base]{saveRDS}}). If not provided, the function will return a list of arrays, with one element for each file/file combination.}
 
@@ -112,7 +112,7 @@ thermoline_ls <-
                            read_fvcom = function(con) R.matlab::readMat(con)$data,
                            calc = calc_thermocline_strength_helper,
                            cl = parallel::makeCluster(2L),
-                           varlist = "calc_thermocline_strength_helper")
+                           pass2varlist = "calc_thermocline_strength_helper")
 utils::str(thermoline_ls)
 
 #### Example (4) Compute fields requiring multiple input files for each day

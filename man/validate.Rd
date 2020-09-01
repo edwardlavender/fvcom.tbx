@@ -46,7 +46,7 @@ validate(
 
 \item{cl}{(optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
-\item{pass2varlist}{A list of character vector of names of objects to export to be passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}} (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{pass2varlist}{A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[WeStCOMSExploreR]{extract}}).}
 
 \item{verbose}{A logical input which defines whether or not to display messages to the console detailing function progress.}
 }
