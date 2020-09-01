@@ -9,9 +9,9 @@ find_xy(mesh_ID, mesh, nodexy = NULL)
 \arguments{
 \item{mesh_ID}{A vector of integers which define mesh IDs for which coordinates are designed.}
 
-\item{mesh}{A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, around nodes or elements.}
+\item{mesh}{A mesh, created by \code{\link[fvcom.tbx]{build_mesh}}, around nodes or elements.}
 
-\item{nodexy}{(optional) A dataframe with columns which specify the coordinates and IDs of each cell in mesh around nodes in columns named 'node_id', 'x' and 'y' (see \code{\link[WeStCOMSExploreR]{dat_nodexy}}). If provided, coordinates are extracted from \code{nodexy} rather than \code{mesh}. This is recommended.}
+\item{nodexy}{(optional) A dataframe with columns which specify the coordinates and IDs of each cell in mesh around nodes in columns named 'node_id', 'x' and 'y' (see \code{\link[fvcom.tbx]{dat_nodexy}}). If provided, coordinates are extracted from \code{nodexy} rather than \code{mesh}. This is recommended.}
 }
 \value{
 The function returns a dataframe with mesh IDs ('mesh_ID') and corresponding coordinates ('x' and 'y').

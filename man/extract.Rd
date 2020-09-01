@@ -31,7 +31,7 @@ extract(
 
 \item{read_fvcom}{A function which is used to load files (and, if necessary, extract the FVCOM array from the loaded object). The function should take a single single argument, the file connection, as input, and load the file. The default is \code{function(con) = R.matlab::readMat(con)$data} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).}
 
-\item{dir2load}{A string which defines the directory from which to load FVCOM arrays. In this directory, FVCOM file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}). All files with the pattern \code{*extension}, see \code{extension} are assumed to be FVCOM arrays.}
+\item{dir2load}{A string which defines the directory from which to load FVCOM arrays. In this directory, FVCOM file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[fvcom.tbx]{date_name}}). All files with the pattern \code{*extension}, see \code{extension} are assumed to be FVCOM arrays.}
 
 \item{extension}{A string which defines the extension of the FVCOM arrays. The default is \code{".mat"}.}
 
@@ -48,7 +48,7 @@ The function returns a dataframe which includes FVCOM predictions for specified 
 This function automates the extraction of FVCOM predictions for a variable on specified dates/times/layers/mesh cells from FVCOM arrays. The function implements important checks, accounts for any corrupt files and can load FVCOM arrays in parallel. FVCOM predictions are returned as a dataframe because these form the backbone of data analysis in R and are easily converted to other objects (e.g. matrices, lists) where necessary.
 }
 \details{
-The function is designed to extract FVCOM predictions for only one variable at a time. This is because FVCOM outputs different variables should be located in different files, may be different in dimension (2-dimensional versus 3-dimensional variables) and file type (usually files are .mat but WeStCOMSExploreR can compute and save outputs as .rds files). To implement the function for multiple variables, implement the function sequentially or in parallel for each variable. Non integer hours or layers are not currently implemented. If you require predictions for non integer hours or layers, include each the lower and upper hour or layer in \code{dat} and then interpolate predictions after these are provided. It is important to emphasise that FVCOM outputs are saved in multiple files (one for each day) by necessity: they contain a lot of data. Therefore, there are memory limitations which constrain the amount of data that can be extracted and returned by \code{\link[WeStCOMSExploreR]{extract}}. If you need to extract many predictions to compute summary statistics or plots, use \code{\link[WeStCOMSExploreR]{explore_field_2d}} which implements an iterative approach which avoids this issue by loading files iteratively and only saving outputs computed from each file, rather than all the predictions for each file. In other cases, \code{\link[WeStCOMSExploreR]{extract}} can be implemented iteratively, with the outputs saved after every iteration in separate files.
+The function is designed to extract FVCOM predictions for only one variable at a time. This is because FVCOM outputs different variables should be located in different files, may be different in dimension (2-dimensional versus 3-dimensional variables) and file type (usually files are .mat but fvcom.tbx can compute and save outputs as .rds files). To implement the function for multiple variables, implement the function sequentially or in parallel for each variable. Non integer hours or layers are not currently implemented. If you require predictions for non integer hours or layers, include each the lower and upper hour or layer in \code{dat} and then interpolate predictions after these are provided. It is important to emphasise that FVCOM outputs are saved in multiple files (one for each day) by necessity: they contain a lot of data. Therefore, there are memory limitations which constrain the amount of data that can be extracted and returned by \code{\link[fvcom.tbx]{extract}}. If you need to extract many predictions to compute summary statistics or plots, use \code{\link[fvcom.tbx]{explore_field_2d}} which implements an iterative approach which avoids this issue by loading files iteratively and only saving outputs computed from each file, rather than all the predictions for each file. In other cases, \code{\link[fvcom.tbx]{extract}} can be implemented iteratively, with the outputs saved after every iteration in separate files.
 }
 \examples{
 #### Example (1) Implement extract() for a 2-dimensional variable
@@ -63,7 +63,7 @@ match_hour <- data.frame(hour = 0:1, index = 1:2)
 match_mesh <- data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
 # Define path
 path <- system.file("WeStCOMS_files/tidal_elevation/",
-                    package = "WeStCOMSExploreR", mustWork = TRUE)
+                    package = "fvcom.tbx", mustWork = TRUE)
 # Implement extract() for a 2-dimensional variable
 ext <- extract(dat = dat,
                match_hour = match_hour,
@@ -78,7 +78,7 @@ dat$layer <- 1
 # Define match_layer if necessary
 # Define path
 path <- system.file("WeStCOMS_files/temp/",
-                    package = "WeStCOMSExploreR", mustWork = TRUE)
+                    package = "fvcom.tbx", mustWork = TRUE)
 # Implement extract()
 ext <- extract(dat = dat,
                match_hour = match_hour,

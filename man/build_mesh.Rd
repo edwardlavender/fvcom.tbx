@@ -14,9 +14,9 @@ build_mesh(
 )
 }
 \arguments{
-\item{nodexy}{A dataframe containing node IDs and coordinates. The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.}
+\item{nodexy}{A dataframe containing node IDs and coordinates. The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[fvcom.tbx]{dat_nodexy}} for an example.}
 
-\item{trinodes}{A dataframe containing element IDs and the surrounding nodes (i.e. which nodes are linked to which other nodes). The dataframe should have four columns: 'element_id', 'node1', 'node2' and 'node3'. See \code{\link[WeStCOMSExploreR]{dat_trinodes}} for an example}
+\item{trinodes}{A dataframe containing element IDs and the surrounding nodes (i.e. which nodes are linked to which other nodes). The dataframe should have four columns: 'element_id', 'node1', 'node2' and 'node3'. See \code{\link[fvcom.tbx]{dat_trinodes}} for an example}
 
 \item{mesh_type}{A character specifying the mesh type to be built. There are two options: \code{"node"} or \code{"element"}. \code{mesh_type = "node"} builds a mesh based on nodes (i.e. around elements). This is useful for plotting conditions resolved at elements. \code{mesh_type = "element"} builds a mesh around nodes based on elements. This is useful for plotting conditions resolved at nodes.}
 
@@ -68,8 +68,8 @@ mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
 }
 \seealso{
 \code{\link[sp]{SpatialPolygonsDataFrame-class}} for the output class;
-\code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example nodexy dataframe;
-\code{\link[WeStCOMSExploreR]{dat_trinodes}} for an example trinodes dataframe;
+\code{\link[fvcom.tbx]{dat_nodexy}} for an example nodexy dataframe;
+\code{\link[fvcom.tbx]{dat_trinodes}} for an example trinodes dataframe;
 \code{\link[parallel]{makeCluster}} and \code{\link[parallel]{clusterExport}} for more information on parallelisation.
 }
 \author{

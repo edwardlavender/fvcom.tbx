@@ -1,5 +1,5 @@
-#' @title Convert an FVCOM array to a dataframe for \code{\link[WeStCOMSExploreR]{plot_field_2d}}
-#' @description This function converts an FVCOM array to a dataframe that, for a snapshot in time, contains the values of the cell at each specified ID; i.e, a 2-dimensional field that can be plotted using \code{\link[WeStCOMSExploreR]{plot_field_2d}}.
+#' @title Convert an FVCOM array to a dataframe for \code{\link[fvcom.tbx]{plot_field_2d}}
+#' @description This function converts an FVCOM array to a dataframe that, for a snapshot in time, contains the values of the cell at each specified ID; i.e, a 2-dimensional field that can be plotted using \code{\link[fvcom.tbx]{plot_field_2d}}.
 #'
 #' @param data A 2- or 3-dimensional array outputted by FVCOM for an environmental variable.
 #' @param hour An integer specifying single hour (i.e. row) for which to extract model outputs.
@@ -14,7 +14,7 @@
 #'
 #' #### Step 1: Load in some WeStCOMS files...
 #' # Define directory of the folder containing temperatures:
-#' path <- system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE)
+#' path <- system.file("WeStCOMS_files/temp", package = "fvcom.tbx", mustWork = TRUE)
 #' # Define the path to the temperature file for 2016-03-01:
 #' pathname <- file.path(path, "160301.mat")
 #' # Read in the file using the R.matlab package:

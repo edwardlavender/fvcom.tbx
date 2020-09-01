@@ -2,8 +2,8 @@
 #' @description This function finds the coordinates of specified mesh cells. For nodes, these can be extracted from the \code{nodexy} dataframe or from the mesh. The latter method is not quite as accurate and is slower; this difference may become noticeable for large meshes. However, for elements, the extraction of coordinates from the mesh is the only implemented method.
 #'
 #' @param mesh_ID A vector of integers which define mesh IDs for which coordinates are designed.
-#' @param mesh A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, around nodes or elements.
-#' @param nodexy (optional) A dataframe with columns which specify the coordinates and IDs of each cell in mesh around nodes in columns named 'node_id', 'x' and 'y' (see \code{\link[WeStCOMSExploreR]{dat_nodexy}}). If provided, coordinates are extracted from \code{nodexy} rather than \code{mesh}. This is recommended.
+#' @param mesh A mesh, created by \code{\link[fvcom.tbx]{build_mesh}}, around nodes or elements.
+#' @param nodexy (optional) A dataframe with columns which specify the coordinates and IDs of each cell in mesh around nodes in columns named 'node_id', 'x' and 'y' (see \code{\link[fvcom.tbx]{dat_nodexy}}). If provided, coordinates are extracted from \code{nodexy} rather than \code{mesh}. This is recommended.
 #'
 #' @return The function returns a dataframe with mesh IDs ('mesh_ID') and corresponding coordinates ('x' and 'y').
 #'

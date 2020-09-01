@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# WeStCOMSExploreR
+# fvcom.tbx
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-`WeStCOMSExploreR` is an `R` package which provides tools for the
+`fvcom.tbx` is an `R` package which provides tools for the
 exploration of unstructured, prism-based hydrodynamic model outputs
 (i.e. from the Finite Coastal Ocean Volume Model, FVCOM) in `R`. The
 package has been designed specifically for the West Coast of Scotland
@@ -30,17 +30,17 @@ includes functions which facilitate the following operations:
     diverse animal movement datasets;
 
 This README file outlines the steps that are required to set up FVCOM
-outputs for integration with `R` via `WeStCOMSExploreR` and some of the
+outputs for integration with `R` via `fvcom.tbx` and some of the
 main functionality of the package. For further details, please consult
 the vignette and the reference manual.
 
 ## Installation
 
-You can install the development version of `WeStCOMSExploreR` from
+You can install the development version of `fvcom.tbx` from
 [GitHub](https://github.com) with:
 
 ``` r
-devtools::install_github("edwardlavender/WeStCOMSExploreR")
+devtools::install_github("edwardlavender/fvcom.tbx")
 ```
 
 ## Set up
@@ -50,7 +50,7 @@ Common Data Form (NetCDF) files. Each file contains information on the
 model structure (e.g., the model mesh) and all of the model predictions
 for a specific day. Within each file, model predictions are stored as 2-
 or 3-dimensional arrays. To integrate these files with `R`, via
-`WeStCOMSExploreR`, follow the workflow detailed below:
+`fvcom.tbx`, follow the workflow detailed below:
 
 1.  Acquire FVCOM files.
 2.  Define a directory system in which to store environmental arrays
@@ -62,7 +62,7 @@ or 3-dimensional arrays. To integrate these files with `R`, via
 
 The first step is to acquire FVCOM files. FVCOM files can be obtained
 from source or from a remote server. For file acquisition from a remote
-server, `WeStCOMSExploreR` includes the `thredds_download()` function
+server, `fvcom.tbx` includes the `thredds_download()` function
 which is designed to download WeStCOMS files from the SAMS thredds
 server.
 
@@ -83,7 +83,7 @@ arrays of interest (see below).
 
 ### Directory conventions
 
-`WeStCOMSExploreR` is step up to work with environmental arrays rather
+`fvcom.tbx` is step up to work with environmental arrays rather
 than the full FVCOM files. Hence, it is necessary to define a set of
 directories into which, for each FVCOM file, environmental arrays can be
 extracted and saved. The following directory names are recommended:
@@ -96,10 +96,10 @@ extracted and saved. The following directory names are recommended:
   - ‘ucurrent\_speed’ and ‘vcurrent\_speed’, to store the \(u\) and
     \(v\) components of current velocity;
   - ‘sun\_angle’, to store sun angle (an optional field which can be
-    computed by `WeStCOMSExploreR`);
+    computed by `fvcom.tbx`);
 
 To create a directory system in which to store outputs,
-`WeStCOMSExploreR` provides the `create_wcdirs()` function.
+`fvcom.tbx` provides the `create_wcdirs()` function.
 
 ### Environmental array conventions
 
@@ -123,10 +123,10 @@ system. If you have already obtained the full FVCOM files\* (e.g., via
 \*An alternative workflow, rather than obtaining the full FVCOM files
 and then extracting environmental arrays, is to directly extract and
 only download specific environmental arrays of interest, which may be
-faster. `WeStCOMSExploreR` may include functionality via `thredds_url()`
+faster. `fvcom.tbx` may include functionality via `thredds_url()`
 and `thredds_extract()` functions to implement this approach in future.
 
-For environmental arrays, `WeStCOMSExploreR` assumes the following
+For environmental arrays, `fvcom.tbx` assumes the following
 conventions:
 
   - File type. Environmental arrays can be saved in any format (e.g., as
@@ -134,7 +134,7 @@ conventions:
     vignette provides a sample MATLAB® script in which full FVCOM files
     are loaded into MATLAB®, environmental arrays extracted and then
     saved into a pre-defined directory system as .mat files.
-    Accordingly, in `WeStCOMSExploreR`, the default function to load
+    Accordingly, in `fvcom.tbx`, the default function to load
     files into `R` is `function(con) R.matlab::readMat(con)$data`, but
     this can be changed by the user as necessary. In any given directory
     (e.g., ‘/temp’), all of the environmental arrays should be of the
@@ -148,7 +148,7 @@ conventions:
     and WeStCOMS file names.
 
 Armed with the necessary standard FVCOM objects and environmental
-arrays, we can now proceed to implement functions in `WeStCOMSExploreR`
+arrays, we can now proceed to implement functions in `fvcom.tbx`
 to build model mesh(es), compute new fields, extract model predictions,
 explore environmental conditions and validate model predictions with
 observations.
@@ -235,7 +235,7 @@ conditions to evaluate model skill.
 
 ## Future functionality
 
-Future developments to `WeStCOMSExploreR` may include developing the
+Future developments to `fvcom.tbx` may include developing the
 following functionality:
 
   - Relaxing file naming conventions;
@@ -247,7 +247,7 @@ following functionality:
 
 ## Disclaimer
 
-`WeStCOMSExploreR` is a new package at an early stage of evolution.
+`fvcom.tbx` is a new package at an early stage of evolution.
 Please report issues, comments or suggestions\!
 
 ## Links

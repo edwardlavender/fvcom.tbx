@@ -15,7 +15,7 @@ thredds_download(
 )
 }
 \arguments{
-\item{file_name}{A character vector of file name(s) which specify the files to be downloaded. These should contain a unique identifier for each file (for example, a date_name, see \code{\link[WeStCOMSExploreR]{date_name}}) but they do not need to match file names precisely.}
+\item{file_name}{A character vector of file name(s) which specify the files to be downloaded. These should contain a unique identifier for each file (for example, a date_name, see \code{\link[fvcom.tbx]{date_name}}) but they do not need to match file names precisely.}
 
 \item{pattern}{A character string containing a regular expression which is matched to identify files (e.g., \code{".nc"}).}
 

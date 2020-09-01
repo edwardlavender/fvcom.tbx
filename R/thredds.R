@@ -14,7 +14,7 @@
 
 #' @title Download FVCOM outputs from the SAMS thredds server
 #' @description This function is used to download FVCOM outputs from the SAMS thredds server.
-#' @param file_name A character vector of file name(s) which specify the files to be downloaded. These should contain a unique identifier for each file (for example, a date_name, see \code{\link[WeStCOMSExploreR]{date_name}}) but they do not need to match file names precisely.
+#' @param file_name A character vector of file name(s) which specify the files to be downloaded. These should contain a unique identifier for each file (for example, a date_name, see \code{\link[fvcom.tbx]{date_name}}) but they do not need to match file names precisely.
 #' @param pattern A character string containing a regular expression which is matched to identify files (e.g., \code{".nc"}).
 #' @param server_catalog A character that defines the URL of the catalog.
 #' @param dest_file A character that defines the directory in which to save file(s).

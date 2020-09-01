@@ -3,7 +3,7 @@
 #### Prepare_WeStCOMS_Data
 
 #### Read in data:
-setwd("/Users/el72/Documents/PhD/Academic_PhD_Work/FVCOM/WeStCOMS R code/R Package/WeStCOMSExplorer/WeStCOMSExploreR/data-raw/")
+setwd("/Users/el72/Documents/PhD/Academic_PhD_Work/FVCOM/WeStCOMS R code/R Package/WeStCOMSExplorer/fvcom.tbx/data-raw/")
 # mesh dfs
 dat_trinodes <- readRDS("dat_trinodes.rda")
 dat_nodexy <- readRDS("dat_nodexy.rda")

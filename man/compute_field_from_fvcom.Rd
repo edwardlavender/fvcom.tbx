@@ -21,9 +21,9 @@ compute_field_from_fvcom(
 
 \item{sink_file}{(optional) A vector of names (excluding file extensions) for the arrays that are derived for each source file/file combination. This is required if files are to be saved (see \code{dir2save}).}
 
-\item{read_fvcom}{A function which is used to load environmental arrays (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{read_fvcom}{A function which is used to load environmental arrays (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{calc}{A function which, as input, takes a list of the array(s) that are required to compute a new field for a particular day and computes this new field. See \code{\link[WeStCOMSExploreR]{calc_thermocline}}, \code{\link[WeStCOMSExploreR]{calc_speed}} and \code{\link[WeStCOMSExploreR]{calc_direction}} for examples. A custom function can be provided in the same vein.}
+\item{calc}{A function which, as input, takes a list of the array(s) that are required to compute a new field for a particular day and computes this new field. See \code{\link[fvcom.tbx]{calc_thermocline}}, \code{\link[fvcom.tbx]{calc_speed}} and \code{\link[fvcom.tbx]{calc_direction}} for examples. A custom function can be provided in the same vein.}
 
 \item{cl}{(optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.}
 
@@ -44,7 +44,7 @@ This function computes new hydrodynamic fields from FVCOM outputs, such as therm
 \examples{
 #### Define overall path from which to load FVCOM files
 path <- system.file("WeStCOMS_files/",
-                    package = "WeStCOMSExploreR", mustWork = TRUE)
+                    package = "fvcom.tbx", mustWork = TRUE)
 
 #### Example (1): Compute a new field derived from only one type of FVCOM file
 # ... using default options.

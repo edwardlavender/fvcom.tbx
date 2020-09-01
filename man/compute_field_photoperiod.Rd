@@ -14,7 +14,7 @@ compute_field_photoperiod(
 \arguments{
 \item{date}{A vector of dates (see \code{\link[base]{Date}}) for which photoperiod will be calculated.}
 
-\item{nodexy}{A dataframe containing decimal coordinates (in latitude/longitude) at which photoperiod is calculated. The dataframe should have two columns: 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.}
+\item{nodexy}{A dataframe containing decimal coordinates (in latitude/longitude) at which photoperiod is calculated. The dataframe should have two columns: 'x' and 'y'. See \code{\link[fvcom.tbx]{dat_nodexy}} for an example.}
 
 \item{interval}{A character vector with two elements which define the specific sunrise and sunset phases (in that order) between which photoperiod is calculated. This is passed to the \code{keep} argument of \code{\link[suncalc]{getSunlightTimes}} where further details are provided. The default option is to calculate the duration between dawn and dusk in each location on each day.}
 

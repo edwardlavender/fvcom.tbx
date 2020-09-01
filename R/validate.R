@@ -5,16 +5,16 @@
 #' @param dat_obs1 A dataframe which contains the location(s), layer(s) and timestamp(s) at which environmental observations have been made. These should be defined in columns named 'lat' and 'long', 'location', 'layer' and 'timestamp' respectively. A column 'key' may also need to be included (see Details). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe, (\code{dat_obs2}), see below.
 #' @param dat_obs2 A dataframe which contains the environmental observations which will be used to validate model predictions. This must contain timestamps ('timestamp'), observations ('obs'). A column 'key' may also need to be included (see Details). Note that observations can be provided in \code{dat_obs1} but, for some validation datasets, observations and locations are in separate datasets (see Details). \code{dat_obs2} allows for this flexibility.
 #' @param threshold_match_gap A numeric input which defines the duration (s) between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.
-#' @param mesh A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build_mesh}}.
-#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer n (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param read_fvcom A function which is used to load files (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param dir2load A string which defines the directory from which to load FVCOM arrays containing predictions (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param extension A string which defines the extension of the FVCOM arrays (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param cl (optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param mesh A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[fvcom.tbx]{build_mesh}}.
+#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[fvcom.tbx]{extract}}).
+#' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer n (see \code{\link[fvcom.tbx]{extract}}).
+#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[fvcom.tbx]{extract}}).
+#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[fvcom.tbx]{extract}}).
+#' @param read_fvcom A function which is used to load files (see \code{\link[fvcom.tbx]{extract}}).
+#' @param dir2load A string which defines the directory from which to load FVCOM arrays containing predictions (see \code{\link[fvcom.tbx]{extract}}).
+#' @param extension A string which defines the extension of the FVCOM arrays (see \code{\link[fvcom.tbx]{extract}}).
+#' @param cl (optional) A cluster objected created by the parallel package (see \code{\link[fvcom.tbx]{extract}}).
+#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[fvcom.tbx]{extract}}).
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
 #'
 #' @details To use this function, the user must supply a dataframe (\code{dat_obs1}) which contains the locations(s) , layer(s) and time(s) (in a column named 'timestamp'). These columns must be named 'long' and 'lat', 'layer' and 'timestamp' respectively. A column, 'key', may also need to be included (see below). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe (\code{dat_obs2}) with columns 'timestamp', 'obs' and 'key'. One situation where this latter option is useful is for animal movement data when the location of the animal is known from one tag type (e.g. passive acoustic telemetry) and observations are recorded by another tag type (e.g. an archival tag), possibly at a different resolution. In this scenario, both dataframes should contain a column, 'key', which connects the factor level(s) (e.g. individuals) for which locations observations have been made in the first dataframe with the factor level(s) for which environmental observations (which will be used to validate the model) have been made. In this case, a nearest neighbour matching approach is used to add observations into the first dataframe (\code{dat_obs1}) from the second dataframe (\code{dat_obs2}) by selecting those that occurred closest in time to the timestamps stipulated in the first dataframe (this is why is is important to have a 'key' to distinguish among factor levels). The function uses a mesh supplied by the user to determine the FVCOM mesh nodes/elements within which each location lies (i.e. nearest neighbour interpolation). With this information, the function loads in each FVCOM file from a user-defined directory, extracts the relevant model predictions from this file, and then returns the original dataframe with predictions added. FVCOM files can be loaded in parallel via \code{cl} and \code{pass2varlist} arguments.
@@ -53,7 +53,7 @@
 #'
 #' #### Define path from which to load predictions:
 #' path <-
-#'  paste0(system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE), "/")
+#'  paste0(system.file("WeStCOMS_files/temp", package = "fvcom.tbx", mustWork = TRUE), "/")
 #'
 #' #### Implement validation:
 #' validation <-
@@ -175,7 +175,7 @@ validate <-
     #### Algorithm start
     t1 <- Sys.time()
     if(verbose) {
-      cat("WeStCOMSExploreR::validate() called...\n")
+      cat("fvcom.tbx::validate() called...\n")
       cat("Step 1: Initial processing of dat_obs1...\n")
     }
 
@@ -254,7 +254,7 @@ validate <-
     ################################################
     #### Add wc predictions to dataframe
 
-    if(verbose) cat("Step 4: Calling WeStCOMSExploreR::extract() to extract predictions...\n")
+    if(verbose) cat("Step 4: Calling fvcom.tbx::extract() to extract predictions...\n")
     dat_obs1_wc <- extract(dat = dat_obs1,
                            match_hour = match_hour,
                            match_layer = match_layer,
@@ -273,7 +273,7 @@ validate <-
     #### End time
     t2 <- Sys.time()
     tdiff <- round(difftime(t2, t1))
-    if(verbose) cat(paste0("WeStCOMSExploreR::validate() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+    if(verbose) cat(paste0("fvcom.tbx::validate() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
 
     #### Return dataframe
     return(dat_obs1_wc)

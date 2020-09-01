@@ -28,7 +28,7 @@ pair_ts(
 
 \item{val_col}{A character that defines the name of the column that contains observations in \code{d2}.}
 
-\item{method}{A character that defines the matching method. The options currently implemented are \code{"match_ts_nearest"}, which implements \code{\link[Tools4ETS]{match_ts_nearest}} and \code{"match_ts_nearest_by_key"} which implements \code{\link[Tools4ETS]{match_ts_nearest_by_key}}.}
+\item{method}{A character that defines the matching method. The options currently implemented are \code{"match_ts_nearest"}, which implements \code{match_ts_nearest} and \code{"match_ts_nearest_by_key"} which implements \code{match_ts_nearest_by_key}.}
 
 \item{min_gap}{(optional) A number that defines the minimum time gap (in user-defined units, see \code{units}, below) between times in \code{d1} and the times of observations that are added to \code{d1} from \code{d2}. This is useful if, for instance, some of the nearest observations in \code{d2} occurred long before the nearest observations in \code{d1}. If provided, the function counts the number of observations which do not meet this requirement and, if requested via \code{control_beyond_gap}, removes these from the returned dataframe or sets them to NA (see below).}
 

@@ -3,7 +3,7 @@
 #### interp_layer()
 
 #' @title Interpolate a fractional layer number for an observation between Sigma layers
-#' @description This function linearly interpolates the layer number for an observation of a specified depth, depending on the depths of the nearest layers (see Examples). This approach is used in \code{\link[WeStCOMSExploreR]{depth_from_unknown}} to define fractional layer numbers.
+#' @description This function linearly interpolates the layer number for an observation of a specified depth, depending on the depths of the nearest layers (see Examples). This approach is used in \code{\link[fvcom.tbx]{depth_from_unknown}} to define fractional layer numbers.
 #'
 #' @param x A number which specifies the depth of the observation.
 #' @param l1 A number which specifies the layer ID of the nearest layer.

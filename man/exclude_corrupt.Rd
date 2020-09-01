@@ -7,7 +7,7 @@
 exclude_corrupt(dat, corrupt = NULL)
 }
 \arguments{
-\item{dat}{A dataframe (e.g. containing information necessary to extract FVCOM predictions). The only requirement is an integer column named 'date_name' which contains the 6 digit code of FVCOM file names (see \code{\link[WeStCOMSExploreR]{date_name}}).}
+\item{dat}{A dataframe (e.g. containing information necessary to extract FVCOM predictions). The only requirement is an integer column named 'date_name' which contains the 6 digit code of FVCOM file names (see \code{\link[fvcom.tbx]{date_name}}).}
 
 \item{corrupt}{A vector of integers which define the 6 digit code of any corrupt FVCOM files.}
 }
@@ -25,7 +25,7 @@ exclude_corrupt(data.frame(date_name = c(160301, 160302, 160303)), 160301)
 
 }
 \seealso{
-This check is implemented by \code{\link[WeStCOMSExploreR]{extract}}.
+This check is implemented by \code{\link[fvcom.tbx]{extract}}.
 }
 \author{
 Edward Lavender

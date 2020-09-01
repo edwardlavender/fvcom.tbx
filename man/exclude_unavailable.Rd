@@ -7,7 +7,7 @@
 exclude_unavailable(dat, dir2load, ...)
 }
 \arguments{
-\item{dat}{A dataframe (e.g. containing information necessary to extract FVCOM outputs). The only requirement is an integer column named 'date_name' which contains the 6 digit code of FVCOM file names (see \code{\link[WeStCOMSExploreR]{date_name}}).}
+\item{dat}{A dataframe (e.g. containing information necessary to extract FVCOM outputs). The only requirement is an integer column named 'date_name' which contains the 6 digit code of FVCOM file names (see \code{\link[fvcom.tbx]{date_name}}).}
 
 \item{dir2load}{A string which defines the directory from which FVCOM files are loaded. The function identifies all files in this directory (with necessary properties, see \code{...}) to determine whether any of the date names in \code{dat} are not found \code{dir2load}. If this is the case, these rows which refer to unavailable files in \code{dat} are removed.}
 
@@ -23,14 +23,14 @@ This function screens vector of FVCOM file names in a dataframe and removes any 
 
 \dontrun{
 path <- system.file("WeStCOMS_files/tidal_elevation/",
-                    package = "WeStCOMSExploreR", mustWork = TRUE)
+                    package = "fvcom.tbx", mustWork = TRUE)
 exclude_unavailable(data.frame(date_name = c(160301, 160302, 160303)), path)
 exclude_unavailable(data.frame(date_name = c(160301, 160302, 160303), depth = c(60,  65, 90)), path)
 }
 
 }
 \seealso{
-This check is implemented by \code{\link[WeStCOMSExploreR]{extract}}.
+This check is implemented by \code{\link[fvcom.tbx]{extract}}.
 }
 \author{
 Edward Lavender

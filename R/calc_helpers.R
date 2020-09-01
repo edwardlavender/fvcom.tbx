@@ -6,7 +6,7 @@
 #' @examples
 #' #### Step 1: Read example temperature file into a list
 #' path <- system.file("WeStCOMS_files/temp/",
-#'                     package = "WeStCOMSExploreR", mustWork = TRUE)
+#'                     package = "fvcom.tbx", mustWork = TRUE)
 #' file <- list.files(path, full.names = TRUE)[1]
 #' l <- list(R.matlab::readMat(file)$data)
 #' str(l)
@@ -17,7 +17,7 @@
 #' thermocline_strength <- calc_thermocline(l)
 #' hist(thermocline_strength)
 #'
-#' @seealso This function can be implemented within \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}.
+#' @seealso This function can be implemented within \code{\link[fvcom.tbx]{compute_field_from_fvcom}}.
 #' @author Edward Lavender
 #' @export
 #'
@@ -43,7 +43,7 @@ calc_thermocline <- function(l){
 #' #### Step 1: Read example u and v files into a list
 #' # Define the path to the u and v files:
 #' path <- system.file("WeStCOMS_files/",
-#'                     package = "WeStCOMSExploreR", mustWork = TRUE)
+#'                     package = "fvcom.tbx", mustWork = TRUE)
 #' path_u <- paste0(path, "uwind_speed")
 #' path_v <- paste0(path, "vwind_speed")
 #' # Define the source files:
@@ -51,14 +51,17 @@ calc_thermocline <- function(l){
 #' source_v <- list.files(path_v, full.names = TRUE)[1]
 #' # Define a list comprising u and v arrays with one element for each day:
 #' l <- lapply(list(source_u, source_v), function(source){
-#'               R.matlab::readMat(source)$data
+#'               print(source)
+#'               out <- R.matlab::readMat(source)$data
+#'               print(utils::str(out))
+#'               return(out)
 #'            })
 #'
 #' #### Step 2: Compute wind speed
 #' wind_speed <- calc_speed(l)
 #' hist(wind_speed)
 #'
-#' @seealso This function can be implemented within \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}.
+#' @seealso This function can be implemented within \code{\link[fvcom.tbx]{compute_field_from_fvcom}}.
 #' @author Edward Lavender
 #' @export
 #'
@@ -76,12 +79,12 @@ calc_speed <- function(l){
 #' @param l A list composed of two environmental arrays (u and v component arrays) for a particular day.
 #' @details Wind or current direction are expressed as the direction (degrees) of mass flow.
 #' @return The function returns an array comprising wind/current directions for each cell in the original array.
-#' @seealso This function can be implemented within \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}.
+#' @seealso This function can be implemented within \code{\link[fvcom.tbx]{compute_field_from_fvcom}}.
 #' @examples
 #' #### Step 1: Read example u and v files into a list
 #' # Define the path to the u and v files:
 #' path <- system.file("WeStCOMS_files/",
-#'                     package = "WeStCOMSExploreR", mustWork = TRUE)
+#'                     package = "fvcom.tbx", mustWork = TRUE)
 #' path_u <- paste0(path, "uwind_speed")
 #' path_v <- paste0(path, "vwind_speed")
 #' # Define the source files:

@@ -1,5 +1,5 @@
 #' @title The coastline around Oban
-#' @description A SpatialPolygonsDataFrame delineating the coastline around Oban in an area defined by \code{\link[WeStCOMSExploreR]{dat_area_boundaries}}.
+#' @description A SpatialPolygonsDataFrame delineating the coastline around Oban in an area defined by \code{\link[fvcom.tbx]{dat_area_boundaries}}.
 #'
 #' @format A SpatialPolygonsDataFrame (see \code{\link[sp]{SpatialPolygonsDataFrame-class}}).
 #'

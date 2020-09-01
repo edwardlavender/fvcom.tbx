@@ -1,17 +1,17 @@
 #' @title Compute the depth of Sigma layers at specified location(s) and time(s)
-#' @description In FVCOM, three-dimensional hydrodynamic conditions are predicted for each node (or element) at 11 Sigma layers (or between these layers) for every hour of every day. The depth of each layer depends on the depth of the seabed below mean sea level (in a given location), the tidal elevation (in a given location and at a given time) and a constant which adjusts this depth for each layer, according to the equation \eqn{depth_{t, l, n} = s_{l} \times (h_n + el_{n, t})} where \eqn{s} is a constant multiplier for layer \eqn{l}, \code{h} is the depth of node \code{n} below mean sea level and \code{el} is the tidal elevation predicted at that node at hour \code{t}. If values for \eqn{h_n} and \eqn{el_{n, t}} are already known, \code{\link[WeStCOMSExploreR]{depth_from_known}} calculates the depths of the layers accordingly. Otherwise, \code{\link[WeStCOMSExploreR]{depth_from_unknown}} first extracts necessary parameters for these variables using \code{\link[WeStCOMSExploreR]{extract}} and then uses these to calculate the depths of all layers specified in \code{siglev} at specified times and locations. To implement (see \code{\link[WeStCOMSExploreR]{depth_from_unknown}}), the user must supply a dataframe which contains the times (dates and hours) for which depths should be calculated, as well as a vector of constants (\code{siglev}) which are used to calculate the depths of corresponding layers. If requested, the function can use the computed depths of each layer to assign user-supplied depths Sigma layer IDs using nearest neighbour interpolation or fractional layer IDs using linear interpolation.
+#' @description In FVCOM, three-dimensional hydrodynamic conditions are predicted for each node (or element) at 11 Sigma layers (or between these layers) for every hour of every day. The depth of each layer depends on the depth of the seabed below mean sea level (in a given location), the tidal elevation (in a given location and at a given time) and a constant which adjusts this depth for each layer, according to the equation \eqn{depth_{t, l, n} = s_{l} \times (h_n + el_{n, t})} where \eqn{s} is a constant multiplier for layer \eqn{l}, \code{h} is the depth of node \code{n} below mean sea level and \code{el} is the tidal elevation predicted at that node at hour \code{t}. If values for \eqn{h_n} and \eqn{el_{n, t}} are already known, \code{\link[fvcom.tbx]{depth_from_known}} calculates the depths of the layers accordingly. Otherwise, \code{\link[fvcom.tbx]{depth_from_unknown}} first extracts necessary parameters for these variables using \code{\link[fvcom.tbx]{extract}} and then uses these to calculate the depths of all layers specified in \code{siglev} at specified times and locations. To implement (see \code{\link[fvcom.tbx]{depth_from_unknown}}), the user must supply a dataframe which contains the times (dates and hours) for which depths should be calculated, as well as a vector of constants (\code{siglev}) which are used to calculate the depths of corresponding layers. If requested, the function can use the computed depths of each layer to assign user-supplied depths Sigma layer IDs using nearest neighbour interpolation or fractional layer IDs using linear interpolation.
 
-#' @param dat 	A dataframe which defines the FVCOM file date names, hours, and mesh (node) IDs for which layer depths should be calculated (see \code{\link[WeStCOMSExploreR]{extract}}). The dataframe may contain column named 'depth', containing (absolute) depths (m), if you want to assign layers IDs to depth observations (see Description). The dataframe may also contain a column named 'layer' if you want to compute the depths of a particular layer at each row in \code{dat}, rather than all layers in \code{siglev} (see below). The dataframe should be arranged by 'date_name'.
+#' @param dat 	A dataframe which defines the FVCOM file date names, hours, and mesh (node) IDs for which layer depths should be calculated (see \code{\link[fvcom.tbx]{extract}}). The dataframe may contain column named 'depth', containing (absolute) depths (m), if you want to assign layers IDs to depth observations (see Description). The dataframe may also contain a column named 'layer' if you want to compute the depths of a particular layer at each row in \code{dat}, rather than all layers in \code{siglev} (see below). The dataframe should be arranged by 'date_name'.
 #' @param h A dataframe which, for each mesh ID, defines the (absolute) depth of the seabed in that cell below mean sea level. Columns should be named 'ID' and 'h' respectively.
 #' @param siglev A dataframe which, for each Sigma layer, defines the (absolute value of the) siglev constant. Columns should be named 'layer' and 'siglev' respectively.
-#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2- and 3-dimensional arrays respectively) which corresponds to each mesh cell (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param read_fvcom A function which is used to load files (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param dir2load A string which defines the directory from which to load the FVCOM arrays that contain the tidal elevation predictions required to calculate depth (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param extension A string which defines the extension of the FVCOM arrays (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param cl (optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[WeStCOMSExploreR]{extract}}).
+#' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[fvcom.tbx]{extract}}).
+#' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2- and 3-dimensional arrays respectively) which corresponds to each mesh cell (see \code{\link[fvcom.tbx]{extract}}).
+#' @param corrupt A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[fvcom.tbx]{extract}}).
+#' @param read_fvcom A function which is used to load files (see \code{\link[fvcom.tbx]{extract}}).
+#' @param dir2load A string which defines the directory from which to load the FVCOM arrays that contain the tidal elevation predictions required to calculate depth (see \code{\link[fvcom.tbx]{extract}}).
+#' @param extension A string which defines the extension of the FVCOM arrays (see \code{\link[fvcom.tbx]{extract}}).
+#' @param cl (optional) A cluster objected created by the parallel package (see \code{\link[fvcom.tbx]{extract}}).
+#' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[fvcom.tbx]{extract}}).
 #' @param depth_of_specified A logical input that defines whether or not to calculate the depths of all layers in \code{siglev} for each row in \code{dat} (\code{depth_of_specified = FALSE}), or just the depths of specified layers, specified via \code{dat$layer} (\code{depth_of_specified = TRUE}).
 #' @param assign_layer A logical input that defines whether or not layer IDs should be assigned to observed depths, based on the computed depths of Sigma layers. This method requires a column named 'depth' in \code{dat}.
 #' @param assign_layer_method A character which defines the method by which layer IDs should be assigned to observed depths, if \code{assign_layer = TRUE}. Implemented options are \code{"nearest"} or \code{"fractional"}. If \code{assign_layer_method = "nearest"}, then each depth observation is assigned the layer ID of the nearest node. If \code{assign_layer_method = "fractional"}, a fractional layer ID is computed based on the depths of the two nodes which surround the observed depth.
@@ -44,7 +44,7 @@
 #' h <- dat_h; colnames(h) <- c("ID", "h")
 #' match_mesh <- data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
 #' dir2load <- system.file("WeStCOMS_files/tidal_elevation/",
-#'                         package = "WeStCOMSExploreR", mustWork = TRUE)
+#'                         package = "fvcom.tbx", mustWork = TRUE)
 #'
 #' #### Example (1) Compute layer depths for all layers using default options
 #' dol1 <- depth_from_unknown(dat = dat,
@@ -209,7 +209,7 @@ depth_from_unknown <-
     #### Algorithm start
     t1 <- Sys.time()
     if(verbose) {
-      cat("WeStCOMSExploreR::depth_from_unknown() called...\n")
+      cat("fvcom.tbx::depth_from_unknown() called...\n")
       cat("Step 1: Implementing initial checks...\n")
     }
 
@@ -249,7 +249,7 @@ depth_from_unknown <-
     #### Extract tidal predictions with extract()
 
     #### Use extract() to extract tidal heightrs
-    if(verbose) cat("Step 2: Calling WeStCOMSExploreR::extract() to extract tidal elevation(s)...\n")
+    if(verbose) cat("Step 2: Calling fvcom.tbx::extract() to extract tidal elevation(s)...\n")
     dat <- extract(dat,
                    match_hour = match_hour,
                    match_mesh = match_mesh,
@@ -406,7 +406,7 @@ depth_from_unknown <-
     #### End time
     t2 <- Sys.time()
     tdiff <- round(difftime(t2, t1))
-    if(verbose) cat(paste0("WeStCOMSExploreR::depth_from_unknown() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+    if(verbose) cat(paste0("fvcom.tbx::depth_from_unknown() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
 
     #### Return dataframe
     return(dat)

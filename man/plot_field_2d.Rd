@@ -46,7 +46,7 @@ plot_field_2d(
 \arguments{
 \item{coastline}{A spatial object, such as a shapefile (i.e. SpatialPolygonsDataFrame), that delineates the coastline in the study area. This is assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below).}
 
-\item{mesh}{A SpatialPolygonsDataFrame, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that defines the unstructured mesh in the study area across which environmental conditions have been resolved. This is also assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below). For conditions resolved at the nodes of an unstructured grid, a mesh around nodes (i.e. based on elements) is required. In contrast, for conditions resolved at the elements of an unstructured grid, a mesh around elements (i.e. based on nodes) is required.}
+\item{mesh}{A SpatialPolygonsDataFrame, created by \code{\link[fvcom.tbx]{build_mesh}}, that defines the unstructured mesh in the study area across which environmental conditions have been resolved. This is also assumed to have been cropped to the study area (i.e. its extent should be within the region defined by xlim and ylim, see below). For conditions resolved at the nodes of an unstructured grid, a mesh around nodes (i.e. based on elements) is required. In contrast, for conditions resolved at the elements of an unstructured grid, a mesh around elements (i.e. based on nodes) is required.}
 
 \item{vector_field}{A logical object defining whether the data to be plotted across the mesh are a scalar field (e.g. temperature), in which case \code{vector_field = FALSE} or a vector field (e.g. wind speed), in which case \code{vector_field = TRUE}.}
 
@@ -133,14 +133,14 @@ This function creates a map of the environmental conditions over space, as resol
 # vector_field = FALSE; this is necessary because temperature is a scalar field.
 # data = dat_temp; this is a pre-processed dataframe which provides a snapshot of
 # ... of surface temperatures for a single timepoint.
-WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_oban,
-                              mesh = WeStCOMSExploreR::dat_mesh_around_nodes,
+fvcom.tbx::plot_field_2d(coastline = fvcom.tbx::dat_coast_around_oban,
+                              mesh = fvcom.tbx::dat_mesh_around_nodes,
                               vector_field = FALSE,
-                              data = WeStCOMSExploreR::dat_temp,
-                              xlim = c(WeStCOMSExploreR::dat_area_boundaries$xlim1,
-                                       WeStCOMSExploreR::dat_area_boundaries$xlim2),
-                              ylim = c(WeStCOMSExploreR::dat_area_boundaries$ylim1,
-                                       WeStCOMSExploreR::dat_area_boundaries$ylim2),
+                              data = fvcom.tbx::dat_temp,
+                              xlim = c(fvcom.tbx::dat_area_boundaries$xlim1,
+                                       fvcom.tbx::dat_area_boundaries$xlim2),
+                              ylim = c(fvcom.tbx::dat_area_boundaries$ylim1,
+                                       fvcom.tbx::dat_area_boundaries$ylim2),
                               #### Use default graphical parameters for the coastline:
                               # coastline_col = "white",
                               # coastline_border = "black",
@@ -177,14 +177,14 @@ WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_o
 \dontrun{
 # Default graphical parameters are used so we can miss those arguments out
 # ... to simplify the function
-WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_oban,
-                              mesh = WeStCOMSExploreR::dat_mesh_around_nodes,
+fvcom.tbx::plot_field_2d(coastline = fvcom.tbx::dat_coast_around_oban,
+                              mesh = fvcom.tbx::dat_mesh_around_nodes,
                               vector_field = FALSE,
-                              data = WeStCOMSExploreR::dat_tidal_elevation,
-                              xlim = c(WeStCOMSExploreR::dat_area_boundaries$xlim1,
-                                       WeStCOMSExploreR::dat_area_boundaries$xlim2),
-                              ylim = c(WeStCOMSExploreR::dat_area_boundaries$ylim1,
-                                       WeStCOMSExploreR::dat_area_boundaries$ylim2),
+                              data = fvcom.tbx::dat_tidal_elevation,
+                              xlim = c(fvcom.tbx::dat_area_boundaries$xlim1,
+                                       fvcom.tbx::dat_area_boundaries$xlim2),
+                              ylim = c(fvcom.tbx::dat_area_boundaries$ylim1,
+                                       fvcom.tbx::dat_area_boundaries$ylim2),
                               zlab = "Tidal Elevation (m)",
                               main = "2016-03-01"
 )
@@ -196,15 +196,15 @@ WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_o
 # ... we need a mesh around elements. Also note vector_field = TRUE.
 # Note also that the data needs to be supplied as a list comprising udata and vdata
 # ... (i.e. dataframes of the u and v vector components respectively).
-WeStCOMSExploreR::plot_field_2d(coastline = WeStCOMSExploreR::dat_coast_around_oban,
-                              mesh = WeStCOMSExploreR::dat_mesh_around_elements,
+fvcom.tbx::plot_field_2d(coastline = fvcom.tbx::dat_coast_around_oban,
+                              mesh = fvcom.tbx::dat_mesh_around_elements,
                               vector_field = TRUE,
-                              data = list(udata = WeStCOMSExploreR::dat_uwind_speed,
-                                         vdata = WeStCOMSExploreR::dat_vwind_speed),
-                              xlim = c(WeStCOMSExploreR::dat_area_boundaries$xlim1,
-                                       WeStCOMSExploreR::dat_area_boundaries$xlim2),
-                              ylim = c(WeStCOMSExploreR::dat_area_boundaries$ylim1,
-                                       WeStCOMSExploreR::dat_area_boundaries$ylim2),
+                              data = list(udata = fvcom.tbx::dat_uwind_speed,
+                                         vdata = fvcom.tbx::dat_vwind_speed),
+                              xlim = c(fvcom.tbx::dat_area_boundaries$xlim1,
+                                       fvcom.tbx::dat_area_boundaries$xlim2),
+                              ylim = c(fvcom.tbx::dat_area_boundaries$ylim1,
+                                       fvcom.tbx::dat_area_boundaries$ylim2),
                               # Default graphical parameters for coastline, mesh, colour scheme
                               # You can adjust the properties of the arrows for vector fields:
                               arrow_angle = 30,

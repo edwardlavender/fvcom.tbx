@@ -17,7 +17,7 @@ depth_from_known(siglev, h, el)
 The function returns a number/numeric vector of Sigma layer depths calculated from user inputs.
 }
 \description{
-The depth of Sigma layers can be calculated from the depth of the seabed below mean sea level (in a given location), the tidal elevation (at a given time and in a given location) and a vector of constants which adjusts for the relative position of each layer. If these values are known, \code{\link[WeStCOMSExploreR]{depth_from_known}} can be implemented to calculate the depth of Sigma layers. If these values are unknown, the function \code{\link[WeStCOMSExploreR]{depth_from_unknown}} should be used instead: this function first computes the appropriate values for specified times/locations and then uses these values to calculate depths.
+The depth of Sigma layers can be calculated from the depth of the seabed below mean sea level (in a given location), the tidal elevation (at a given time and in a given location) and a vector of constants which adjusts for the relative position of each layer. If these values are known, \code{\link[fvcom.tbx]{depth_from_known}} can be implemented to calculate the depth of Sigma layers. If these values are unknown, the function \code{\link[fvcom.tbx]{depth_from_unknown}} should be used instead: this function first computes the appropriate values for specified times/locations and then uses these values to calculate depths.
 }
 \examples{
 

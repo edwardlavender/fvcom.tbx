@@ -2,7 +2,7 @@
 % Please edit documentation in R/fvcom_array_to_df.R
 \name{fvcom_array_to_df}
 \alias{fvcom_array_to_df}
-\title{Convert an FVCOM array to a dataframe for \code{\link[WeStCOMSExploreR]{plot_field_2d}}}
+\title{Convert an FVCOM array to a dataframe for \code{\link[fvcom.tbx]{plot_field_2d}}}
 \usage{
 fvcom_array_to_df(data, hour, layer = NULL, ID)
 }
@@ -19,7 +19,7 @@ fvcom_array_to_df(data, hour, layer = NULL, ID)
 A dataframe with two columns: ID (a unique identifier for each node) and fvcom, the value resolved by FVCOM for the snapshot in time and, if applicable, the layer specified.
 }
 \description{
-This function converts an FVCOM array to a dataframe that, for a snapshot in time, contains the values of the cell at each specified ID; i.e, a 2-dimensional field that can be plotted using \code{\link[WeStCOMSExploreR]{plot_field_2d}}.
+This function converts an FVCOM array to a dataframe that, for a snapshot in time, contains the values of the cell at each specified ID; i.e, a 2-dimensional field that can be plotted using \code{\link[fvcom.tbx]{plot_field_2d}}.
 }
 \note{
 The function extracts the values for the hours, layers and mesh IDs supplied from the array using indexing (since FVCOM outputs may not have column names defining mesh IDs). This means that a full array must be supplied for the outputs for the correct cells to be extracted: if the array is subsetted before being passed to this function, then the value at row 1, layer 1 and sheet 1 may not be reflective of hour, layer and mesh cell 1.
@@ -28,7 +28,7 @@ The function extracts the values for the hours, layers and mesh IDs supplied fro
 
 #### Step 1: Load in some WeStCOMS files...
 # Define directory of the folder containing temperatures:
-path <- system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE)
+path <- system.file("WeStCOMS_files/temp", package = "fvcom.tbx", mustWork = TRUE)
 # Define the path to the temperature file for 2016-03-01:
 pathname <- file.path(path, "160301.mat")
 # Read in the file using the R.matlab package:

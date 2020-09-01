@@ -24,7 +24,7 @@ find_cells(
 
 \item{xysp}{A \code{\link[sp]{SpatialPoints-class}} object which defines the positions at which mesh IDs are defined. Alternatively, \code{lat} and \code{long} or \code{dat} can be provided (see above).}
 
-\item{mesh}{A mesh, created by \code{\link[WeStCOMSExploreR]{build_mesh}}, that surrounds nodes or elements.}
+\item{mesh}{A mesh, created by \code{\link[fvcom.tbx]{build_mesh}}, that surrounds nodes or elements.}
 
 \item{proj}{A projection string of class CRS-class. The default is World Geodetic System 84 (WGS84). This should be the same as for \code{mesh} and inputted coordinates.}
 

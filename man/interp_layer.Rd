@@ -21,7 +21,7 @@ interp_layer(x, l1, l2, b1, b2)
 The function returns a (fractional) layer number for an observation that lies between two layers.
 }
 \description{
-This function linearly interpolates the layer number for an observation of a specified depth, depending on the depths of the nearest layers (see Examples). This approach is used in \code{\link[WeStCOMSExploreR]{depth_from_unknown}} to define fractional layer numbers.
+This function linearly interpolates the layer number for an observation of a specified depth, depending on the depths of the nearest layers (see Examples). This approach is used in \code{\link[fvcom.tbx]{depth_from_unknown}} to define fractional layer numbers.
 }
 \examples{
 

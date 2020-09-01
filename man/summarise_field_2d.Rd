@@ -26,7 +26,7 @@ This function produces summary statistics of the variation in environmental cond
 \examples{
 
 #### Load in WeStCOMS data and process data as required into a 2-dimensional field:
-path <- system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE)
+path <- system.file("WeStCOMS_files/temp", package = "fvcom.tbx", mustWork = TRUE)
 # Define the path to the temperature file for 2016-03-01:
 pathname <- file.path(path, "160301.mat")
 # Read in the file using the R.matlab package:

@@ -1,4 +1,4 @@
-Package: WeStCOMSExploreR
+Package: fvcom.tbx
 Type: Package
 Title: An R Toolbox for the Unstructured Grid Finite Volume Community Ocean Model (FVCOM)
 Version: 0.1.0
@@ -18,8 +18,8 @@ Suggests:
     knitr, rmarkdown, scales, 
 Depends: R (>= 3.5)
 License: GPL-3
-URL: http://github.com/edwardlavender/WeStCOMSExploreR
-BugReports: http://github.com/edwardlavender/WeStCOMSExploreR/issues
+URL: http://github.com/edwardlavender/fvcom.tbx
+BugReports: http://github.com/edwardlavender/fvcom.tbx/issues
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr

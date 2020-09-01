@@ -1,10 +1,10 @@
 #' @title Compute sun angle across an FVCOM mesh
 #' @description This function computes the sun angle across a spatial mesh on the dates/times specified. To calculate sun angle, the user must specify a dataframe containing node IDs and associated coordinates across which sun angle is evaluated. (Sun angle, a scalar variable, is computed at nodes for consistency with other FVCOM outputs.) Next, the user must specify the date and hours on that date for which to calculate sun angle. Finally, the user needs to specify whether or not sun angle should be returns in degrees or radians, the directory to save files (not required) and whether or not to print messages/progress to the console.
 #'
-#' @param nodexy A dataframe containing node ids and decimal coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.
+#' @param nodexy A dataframe containing node ids and decimal coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[fvcom.tbx]{dat_nodexy}} for an example.
 #' @param date A vector of dates (see \code{\link[base]{Date}}) for which sun angle is to be calculated.
 #' @param tz A character vector specifying the time zone. The default is \code{"UTC"}.
-#' @param sink_file (optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[WeStCOMSExploreR]{date_name}} is used to define file names from inputted dates.
+#' @param sink_file (optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[fvcom.tbx]{date_name}} is used to define file names from inputted dates.
 #' @param hours A integer vector specifying the hours at which you want to calculate sun angle.
 #' @param units A character input defining the units (\code{"degrees"} or \code{"radians"} of sun angle.
 #' @param dir2save (optional) A string specifying the directory in which to save sun angle files.
@@ -15,8 +15,8 @@
 #' @examples
 #'
 #' #### (1) Compute sun angle across a sample of WeStCOMS nodes
-#' sun_angle <- WeStCOMSExploreR::compute_field_sun_angle(
-#'   nodexy = WeStCOMSExploreR::dat_nodexy,
+#' sun_angle <- fvcom.tbx::compute_field_sun_angle(
+#'   nodexy = fvcom.tbx::dat_nodexy,
 #'   date = as.character("2016-01-01"),
 #'   tz = "UTC",
 #'   hours = 0:23,
@@ -49,7 +49,7 @@ compute_field_sun_angle <-
     if(!is.null(dir2save)) dir2save <- check_dir(input = dir2save, check_slash = TRUE)
 
     #### Define dataframe to calculate sun_angle:
-    if(verbose) cat("WeStCOMSExploreR::compute_field_sun_angle() called...\n")
+    if(verbose) cat("fvcom.tbx::compute_field_sun_angle() called...\n")
     nodexy$index <- 1:nrow(nodexy)
     date <- as.POSIXct(date, tz = tz)
     secs <- hours*60*60

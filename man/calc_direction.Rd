@@ -22,7 +22,7 @@ Wind or current direction are expressed as the direction (degrees) of mass flow.
 #### Step 1: Read example u and v files into a list
 # Define the path to the u and v files:
 path <- system.file("WeStCOMS_files/",
-                    package = "WeStCOMSExploreR", mustWork = TRUE)
+                    package = "fvcom.tbx", mustWork = TRUE)
 path_u <- paste0(path, "uwind_speed")
 path_v <- paste0(path, "vwind_speed")
 # Define the source files:
@@ -39,7 +39,7 @@ graphics::hist(wind_direction)
 
 }
 \seealso{
-This function can be implemented within \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}.
+This function can be implemented within \code{\link[fvcom.tbx]{compute_field_from_fvcom}}.
 }
 \author{
 Edward Lavender

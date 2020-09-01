@@ -21,7 +21,7 @@ Thermocline strength is approximated as the difference in temperature between th
 \examples{
 #### Step 1: Read example temperature file into a list
 path <- system.file("WeStCOMS_files/temp/",
-                    package = "WeStCOMSExploreR", mustWork = TRUE)
+                    package = "fvcom.tbx", mustWork = TRUE)
 file <- list.files(path, full.names = TRUE)[1]
 l <- list(R.matlab::readMat(file)$data)
 str(l)
@@ -34,7 +34,7 @@ hist(thermocline_strength)
 
 }
 \seealso{
-This function can be implemented within \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}.
+This function can be implemented within \code{\link[fvcom.tbx]{compute_field_from_fvcom}}.
 }
 \author{
 Edward Lavender

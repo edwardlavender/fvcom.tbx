@@ -22,7 +22,7 @@ In each cell, speed (m/s) is given by Pythagoras' Theorem.
 #### Step 1: Read example u and v files into a list
 # Define the path to the u and v files:
 path <- system.file("WeStCOMS_files/",
-                    package = "WeStCOMSExploreR", mustWork = TRUE)
+                    package = "fvcom.tbx", mustWork = TRUE)
 path_u <- paste0(path, "uwind_speed")
 path_v <- paste0(path, "vwind_speed")
 # Define the source files:
@@ -30,7 +30,10 @@ source_u <- list.files(path_u, full.names = TRUE)[1]
 source_v <- list.files(path_v, full.names = TRUE)[1]
 # Define a list comprising u and v arrays with one element for each day:
 l <- lapply(list(source_u, source_v), function(source){
-              R.matlab::readMat(source)$data
+              print(source)
+              out <- R.matlab::readMat(source)$data
+              print(utils::str(out))
+              return(out)
            })
 
 #### Step 2: Compute wind speed
@@ -39,7 +42,7 @@ hist(wind_speed)
 
 }
 \seealso{
-This function can be implemented within \code{\link[WeStCOMSExploreR]{compute_field_from_fvcom}}.
+This function can be implemented within \code{\link[fvcom.tbx]{compute_field_from_fvcom}}.
 }
 \author{
 Edward Lavender

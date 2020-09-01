@@ -7,13 +7,13 @@
 #' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2-dimensional and 3-dimensional arrays respectively) which corresponds to each mesh cell. This only needs to be provided if you are working with a subset of FVCOM arrays: in this situation, mesh IDs 5, 6, 7, for example, may not correspond to index 5, 6, 7 in FVCOM arrays. \code{match_mesh} provides the link which ensures that FVCOM predictions are extracted correctly (see Examples). All FVCOM arrays are assumed to have the same structure.
 #' @param corrupt A vector of numbers, representing FVCOM date names, which define corrupt files. These will not be loaded.
 #' @param read_fvcom A function which is used to load files (and, if necessary, extract the FVCOM array from the loaded object). The function should take a single single argument, the file connection, as input, and load the file. The default is \code{function(con) = R.matlab::readMat(con)$data} but other functions may be required depending on the format of FVCOM files (e.g. \code{\link[base]{readRDS}}).
-#' @param dir2load A string which defines the directory from which to load FVCOM arrays. In this directory, FVCOM file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[WeStCOMSExploreR]{date_name}}). All files with the pattern \code{*extension}, see \code{extension} are assumed to be FVCOM arrays.
+#' @param dir2load A string which defines the directory from which to load FVCOM arrays. In this directory, FVCOM file names are assumed to follow the standard naming convention (i.e., yymmdd; see \code{\link[fvcom.tbx]{date_name}}). All files with the pattern \code{*extension}, see \code{extension} are assumed to be FVCOM arrays.
 #' @param extension A string which defines the extension of the FVCOM arrays. The default is \code{".mat"}.
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
 #' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.
 #' @param verbose A logical input which defines whether or not to display messages to the console detailing function progress.
 #'
-#' @details The function is designed to extract FVCOM predictions for only one variable at a time. This is because FVCOM outputs different variables should be located in different files, may be different in dimension (2-dimensional versus 3-dimensional variables) and file type (usually files are .mat but WeStCOMSExploreR can compute and save outputs as .rds files). To implement the function for multiple variables, implement the function sequentially or in parallel for each variable. Non integer hours or layers are not currently implemented. If you require predictions for non integer hours or layers, include each the lower and upper hour or layer in \code{dat} and then interpolate predictions after these are provided. It is important to emphasise that FVCOM outputs are saved in multiple files (one for each day) by necessity: they contain a lot of data. Therefore, there are memory limitations which constrain the amount of data that can be extracted and returned by \code{\link[WeStCOMSExploreR]{extract}}. If you need to extract many predictions to compute summary statistics or plots, use \code{\link[WeStCOMSExploreR]{explore_field_2d}} which implements an iterative approach which avoids this issue by loading files iteratively and only saving outputs computed from each file, rather than all the predictions for each file. In other cases, \code{\link[WeStCOMSExploreR]{extract}} can be implemented iteratively, with the outputs saved after every iteration in separate files.
+#' @details The function is designed to extract FVCOM predictions for only one variable at a time. This is because FVCOM outputs different variables should be located in different files, may be different in dimension (2-dimensional versus 3-dimensional variables) and file type (usually files are .mat but fvcom.tbx can compute and save outputs as .rds files). To implement the function for multiple variables, implement the function sequentially or in parallel for each variable. Non integer hours or layers are not currently implemented. If you require predictions for non integer hours or layers, include each the lower and upper hour or layer in \code{dat} and then interpolate predictions after these are provided. It is important to emphasise that FVCOM outputs are saved in multiple files (one for each day) by necessity: they contain a lot of data. Therefore, there are memory limitations which constrain the amount of data that can be extracted and returned by \code{\link[fvcom.tbx]{extract}}. If you need to extract many predictions to compute summary statistics or plots, use \code{\link[fvcom.tbx]{explore_field_2d}} which implements an iterative approach which avoids this issue by loading files iteratively and only saving outputs computed from each file, rather than all the predictions for each file. In other cases, \code{\link[fvcom.tbx]{extract}} can be implemented iteratively, with the outputs saved after every iteration in separate files.
 #'
 #' @return The function returns a dataframe which includes FVCOM predictions for specified dates/hours/layers and mesh cells.
 #'
@@ -30,7 +30,7 @@
 #' match_mesh <- data.frame(mesh = dat_nodexy$node_id, index = 1:length(dat_nodexy$node_id))
 #' # Define path
 #' path <- system.file("WeStCOMS_files/tidal_elevation/",
-#'                     package = "WeStCOMSExploreR", mustWork = TRUE)
+#'                     package = "fvcom.tbx", mustWork = TRUE)
 #' # Implement extract() for a 2-dimensional variable
 #' ext <- extract(dat = dat,
 #'                match_hour = match_hour,
@@ -45,7 +45,7 @@
 #' # Define match_layer if necessary
 #' # Define path
 #' path <- system.file("WeStCOMS_files/temp/",
-#'                     package = "WeStCOMSExploreR", mustWork = TRUE)
+#'                     package = "fvcom.tbx", mustWork = TRUE)
 #' # Implement extract()
 #' ext <- extract(dat = dat,
 #'                match_hour = match_hour,
@@ -92,7 +92,7 @@ extract <-
     #### Algorithm start
     t1 <- Sys.time()
     if(verbose){
-      cat("WeStCOMSExploreR::extract() called...\n")
+      cat("fvcom.tbx::extract() called...\n")
       cat("... extract() step 1: Initial checks/processing of dat...\n")
     }
 
@@ -182,7 +182,7 @@ extract <-
     #### End time
     t2 <- Sys.time()
     tdiff <- round(difftime(t2, t1))
-    if(verbose) cat(paste0("WeStCOMSExploreR::extract() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
+    if(verbose) cat(paste0("fvcom.tbx::extract() algorithm duration approximately ", round(tdiff), " ",  methods::slot(tdiff, "units"), ".\n"))
 
     #### Return dataframe
     return(dat)

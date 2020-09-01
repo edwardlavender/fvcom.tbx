@@ -28,25 +28,25 @@ validate(
 
 \item{threshold_match_gap}{A numeric input which defines the duration (s) between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.}
 
-\item{mesh}{A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[WeStCOMSExploreR]{build_mesh}}.}
+\item{mesh}{A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[fvcom.tbx]{build_mesh}}.}
 
-\item{match_hour}{A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{match_hour}{A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{match_layer}{A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer n (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{match_layer}{A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer n (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{match_mesh}{(optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{match_mesh}{(optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{extension}{A string which defines the extension of the FVCOM arrays (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{extension}{A string which defines the extension of the FVCOM arrays (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{corrupt}{A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{corrupt}{A vector of numbers, representing WeStCOMS date names, which define corrupt files (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{read_fvcom}{A function which is used to load files (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{read_fvcom}{A function which is used to load files (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{dir2load}{A string which defines the directory from which to load FVCOM arrays containing predictions (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{dir2load}{A string which defines the directory from which to load FVCOM arrays containing predictions (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{cl}{(optional) A cluster objected created by the parallel package (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{cl}{(optional) A cluster objected created by the parallel package (see \code{\link[fvcom.tbx]{extract}}).}
 
-\item{pass2varlist}{A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[WeStCOMSExploreR]{extract}}).}
+\item{pass2varlist}{A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment (see \code{\link[fvcom.tbx]{extract}}).}
 
 \item{verbose}{A logical input which defines whether or not to display messages to the console detailing function progress.}
 }
@@ -91,7 +91,7 @@ raster::crs(dat_mesh_around_nodes) <- proj
 
 #### Define path from which to load predictions:
 path <-
- paste0(system.file("WeStCOMS_files/temp", package = "WeStCOMSExploreR", mustWork = TRUE), "/")
+ paste0(system.file("WeStCOMS_files/temp", package = "fvcom.tbx", mustWork = TRUE), "/")
 
 #### Implement validation:
 validation <-

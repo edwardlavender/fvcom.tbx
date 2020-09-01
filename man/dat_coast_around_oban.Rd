@@ -14,6 +14,6 @@ https://biogeo.ucdavis.edu/data/gadm3.6/Rsp/gadm36_GBR_0_sp.rds
 dat_coast_around_oban
 }
 \description{
-A SpatialPolygonsDataFrame delineating the coastline around Oban in an area defined by \code{\link[WeStCOMSExploreR]{dat_area_boundaries}}.
+A SpatialPolygonsDataFrame delineating the coastline around Oban in an area defined by \code{\link[fvcom.tbx]{dat_area_boundaries}}.
 }
 \keyword{datasets}

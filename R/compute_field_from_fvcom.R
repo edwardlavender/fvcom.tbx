@@ -3,8 +3,8 @@
 #'
 #' @param source_file A list. Each element should comprise a vector of complete file paths (including the directory path, the file name and extension) containing all of the environmental arrays for a given day that are required to compute a new field. Often, only one file is required to compute a new field (e.g., thermocline strength can be computed from temperature predictions). However, sometimes, multiple files may be required in each list element (e.g., current direction is computed from u and v component vector arrays).
 #' @param sink_file (optional) A vector of names (excluding file extensions) for the arrays that are derived for each source file/file combination. This is required if files are to be saved (see \code{dir2save}).
-#' @param read_fvcom A function which is used to load environmental arrays (see \code{\link[WeStCOMSExploreR]{extract}}).
-#' @param calc A function which, as input, takes a list of the array(s) that are required to compute a new field for a particular day and computes this new field. See \code{\link[WeStCOMSExploreR]{calc_thermocline}}, \code{\link[WeStCOMSExploreR]{calc_speed}} and \code{\link[WeStCOMSExploreR]{calc_direction}} for examples. A custom function can be provided in the same vein.
+#' @param read_fvcom A function which is used to load environmental arrays (see \code{\link[fvcom.tbx]{extract}}).
+#' @param calc A function which, as input, takes a list of the array(s) that are required to compute a new field for a particular day and computes this new field. See \code{\link[fvcom.tbx]{calc_thermocline}}, \code{\link[fvcom.tbx]{calc_speed}} and \code{\link[fvcom.tbx]{calc_direction}} for examples. A custom function can be provided in the same vein.
 #' @param cl (optional) A cluster objected created by the parallel package. If supplied, the algorithm is implemented in parallel. Note that the connection with the cluster is stopped within the function.
 #' @param pass2varlist A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.
 #' @param dir2save (optional) A string which defines the directory in which to save files. If provided, for each source file/file combination, the function will save a .rds file with the specified name in the specified directory (see \code{\link[base]{saveRDS}}). If not provided, the function will return a list of arrays, with one element for each file/file combination.
@@ -16,7 +16,7 @@
 #' @examples
 #' #### Define overall path from which to load FVCOM files
 #' path <- system.file("WeStCOMS_files/",
-#'                     package = "WeStCOMSExploreR", mustWork = TRUE)
+#'                     package = "fvcom.tbx", mustWork = TRUE)
 #'
 #' #### Example (1): Compute a new field derived from only one type of FVCOM file
 #' # ... using default options.
@@ -127,7 +127,7 @@ compute_field_from_fvcom <-
 
     #### Checks
     if(verbose){
-      cat("WeStCOMSExploreR::compute_field_from_fvcom() called...\n")
+      cat("fvcom.tbx::compute_field_from_fvcom() called...\n")
       cat("Step 1/2: Checking user inputs...\n")
     }
     ## Check dir2save

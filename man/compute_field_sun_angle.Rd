@@ -19,7 +19,7 @@ compute_field_sun_angle(
 )
 }
 \arguments{
-\item{nodexy}{A dataframe containing node ids and decimal coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[WeStCOMSExploreR]{dat_nodexy}} for an example.}
+\item{nodexy}{A dataframe containing node ids and decimal coordinates (in latitude/longitude). The dataframe should have three columns: 'node_id', 'x' and 'y'. See \code{\link[fvcom.tbx]{dat_nodexy}} for an example.}
 
 \item{date}{A vector of dates (see \code{\link[base]{Date}}) for which sun angle is to be calculated.}
 
@@ -29,7 +29,7 @@ compute_field_sun_angle(
 
 \item{units}{A character input defining the units (\code{"degrees"} or \code{"radians"} of sun angle.}
 
-\item{sink_file}{(optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[WeStCOMSExploreR]{date_name}} is used to define file names from inputted dates.}
+\item{sink_file}{(optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[fvcom.tbx]{date_name}} is used to define file names from inputted dates.}
 
 \item{dir2save}{(optional) A string specifying the directory in which to save sun angle files.}
 
@@ -44,8 +44,8 @@ This function computes the sun angle across a spatial mesh on the dates/times sp
 \examples{
 
 #### (1) Compute sun angle across a sample of WeStCOMS nodes
-sun_angle <- WeStCOMSExploreR::compute_field_sun_angle(
-  nodexy = WeStCOMSExploreR::dat_nodexy,
+sun_angle <- fvcom.tbx::compute_field_sun_angle(
+  nodexy = fvcom.tbx::dat_nodexy,
   date = as.character("2016-01-01"),
   tz = "UTC",
   hours = 0:23,

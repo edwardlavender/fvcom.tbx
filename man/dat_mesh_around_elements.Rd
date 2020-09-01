@@ -14,6 +14,6 @@ The WeStCOMS mesh was designed by Dmitry Aleynik.
 dat_mesh_around_elements
 }
 \description{
-An unstructured grid surrounding elements (i.e. based on nodes) for a subset of the WeStCOMS mesh in an area around Oban (see \code{\link[WeStCOMSExploreR]{dat_area_boundaries}}).
+An unstructured grid surrounding elements (i.e. based on nodes) for a subset of the WeStCOMS mesh in an area around Oban (see \code{\link[fvcom.tbx]{dat_area_boundaries}}).
 }
 \keyword{datasets}
