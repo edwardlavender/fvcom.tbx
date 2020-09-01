@@ -37,8 +37,7 @@
 #' field2d <- data.frame(cov2d = "temp",
 #'                       mesh_type = "element",
 #'                       extension = ".mat",
-#'                       vector_field = FALSE,
-#'                       dir2save = "/Users/el72/Desktop/")
+#'                       vector_field = FALSE)
 #'
 #' #### Define dat_ls, a list of dataframes which defines
 #' # ... the specific FVCOM outputs we'll extract.
