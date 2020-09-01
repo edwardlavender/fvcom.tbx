@@ -125,7 +125,6 @@ This function creates a map of the environmental conditions over space, as resol
 \examples{
 
 #### (1) Plot a scalar variable (e.g. surface temperature) over space at a snapshot in time.
-
 # This example plots temperature over space for a snapshot in time.
 # The key arguments to note here are:
 # mesh = dat_mesh_around_nodes; this is necessary because temperature is resolved at the nodes,
@@ -153,7 +152,7 @@ plot_field_2d(coastline = dat_coast_around_oban,
 
 #### (2) Plot tidal elevation over space at a snapshot in time.
 ## Example not run simply to minimise CPU required for examples
-\dontrun{
+\donttest{
 plot_field_2d(coastline = dat_coast_around_oban,
               mesh = dat_mesh_around_nodes,
               vector_field = FALSE,
@@ -168,7 +167,7 @@ plot_field_2d(coastline = dat_coast_around_oban,
 }
 
 #### (3) Plot a vector field over space at a snapshot in time.
-
+\donttest{
 # Note that vector fields are resolved at the elements of WeStCOMS, so
 # ... we need a mesh around elements. Also note vector_field = TRUE.
 # Note also that the data needs to be supplied as a list comprising udata and vdata
@@ -191,6 +190,7 @@ plot_field_2d(coastline = dat_coast_around_oban,
               zlab = "Wind Speed (m)",
               main = "2016-03-01"
 )
+}
 
 }
 \author{

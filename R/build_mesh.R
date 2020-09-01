@@ -17,21 +17,24 @@
 #' # ...'In sp::Polygon(coords, hole) : less than 4 coordinates in polygon'.
 #' # This can be safely ignored. This is because each polygon is a prism;
 #' # ... i.e., only comprised of three coordinates.
+#' \donttest{
 #' mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
 #'                                    trinodes = dat_trinodes,
 #'                                    mesh_type = "node",
 #'                                    cl = NULL,
 #'                                    pass2varlist = NULL)
+#' }
 #'
 #' # 2) Build a mesh around nodes (based on elements) on a single processor
+#' \donttest{
 #' mesh_around_nodes <- build_mesh(nodexy = dat_nodexy,
 #'                                 trinodes = dat_trinodes,
 #'                                 mesh_type = "element",
 #'                                 cl = NULL,
 #'                                 pass2varlist = NULL)
-#'
+#' }
 #' # 3) Build a mesh around elements (based on nodes) using parallel processing
-#' \dontrun{
+#' \donttest{
 #' # Define cluster object:
 #' cl <- parallel::makeCluster(2L)
 #' # Run the build_mesh algorithm in parallel by supplying a cluster:
