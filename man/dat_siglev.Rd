@@ -18,6 +18,6 @@ Dmitry Aleynik
 dat_siglev
 }
 \description{
-A dataset defining the siglev constants of each Sigma layer in WeStCOMS. These constants, combined with tidal elevation (m) and depth below mean sea level, can be used to compute the depths of Sigma layers at a given location and time.
+A dataset defining the siglev constants of each Sigma layer in WeStCOMS. These constants, combined with tidal elevation (m) and the depth of the seabed below mean sea level, can be used to compute the depths of Sigma layers at a given location and time.
 }
 \keyword{datasets}

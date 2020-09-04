@@ -34,7 +34,7 @@ This function implements linear interpolation between the depths of layers, rath
 # ... predictions are for layers 2 and 3 which have depths 20 and 30 m respectively.
 # Imagine these predictions are 8 and 9 dg C. Then the interpolated temperature at
 # ... depth 25 m is:
-interp_btw_depths( 25, 20, 30, 8, 9)
+interp_btw_depths(25, 20, 30, 8, 9)
 
 }
 \author{

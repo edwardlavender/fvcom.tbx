@@ -22,15 +22,15 @@ find_cells(
 
 \item{dat}{A dataframe with columns 'lat' and 'long' (in decimal degrees) at which mesh IDs will be identified. Alternatively, \code{lat} and \code{long} or \code{xysp} can be provided.}
 
-\item{xysp}{A \code{\link[sp]{SpatialPoints-class}} object which defines the positions at which mesh IDs are defined. Alternatively, \code{lat} and \code{long} or \code{dat} can be provided (see above).}
+\item{xysp}{A \code{\link[sp]{SpatialPoints-class}} object which defines the positions at which to identify mesh IDs. Alternatively, \code{lat} and \code{long} or \code{dat} can be provided (see above).}
 
 \item{mesh}{A mesh, created by \code{\link[fvcom.tbx]{build_mesh}}, that surrounds nodes or elements.}
 
-\item{proj}{A projection string of class CRS-class. The default is World Geodetic System 84 (WGS84). This should be the same as for \code{mesh} and inputted coordinates.}
+\item{proj}{A projection string of class code{\link[sp]{CRS-class}}. The default is World Geodetic System 84 (WGS84). This should be the same as for \code{mesh} and inputted coordinates.}
 
 \item{f}{A function to process mesh IDs after identification. For example, \code{function(x) as.numeric(as.character(x))} can be useful.}
 
-\item{return}{A number (1, 2, 3 or 4) which specifies the format of the return output. \code{return = 1} returns a dataframe with columns 'lat', 'long' and 'mesh_ID', comprising only unique coordinates. (Note that this may contain duplicate mesh IDs because unique coordinates may lie within the same mesh cell.) \code{return = 2} only the mesh IDs corresponding to unique coordinates (e.g. to add to an existing dataframe). \code{return = 3} returns a dataframe, as above, but including all inputted coordinate pairs. (This will be the same as outputted with \code{return = 1} if their are no duplicate coordinates.) \code{return = 4} returns only the mesh IDs corresponding to these coordinates.}
+\item{return}{A number (1, 2, 3 or 4) which specifies the format of the return output. \code{return = 1} returns a dataframe with columns 'lat', 'long' and 'mesh_ID', comprising only unique coordinates. (Note that this may contain duplicate mesh IDs because unique coordinates may lie within the same mesh cell.) \code{return = 2} returns only the mesh IDs corresponding to unique coordinates (e.g. to add to an existing dataframe). \code{return = 3} returns a dataframe, as above, but including all inputted coordinate pairs. (This will be the same as outputted with \code{return = 1} if their are no duplicate coordinates.) \code{return = 4} returns only the mesh IDs corresponding to these coordinates.}
 }
 \value{
 The function returns a vector or a dataframe, depending on the input to \code{return} (see above).
@@ -39,13 +39,13 @@ The function returns a vector or a dataframe, depending on the input to \code{re
 This function identifies the mesh cells which surround inputted coordinates. Coordinates can be inputted as \code{lat} and \code{long} vectors, a dataframe (\code{dat}) or a \code{\link[sp]{SpatialPoints-class}} object (\code{xysp}). The function can return a dataframe or vector of mesh IDs for each pair of coordinates or each unique pair of coordinates inputted.
 }
 \details{
-Ensure that the coordinate system of inputted coordinates, the mesh and the projection are identical (whether directly specified, e.g. if coordinates are specified via a \code{\link[sp]{SpatialPoints-class}} object, or otherwise or not (e.g. if coordinates are supplied via \code{lat} and \code{long} vectors.
+Ensure that the coordinate system of inputted coordinates, the mesh and the projection are identical (whether directly specified, e.g. if coordinates are specified via a \code{\link[sp]{SpatialPoints-class}} object or otherwise, e.g. if coordinates are supplied via \code{lat} and \code{long} vectors.
 }
 \examples{
 
 #### Define some coordinates for which to identify the mesh cell ID
 # In this hypothetical example, we'll choose coordinates for which
-# ... we know the mesh ID in advance, so we can vertify the function
+# ... we know the mesh ID in advance, so we can verify the function
 # ... returns the correct outputs:
 set.seed(1)
 xy <- sp::coordinates(dat_mesh_around_nodes)
@@ -86,7 +86,7 @@ identical(cells$mesh_ID, selected_nodes)
 # Imagine we have duplicate coordinates:
 xy <- rbind(xy, xy)
 rownames(xy) <- NULL
-# Look over each return type (1:4) and compare outputs:
+# Loop over each return type (1:4) and compare outputs:
 cells_ls <-
   lapply(1:4, function(i){
     cells <- find_cells(xysp = sp::SpatialPoints(xy, proj4string = proj),

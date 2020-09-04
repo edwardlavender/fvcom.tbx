@@ -11,7 +11,7 @@ depth_from_known(siglev, h, el)
 
 \item{h}{A number or numeric vector of depth below mean sea level.}
 
-\item{el}{A number of numeric vector of tidal elevation.}
+\item{el}{A number of numeric vector of tidal elevation values.}
 }
 \value{
 The function returns a number/numeric vector of Sigma layer depths calculated from user inputs.

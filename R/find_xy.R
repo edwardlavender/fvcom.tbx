@@ -1,9 +1,9 @@
 #' @title Find the coordinates of specified mesh cells
 #' @description This function finds the coordinates of specified mesh cells. For nodes, these can be extracted from the \code{nodexy} dataframe or from the mesh. The latter method is not quite as accurate and is slower; this difference may become noticeable for large meshes. However, for elements, the extraction of coordinates from the mesh is the only implemented method.
 #'
-#' @param mesh_ID A vector of integers which define mesh IDs for which coordinates are designed.
+#' @param mesh_ID A vector of integers which define the mesh IDs for which coordinates are desired.
 #' @param mesh A mesh, created by \code{\link[fvcom.tbx]{build_mesh}}, around nodes or elements.
-#' @param nodexy (optional) A dataframe with columns which specify the coordinates and IDs of each cell in mesh around nodes in columns named 'node_id', 'x' and 'y' (see \code{\link[fvcom.tbx]{dat_nodexy}}). If provided, coordinates are extracted from \code{nodexy} rather than \code{mesh}. This is recommended.
+#' @param nodexy (optional) A dataframe with columns which specify the coordinates and IDs of each cell in the mesh around nodes in columns named 'node_id', 'x' and 'y' (see \code{\link[fvcom.tbx]{dat_nodexy}}). If provided, coordinates are extracted from \code{nodexy} rather than \code{mesh}. This is recommended.
 #'
 #' @return The function returns a dataframe with mesh IDs ('mesh_ID') and corresponding coordinates ('x' and 'y').
 #'
@@ -11,7 +11,7 @@
 #'
 #' #### Define mesh cells for which we want to extract coordinates
 #' # In this hypothetical situation, we'll use mesh IDs for which we know their coordinates
-#' # ... so that we can show that we can compare the two approaches:
+#' # ... so that we can compare the two approaches:
 #' set.seed(1)
 #' select <- sample(1:nrow(dat_nodexy), 10)
 #' dat <- dat_nodexy[select, ]

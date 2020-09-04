@@ -3,7 +3,7 @@
 #'
 #' @param siglev A number or numeric vector of siglev values.
 #' @param h A number or numeric vector of depth below mean sea level.
-#' @param el A number of numeric vector of tidal elevation.
+#' @param el A number of numeric vector of tidal elevation values.
 #'
 #' @return The function returns a number/numeric vector of Sigma layer depths calculated from user inputs.
 #'
