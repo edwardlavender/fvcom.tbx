@@ -40,8 +40,11 @@ You can install the development version of `fvcom.tbx` from
 [GitHub](https://github.com) with:
 
 ``` r
-devtools::install_github("edwardlavender/fvcom.tbx")
+devtools::install_github("edwardlavender/fvcom.tbx", build_vignette = TRUE)
 ```
+
+If you build the vignette, you can view this with `vignette("fvcom.tbx",
+package = "fvcom.tbx")`.
 
 ## Set up
 
