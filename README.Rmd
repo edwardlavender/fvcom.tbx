@@ -2,8 +2,6 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -15,8 +13,7 @@ knitr::opts_chunk$set(
 
 # fvcom.tbx
 
-<!-- badges: start -->
-<!-- badges: end -->
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 `fvcom.tbx` is an `R` toolbox for the exploration of unstructured, prism-based hydrodynamic model outputs (i.e. from the Finite Coastal Ocean Volume Model, FVCOM) in `R`. The package has been designed specifically for the West Coast of Scotland Coastal Modelling System (WeStCOMS), which implements FVCOM. Package development has been motivated by the requirements of ecological research, and the need to link hydrodynamic model outputs with ecological analyses implemented in `R`. To this end, the package includes functions which facilitate the following operations: 
 
@@ -30,6 +27,8 @@ knitr::opts_chunk$set(
 
 This README file outlines the steps that are required to set up FVCOM outputs for integration with `R` via `fvcom.tbx` and some of the main functionality of the package. For further details, please consult the vignette and the reference manual. 
 
+<img src="vignettes/fvcom.tbx_README_fig.png"/>
+
 ## Installation
 
 You can install the development version of `fvcom.tbx` from [GitHub](https://github.com) with:
@@ -38,7 +37,7 @@ You can install the development version of `fvcom.tbx` from [GitHub](https://git
 devtools::install_github("edwardlavender/fvcom.tbx", build_vignette = TRUE)
 ```
 
-If you build the vignette, you can view this with `vignette("fvcom.tbx", package = "fvcom.tbx")`. 
+If you build the vignette, you can view this with `vignette("fvcom.tbx", package = "fvcom.tbx")`.
 
 ## Set up 
 

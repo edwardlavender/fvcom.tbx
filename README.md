@@ -1,11 +1,9 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # fvcom.tbx
 
-<!-- badges: start -->
-
-<!-- badges: end -->
+[![Project Status: Active – The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 `fvcom.tbx` is an `R` toolbox for the exploration of unstructured,
 prism-based hydrodynamic model outputs (i.e. from the Finite Coastal
@@ -33,6 +31,8 @@ This README file outlines the steps that are required to set up FVCOM
 outputs for integration with `R` via `fvcom.tbx` and some of the main
 functionality of the package. For further details, please consult the
 vignette and the reference manual.
+
+<img src="vignettes/fvcom.tbx_README_fig.png"/>
 
 ## Installation
 
