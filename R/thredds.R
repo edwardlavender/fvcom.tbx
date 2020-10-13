@@ -112,7 +112,7 @@ thredds_download <-
         ## Attempt to download file
         try_download <-
           tryCatch(utils::download.file(url = url,
-                                        dest_file = paste0(dest_file, name)),
+                                        destfile = paste0(dest_file, name)),
                    error = function(e) return(e)
           )
 
