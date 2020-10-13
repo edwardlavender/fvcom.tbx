@@ -121,7 +121,7 @@ thredds_download <-
           warn <- paste0("Unable to download file", file, ". ",
                          "File name identified for this file ", name, ". ",
                          "URL obtained for this file: ", url, ". ",
-                         "Error message followinf download.file(...): ", try_download, ".\n")
+                         "Error message following download.file(...): ", try_download, ".\n")
           message(warn)
         }
 
