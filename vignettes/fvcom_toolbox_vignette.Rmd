@@ -794,7 +794,7 @@ l <- mapply(summaries_ls, ylabs, FUN = function(sdf, ylab){
 par(pp)
 ```
 
-The `prettyGraphics` package includes some additional functions for 3-dimensional, interactive visualisation of environmental conditions. 
+The [`prettyGraphics`](https://github.com/edwardlavender/prettyGraphics) package includes some additional functions for 3-dimensional, interactive visualisation of environmental conditions. 
 
 # Validate model predictions 
 

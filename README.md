@@ -221,7 +221,8 @@ conditions through space and/or time. These include the following:
     Sigma layer through space at a specified point in time;
   - `explore_field_2d()` - implement `summarise_field_2d()` and
     `plot_field_2d()` across multiple timepoints and/or model files;
-  - Additional plotting functions are available in the `prettyGraphics`
+  - Additional plotting functions are available in the
+    [`prettyGraphics`](https://github.com/edwardlavender/prettyGraphics)
     package, including `pretty_scape_3d()` and `vis_scape_3d()` which
     produce interactive, 3-dimensional visualisations of
     landscapes/seascapes and/or environmental conditions; for large
