@@ -15,6 +15,9 @@ compute_field_sun_angle(
   units = "degrees",
   sink_file = NULL,
   dir2save = NULL,
+  iterative = FALSE,
+  cl = NULL,
+  pass2varlist = NULL,
   verbose = TRUE
 )
 }
@@ -27,11 +30,17 @@ compute_field_sun_angle(
 
 \item{hours}{A integer vector specifying the hours at which you want to calculate sun angle.}
 
-\item{units}{A character input defining the units (\code{"degrees"} or \code{"radians"} of sun angle.}
+\item{units}{A character input defining the units (\code{"degrees"} or \code{"radians"}) of sun angle.}
 
 \item{sink_file}{(optional) A character specifying the name of sun angle fields, if saved as files (see \code{dir2save}, below). If \code{dir2save = TRUE} and \code{sink_file = NULL}, \code{\link[fvcom.tbx]{date_name}} is used to define file names from inputted dates.}
 
 \item{dir2save}{(optional) A string specifying the directory in which to save sun angle files.}
+
+\item{iterative}{A logical input that defines whether or not to compute sun angle matrices iteratively for each date. The default option is \code{FALSE} but, for large sequences of dates and many nodes, an iterative implementation is necessary to avoid exhausting vector memory.}
+
+\item{cl}{(optional) A cluster objected created by the parallel package. This is only implemented if \code{iterative = TRUE}. If supplied, the algorithm (computing sun angle matrices and, if applicable, saving these to file) is implemented in parallel. Note that the connection with the cluster is stopped within the function.}
+
+\item{pass2varlist}{A list containing the names of exported objects. This may be required if \code{cl} is supplied. This is passed to the \code{varlist} argument of \code{\link[parallel]{clusterExport}}. Exported objects must be located in the global environment.}
 
 \item{verbose}{A logical input specifying whether or not messages and a progress bar should be printed to the console. The default is TRUE.}
 }
@@ -39,21 +48,54 @@ compute_field_sun_angle(
 For each date, the function creates a matrix of hours x mesh cells containing sun angles. Matrices are either returned as a list or saved as .rds files, with one file per day (if \code{dir2save = TRUE}).
 }
 \description{
-This function computes the sun angle across a spatial mesh on the dates/times specified. To calculate sun angle, the user must specify a dataframe containing node IDs and associated coordinates across which sun angle is evaluated. (Sun angle, a scalar variable, is computed at nodes for consistency with other FVCOM outputs.) Next, the user must specify the date and hours on that date for which to calculate sun angle. Finally, the user needs to specify whether or not sun angle should be returns in degrees or radians, the directory to save files (not required) and whether or not to print messages/progress to the console.
+This function computes the sun angle across a spatial mesh on the dates/times specified. To calculate sun angle, the user must specify a dataframe containing node IDs and associated coordinates across which sun angle is evaluated. (Sun angle, a scalar variable, is computed at nodes for consistency with other FVCOM outputs.) Next, the user must specify the date and hours on that date for which to calculate sun angle. Finally, the user needs to specify whether or not sun angle should be returned in degrees or radians, the directory to save files (not required) and whether or not to print messages/progress to the console.
 }
 \examples{
-
-#### (1) Compute sun angle across a sample of WeStCOMS nodes
+#### Example (1): Calculate sun angles for one date and some sample nodes
 sun_angle <-
   compute_field_sun_angle(
     nodexy = dat_nodexy,
-    date = as.character("2016-01-01"),
+    date = as.Date("2016-01-01"),
     tz = "UTC",
     hours = 0:23,
     units = "degrees",
     dir2save = NULL,
     verbose = TRUE
-    )
+  )
+# The function returns a list with one element (matrix) for each date
+# ... with rows (hours) x columns (nodes)
+utils::str(sun_angle)
+
+#### Example (2): Implement algorithm iteratively over each date
+# We're only specifying one example date here, but for demonstration purposes:
+sun_angle <-
+  compute_field_sun_angle(
+    nodexy = dat_nodexy,
+    date = as.Date("2016-01-01"),
+    tz = "UTC",
+    hours = 0:23,
+    units = "degrees",
+    dir2save = NULL,
+    iterative = TRUE,
+    verbose = TRUE
+  )
+utils::str(sun_angle)
+
+#### Example (3): Implement iterations in parallel via cl argument
+# Again, for demonstration purposes only:
+sun_angle <-
+  compute_field_sun_angle(
+    nodexy = dat_nodexy,
+    date = as.Date("2016-01-01"),
+    tz = "UTC",
+    hours = 0:23,
+    units = "degrees",
+    dir2save = NULL,
+    iterative = TRUE,
+    cl = parallel::makeCluster(2L),
+    verbose = TRUE
+  )
+utils::str(sun_angle)
 
 }
 \author{
