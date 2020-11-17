@@ -99,7 +99,11 @@ extract <-
     }
 
     #### Check dat has been provided correctly
-    stopifnot(all(c("date_name", "hour", "mesh_ID") %in% colnames(dat)))
+    check_names(input = dat,
+                req = c("date_name", "hour", "mesh_ID"),
+                extract_names = colnames,
+                type = all)
+    has_name_layer <- ifelse(rlang::has_name(dat, "layer"), TRUE, FALSE)
 
     #### Exclude corrupt files
     dat <- exclude_corrupt(dat, corrupt)
@@ -119,9 +123,6 @@ extract <-
     if(verbose) cat("... extract() step 2: Getting ready to load in FVCOM files...\n")
 
     #### Define indices to extract predictions
-    # Define whether or not we're dealing with a 2-dimensional or 3-dimensional field:
-    field3d <- ifelse(rlang::has_name(dat, "layer"), TRUE, FALSE)
-    # Define indices
     if(!is.null(match_hour)){
       dat$index_hour <- match_hour$index[match(dat$hour, match_hour$hour)]
     } else{
@@ -132,7 +133,7 @@ extract <-
     } else{
       dat$index_mesh <- dat$mesh_ID
     }
-    if(field3d){
+    if(has_name_layer){
       if(!is.null(match_layer)){
         dat$index_layer <- match_layer$index[match(dat$layer, match_layer$layer)]
       } else{
