@@ -26,7 +26,7 @@ find_cells(
 
 \item{mesh}{A mesh, created by \code{\link[fvcom.tbx]{build_mesh}}, that surrounds nodes or elements.}
 
-\item{proj}{A projection string of class code{\link[sp]{CRS-class}}. The default is World Geodetic System 84 (WGS84). This should be the same as for \code{mesh} and inputted coordinates.}
+\item{proj}{A projection string of class {\link[sp]{CRS-class}}. The default is World Geodetic System 84 (WGS84). This should be the same as for \code{mesh} and inputted coordinates.}
 
 \item{f}{A function to process mesh IDs after identification. For example, \code{function(x) as.numeric(as.character(x))} can be useful.}
 
@@ -42,7 +42,6 @@ This function identifies the mesh cells which surround inputted coordinates. Coo
 Ensure that the coordinate system of inputted coordinates, the mesh and the projection are identical (whether directly specified, e.g. if coordinates are specified via a \code{\link[sp]{SpatialPoints-class}} object or otherwise, e.g. if coordinates are supplied via \code{lat} and \code{long} vectors.
 }
 \examples{
-
 #### Define some coordinates for which to identify the mesh cell ID
 # In this hypothetical example, we'll choose coordinates for which
 # ... we know the mesh ID in advance, so we can verify the function
