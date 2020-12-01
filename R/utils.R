@@ -268,6 +268,7 @@ pair_ts <- function(d1,
   #### Checks
   stopifnot(time_col %in% colnames(d1) & time_col %in% colnames(d2))
   stopifnot(val_col %in% colnames(d2))
+  if(val_col %in% colnames(d1)) stop("'val_col' is also a column name in d1.")
   check_value(arg = "method", input = method, supp = c("match_ts_nearest", "match_ts_nearest_by_key"))
   if(!is.null(control_beyond_gap))
     check_value(arg = "control_beyond_gap", input = control_beyond_gap, supp = c("NA", "remove"))
@@ -297,10 +298,12 @@ pair_ts <- function(d1,
     d1$difftime <- as.numeric(difftime(d1[, "time_in_d2", drop = TRUE], d1[, time_col, drop = TRUE], units = units))
 
     ## Check whether the min_gap was exceeded
-    min_gap_exceeded <- any(d1$difftime < min_gap, na.rm = TRUE)
-    l_min_gap_exceeded <- length(which(min_gap_exceeded))
-    if(min_gap_exceeded){
-      warning(paste0(l_min_gap_exceeded, " observations exceeded min_gap."))
+    min_gap_exceeded_bool <- d1$difftime < min_gap
+    min_gap_exceeded_any <- any(min_gap_exceeded_bool, na.rm = TRUE)
+    if(min_gap_exceeded_any){
+      l_min_gap_exceeded <- length(which(min_gap_exceeded_bool))
+      message(paste0(l_min_gap_exceeded, "/", nrow(d1), " (", round((l_min_gap_exceeded/nrow(d1))*100, digits = 3),
+                     " %) observation(s) in 'd1' exceeded 'min_gap'."))
       if(!is.null(control_beyond_gap)){
         if(control_beyond_gap == "remove"){
           d1 <- d1[which(d1$difftime >= min_gap), ]
@@ -311,10 +314,12 @@ pair_ts <- function(d1,
     }
 
     ## Check whether the max_gap was exceeded
-    max_gap_exceeded <- any(d1$difftime > max_gap, na.rm = TRUE)
-    l_max_gap_exceeded <- length(which(max_gap_exceeded))
-    if(max_gap_exceeded){
-      warning(paste0(l_max_gap_exceeded, " observations exceeded max_gap."))
+    max_gap_exceeded_bool <- d1$difftime > max_gap
+    max_gap_exceeded_any <- any(max_gap_exceeded_bool, na.rm = TRUE)
+    if(max_gap_exceeded_any){
+      l_max_gap_exceeded <- length(which(max_gap_exceeded_bool))
+      message(paste0(l_max_gap_exceeded, "/", nrow(d1), " (", round((l_max_gap_exceeded/nrow(d1))*100, digits = 3),
+                     " %) observation(s) in 'd1' exceeded 'max_gap'."))
       if(!is.null(control_beyond_gap)){
         if(control_beyond_gap == "remove"){
           d1 <- d1[which(d1$difftime <= max_gap), ]

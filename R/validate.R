@@ -4,8 +4,8 @@
 #'
 #' @param dat_obs1 A dataframe which contains the location(s), layer(s) and timestamp(s) at which environmental observations have been made. These should be defined in columns named 'lat' and 'long', 'location', 'layer' and 'timestamp' respectively. A column 'key' may also need to be included (see Details). Location(s) are assumed to be in World Geodetic System format (i.e. WGS 84). Observations can either be located in this dataframe, in a column called 'obs', or in a separate dataframe, (\code{dat_obs2}), see below.
 #' @param dat_obs2 A dataframe which contains the environmental observations which will be used to validate model predictions. This must contain timestamps ('timestamp'), observations ('obs'). A column 'key' may also need to be included (see Details). Note that observations can be provided in \code{dat_obs1} but, for some validation datasets, observations and locations are in separate datasets (see Details). \code{dat_obs2} allows for this flexibility.
-#' @param threshold_match_gap A numeric input which defines the duration (s) between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations.
-#' @param mesh A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[fvcom.tbx]{build_mesh}}.
+#' @param threshold_match_gap A numeric input which defines the duration (s) between the timestamp of a known location and that of a corresponding observation before/after which these timestamps in \code{dat_obs1} are removed. This is useful if \code{dat_obs2} is provided and if observations are only available for a sample of the timestamps at which locations are known. In this scenario, matching observations via the nearest timestamp may be inappropriate because there may be long gaps between the times of known locations and observations. In this case, all of the 'nearest' observation(s) that are more than \code{threshold_match_gap} s away (either before or after) the required timestamp(s) are removed.
+#' @param mesh A \code{\link[sp]{SpatialPolygonsDataFrame-class}} object which defines the WeStCOMS mesh created by \code{\link[fvcom.tbx]{build_mesh}}. The coordinate reference system for the mesh should match inputted coordinates (e.g., lat, long) (see \code{dat_obs1}).
 #' @param match_hour A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour (see \code{\link[fvcom.tbx]{extract}}).
 #' @param match_layer A dataframe with two integer columns named 'layer' and 'index' which defines the index in FVCOM arrays (i.e. the column) which corresponds to each layer n (see \code{\link[fvcom.tbx]{extract}}).
 #' @param match_mesh (optional) A dataframe with two columns named 'mesh' and 'index' which defines the index in FVCOM arrays (columns or sheets for 2d and 3d arrays respectively) which corresponds to each mesh cell (see \code{\link[fvcom.tbx]{extract}}).
@@ -199,7 +199,7 @@ validate <-
     mesh_IDs <- find_cells(lat = dat_obs1$lat,
                            long = dat_obs1$long,
                            mesh = mesh,
-                           proj = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                           proj = raster::crs(mesh),
                            f = function(x) as.integer(as.character(x)),
                            return = 1
     )
@@ -231,7 +231,15 @@ validate <-
 
       #### Implement pair_ts() to pair timeseries
       # Define control match gap appropriately
-      if(!is.null(threshold_match_gap)) control_match_gap <- "remove" else control_match_gap <- NULL
+      if(!is.null(threshold_match_gap)){
+        control_match_gap <- "remove"
+        min_gap <- -threshold_match_gap
+        max_gap <- threshold_match_gap
+      } else{
+        control_match_gap <- NULL
+        min_gap <- NULL
+        max_gap <- NULL
+      }
       # Implement pair_ts(), adding a column 'timestamp_obs' rather than 'obs' directly
       # ... into dat_obs1 (it is useful to retain this column).
       dat_obs2$timestamp_obs <- dat_obs2$timestamp
@@ -241,11 +249,14 @@ validate <-
                           key_col = "key",
                           val_col = "timestamp_obs",
                           method = "match_ts_nearest_by_key",
-                          min_gap = threshold_match_gap,
-                          max_gap = threshold_match_gap,
+                          min_gap = min_gap,
+                          max_gap = max_gap,
                           units = "secs",
                           control_beyond_gap = control_match_gap
                           )
+      if(is.null(dat_obs1)){
+        stop("No observations remaining in dat_obs1 after implementation of matching proceedure.")
+      }
       # Add the observations back in by matching timestamp_obs.
       dat_obs1$obs <- dat_obs2$obs[match(dat_obs1$timestamp_obs, dat_obs2$timestamp_obs)]
     }
