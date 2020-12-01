@@ -174,13 +174,17 @@ extract <-
       }
 
       #### Return predictions
-      return(df$wc)
+      return(df)
 
     })
     if(!is.null(cl)) parallel::stopCluster(cl)
 
-    #### Add wc predictions to dataframe
-    dat$wc <- as.numeric(unlist(pls))
+    #### Define dataframe of predictions
+    pdat <- dplyr::bind_rows(pls)
+    pdat$key <- paste0(pdat$date_name, "-", pdat$index_hour, "-", pdat$index_mesh, "-", pdat$index_layer)
+    dat$key  <- paste0(dat$date_name, "-", dat$index_hour, "-", dat$index_mesh, "-", dat$index_layer)
+    dat$wc   <- pdat$wc[match(dat$key, pdat$key)]
+    dat$key  <- NULL
 
     #### End time
     t2 <- Sys.time()
