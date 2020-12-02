@@ -195,8 +195,10 @@ variation over the same spatial domain). These include the following:
 Some functions are designed to facilitate the extraction of model
 predictions from source files. These include the following:
 
-  - `exclude_corrupt()` and `exclude_unavailable()` exclude corrupt and
-    unavailable files from file names vector;
+  - `exclude_corrupt()` and `exclude_unavailable()` - exclude corrupt
+    and unavailable files from file names vector;
+  - `expand_by_hour()` - expand a dataframe with times at non-integer
+    hours to include surrounding integer hours for extraction;
   - `extract()` - extract model predictions for multiple
     dates/hours/layers/mesh cells;
   - `depth_from_known()` - calculate the depth of Sigma layers using
@@ -205,9 +207,9 @@ predictions from source files. These include the following:
     unknown (i.e., extracted) parameters and/or assign the depths of
     Sigma layers to a dataframe using nearest neighbour or bilinear
     interpolation;
-  - `interp_layer()`, `interp_btw_hours()` and `interp_btw_depths()` -
-    interpolate fractional layer numbers and predictions between hours
-    or layers;
+  - `shrink_by_hour`, `interp_btw_hours()`, `interp_btw_depths()` and
+    `interp_layer()` - interpolate predictions between hours or layers
+    and fractional layer numbers;
 
 ## Explore environmental conditions
 
