@@ -19,7 +19,7 @@ extract(
 )
 }
 \arguments{
-\item{dat}{A dataframe which defines the FVCOM arrays date names, hours, layers (if applicable) and mesh cell IDs for which FVCOM predictions should be extracted from FVCOM arrays. Columns should be named 'date_name', 'hour', 'layer' and 'mesh_ID' respectively.}
+\item{dat}{A dataframe which defines the FVCOM array date names, hours, layers (if applicable) and mesh cell IDs for which FVCOM predictions should be extracted from FVCOM arrays. Columns should be named 'date_name', 'hour', 'layer' and 'mesh_ID' respectively.}
 
 \item{match_hour}{A dataframe with two integer columns named 'hour' and 'index' which defines the index in FVCOM arrays (i.e. the row) which corresponds to each hour. The default dataframe is usually appropriate, if FVCOM arrays have not been subsetted. However, if FVCOM arrays have been subsetted (e.g. by selecting rows corresponding to hours 12 and 13), then rows 1 and 2 in FVCOM arrays now represent hours 12 and 13, not hours 0 and 1. \code{match_hour} provides the link which ensures that data for specified hours (e.g. hours 12 and 13) are correctly extracted from an FVCOM array (see Examples). All FVCOM arrays in \code{dir2load} are assumed to have the same structure.}
 
