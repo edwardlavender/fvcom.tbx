@@ -27,7 +27,6 @@ This function linearly interpolates an FVCOM prediction between the depths of tw
 This function implements linear interpolation between the depths of layers, rather than layer numbers, because the spacing between layers is non linear.
 }
 \examples{
-
 #### Example (1): Interpolate environmental conditions between depths
 # Imagine we want to know the predicted temperature at depth 25 m on a given day.
 # For nodes, FVCOM outputs the predictions for each layer. Imagine that the nearest

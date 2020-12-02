@@ -24,7 +24,6 @@ The function returns an interpolated FVCOM prediction for a time between two hou
 This function linearly interpolates an FVCOM prediction between hours.
 }
 \examples{
-
 #### Example (1): Interpolate environmental conditions between hours
 # Imagine we want to know the predicted temperature at 10:10 am on a given day.
 # FVCOM outputs the predictions on every hour, so we have predictions for

@@ -14,7 +14,6 @@
 #' @return The function returns a (fractional) layer number for an observation that lies between two layers.
 #'
 #' @examples
-#'
 #' #### Example (1): Interpolate fractional layer numbers
 #' # Imagine we have made an observation at 22 m deep. To compare this observation to
 #' # ... FVCOM predictions we might want to define the layer number of that observation.
@@ -55,7 +54,6 @@ interp_layer <- function(x, l1, l2, b1, b2){
 #' @return The function returns an interpolated FVCOM prediction for a time between two hours at which FVCOM predictions are available.
 #'
 #' @examples
-#'
 #' #### Example (1): Interpolate environmental conditions between hours
 #' # Imagine we want to know the predicted temperature at 10:10 am on a given day.
 #' # FVCOM outputs the predictions on every hour, so we have predictions for
@@ -69,12 +67,14 @@ interp_layer <- function(x, l1, l2, b1, b2){
 
 interp_btw_hours <- function(x, h1, h2, p1, p2){
   stopifnot(x >= h1 & x <= h2)
-  if(x == p1) return(p1)
-  if(x == p2) return(p2)
+  if(x == h1) return(p1)
+  if(x == h2) return(p2)
   d1 <- abs(x - h1)
   d2 <- abs(x - h2)
-  delta <- abs(p1 - p2)
-  y <- p1*((delta-d1)/delta) + p2*((delta-d2)/delta)
+  delta <- abs(h2 - h1)
+  w1 <- (delta - d1)/delta
+  w2 <- (delta - d2)/delta
+  y <- p1*w1 + p2*w2
   return(y)
 }
 
@@ -97,7 +97,6 @@ interp_btw_hours <- function(x, h1, h2, p1, p2){
 #' @return The function returns an interpolated FVCOM prediction for a depth between two depths (the depths of two layers at which FVCOM predictions are available).
 #'
 #' @examples
-#'
 #' #### Example (1): Interpolate environmental conditions between depths
 #' # Imagine we want to know the predicted temperature at depth 25 m on a given day.
 #' # For nodes, FVCOM outputs the predictions for each layer. Imagine that the nearest
@@ -112,8 +111,8 @@ interp_btw_hours <- function(x, h1, h2, p1, p2){
 
 interp_btw_depths <- function(x, d1, d2, p1, p2){
   stopifnot(x >= d1 & x <= d2)
-  if(x == p1) return(p1)
-  if(x == p2) return(p2)
+  if(x == d1) return(p1)
+  if(x == d2) return(p2)
   delta <- abs(d1 - d2)
   n1 <- abs(delta - abs(d1 - x))
   n2 <- abs(delta - abs(d2 - x))

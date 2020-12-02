@@ -24,7 +24,6 @@ The function returns a (fractional) layer number for an observation that lies be
 This function linearly interpolates the layer number for an observation of a specified depth, depending on the depths of the nearest layers (see Examples). This approach is used in \code{\link[fvcom.tbx]{depth_from_unknown}} to define fractional layer numbers.
 }
 \examples{
-
 #### Example (1): Interpolate fractional layer numbers
 # Imagine we have made an observation at 22 m deep. To compare this observation to
 # ... FVCOM predictions we might want to define the layer number of that observation.
