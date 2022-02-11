@@ -13,7 +13,7 @@ Imports:
     methods, TeachingDemos, stringr,
     R.matlab
 Suggests:
-    xml2, rvest,
+    xml2, rvest, ncdf4,
     microbenchmark, 
     knitr, rmarkdown, scales, 
 Depends: R (>= 3.5)

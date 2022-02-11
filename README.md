@@ -67,6 +67,8 @@ The first step is to acquire FVCOM files. FVCOM files can be obtained
 from source or from a remote server. For file acquisition from a remote
 server, `fvcom.tbx` includes the `thredds_download()` function which is
 designed to download WeStCOMS files from the SAMS thredds server.
+(Alternatively, `thredds_extract()` can be used to extract specific
+predictions from model files on the thredds server.)
 
 From any FVCOM file, it is necessary to obtain the following:
 
