@@ -207,9 +207,7 @@ build_mesh <-
   #### Create a SpatialPolygonsDataFrame from the list
 
   #### Close the connection with the cluster if this has been supplied:
-  if(!is.null(cl)){
-    parallel::stopCluster(cl)
-  }
+  if(!is.null(cl) && inherits(cl, "cluster")) parallel::stopCluster(cl)
 
   #### Message
   cat("Step 2/2: Converting the mesh to a SpatialPolygonsDataFrame... \n")
