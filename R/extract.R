@@ -103,6 +103,9 @@ extract <-
                 req = c("date_name", "hour", "mesh_ID"),
                 extract_names = colnames,
                 type = all)
+    if(!any(inherits(dat$mesh_ID, c("numeric", "integer"))))
+      stop("'dat$mesh_ID' must be an integer.", call. = FALSE)
+    dat$mesh_ID    <- as.integer(dat$mesh_ID)
     has_name_layer <- ifelse(rlang::has_name(dat, "layer"), TRUE, FALSE)
 
     #### Exclude corrupt files
