@@ -194,7 +194,6 @@ thredds_download <-
 
     ## Check dest_file is a directory
     if(!dir.exists(dest_file)) stop("Input to 'dest_file' is not a directory in existence.")
-    if(substr(dest_file, nchar(dest_file), nchar(dest_file)) != "/") dest_file <- paste0(dest_file, "/")
 
     #### Extract all file names and html links from server_catalog
     if(verbose) cat("Step 1: Querying server_catalog to identify files... \n")
@@ -240,7 +239,7 @@ thredds_download <-
         ## Attempt to download file
         try_download <-
           tryCatch(utils::download.file(url = url,
-                                        destfile = paste0(dest_file, name)),
+                                        destfile = file.path(dest_file, name),...),
                    error = function(e) return(e)
           )
 
