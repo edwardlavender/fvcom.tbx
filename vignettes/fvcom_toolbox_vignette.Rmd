@@ -758,7 +758,7 @@ summaries_ls
 
 You could plot these summary statistics though time for each environmental variable and/or use external software to group any saved maps into animations. (This latter activity can be done within `R`, but specialised software is faster and easier to use.) For example, we could create a few timeseries plots to demonstrate the relative magnitude of spatial versus temporal variation using the saved summary statistics (`summaries_ls`). Even through we only have computed summary statistics across four timestamps, let's do this for illustration: 
 
-````{r, fig.cap = "Example timeseries of the spatiotemporal variation in environmental conditions around Oban for three environmental variables, resolved at three time points.", fig.height = 4, fig.width = 8, fig.align = "center"}
+```{r, fig.cap = "Example timeseries of the spatiotemporal variation in environmental conditions around Oban for three environmental variables, resolved at three time points.", fig.height = 4, fig.width = 8, fig.align = "center"}
 # Set plotting margins and other graphical parameters: 
 pp <- par(mfrow = c(1, 3), oma = c(1, 1, 1, 1))
 cex1 <- 1.5
