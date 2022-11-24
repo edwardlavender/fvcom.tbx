@@ -1,9 +1,10 @@
 
 # fvcom.tbx
 
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Project Status: Inactive – The project has reached a stable, usable
+state but is no longer being actively developed; support/maintenance
+will be provided as time
+allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 
 `fvcom.tbx` is an `R` toolbox for the exploration of unstructured,
 prism-based hydrodynamic model outputs (i.e. from the Finite Coastal
@@ -15,17 +16,17 @@ link hydrodynamic model outputs with ecological analyses implemented in
 `R`. To this end, the package includes functions which facilitate the
 following operations:
 
-  - Acquiring FVCOM outputs from the Scottish Association of Marine
-    Sciences (SAMS) thredds server;
-  - Processing FVCOM outputs for integration with `R`;
-  - Computing new hydrodynamic/environmental fields;
-  - Building unstructured mesh(es) as spatial objects and locating cells
-    and coordinates;
-  - Extracting and interpolating model predictions;
-  - Exploring environmental conditions through space and time with
-    statistical summaries and maps;
-  - Validating FVCOM predictions with observations, including from
-    diverse animal movement datasets;
+- Acquiring FVCOM outputs from the Scottish Association of Marine
+  Sciences (SAMS) thredds server;
+- Processing FVCOM outputs for integration with `R`;
+- Computing new hydrodynamic/environmental fields;
+- Building unstructured mesh(es) as spatial objects and locating cells
+  and coordinates;
+- Extracting and interpolating model predictions;
+- Exploring environmental conditions through space and time with
+  statistical summaries and maps;
+- Validating FVCOM predictions with observations, including from diverse
+  animal movement datasets;
 
 This README file outlines the steps that are required to set up FVCOM
 outputs for integration with `R` via `fvcom.tbx` and some of the main
@@ -43,8 +44,8 @@ You can install the development version of `fvcom.tbx` from
 devtools::install_github("edwardlavender/fvcom.tbx", build_vignette = TRUE)
 ```
 
-If you build the vignette, you can view this with `vignette("fvcom.tbx",
-package = "fvcom.tbx")`.
+If you build the vignette, you can view this with
+`vignette("fvcom.tbx", package = "fvcom.tbx")`.
 
 ## Set up
 
@@ -72,15 +73,14 @@ predictions from model files on the thredds server.)
 
 From any FVCOM file, it is necessary to obtain the following:
 
-  - ‘mesh.trinodes’, a dataframe that defines the nodes surrounding each
-    element. A sample dataframe, `dat_trinodes`, is available in this
-    package.
-  - ‘nodexy’, a dataframe that contains the coordinates (longitude,
-    latitude) for every node. A sample dataframe, `dat_nodexy`, is
-    available in this package.
-  - ‘FVCOM.h’, a dataframe that contains the depth of each node below
-    mean sea level. A sample dataframe, `dat_h` is available in this
-    package.
+- ‘mesh.trinodes’, a dataframe that defines the nodes surrounding each
+  element. A sample dataframe, `dat_trinodes`, is available in this
+  package.
+- ‘nodexy’, a dataframe that contains the coordinates (longitude,
+  latitude) for every node. A sample dataframe, `dat_nodexy`, is
+  available in this package.
+- ‘FVCOM.h’, a dataframe that contains the depth of each node below mean
+  sea level. A sample dataframe, `dat_h` is available in this package.
 
 For each FVCOM file, we also need to extract and save the environmental
 arrays of interest (see below).
@@ -92,15 +92,15 @@ full FVCOM files. Hence, it is necessary to define a set of directories
 into which, for each FVCOM file, environmental arrays can be extracted
 and saved. The following directory names are recommended:
 
-  - ‘tidal\_elevation’, to store tidal elevation (m) arrays;
-  - ‘temp’, to store temperature (\(^\circ C\)) arrays;
-  - ‘salinity’, to store salinity (psu) arrays;
-  - ‘uwind\_speed’ and ‘vwind\_speed’, to store the \(u\) and \(v\)
-    components of wind velocity;
-  - ‘ucurrent\_speed’ and ‘vcurrent\_speed’, to store the \(u\) and
-    \(v\) components of current velocity;
-  - ‘sun\_angle’, to store sun angle (an optional field which can be
-    computed by `fvcom.tbx`);
+- ‘tidal_elevation’, to store tidal elevation (m) arrays;
+- ‘temp’, to store temperature ($^\circ C$) arrays;
+- ‘salinity’, to store salinity (psu) arrays;
+- ‘uwind_speed’ and ‘vwind_speed’, to store the $u$ and $v$ components
+  of wind velocity;
+- ‘ucurrent_speed’ and ‘vcurrent_speed’, to store the $u$ and $v$
+  components of current velocity;
+- ‘sun_angle’, to store sun angle (an optional field which can be
+  computed by `fvcom.tbx`);
 
 To create a directory system in which to store outputs, `fvcom.tbx`
 provides the `create_wcdirs()` function.
@@ -132,23 +132,22 @@ faster. `fvcom.tbx` may include functionality via `thredds_url()` and
 
 For environmental arrays, `fvcom.tbx` assumes the following conventions:
 
-  - File type. Environmental arrays can be saved in any format (e.g., as
-    .mat files), providing this format can be loaded into `R`. The
-    vignette provides a sample MATLAB® script in which full FVCOM files
-    are loaded into MATLAB®, environmental arrays extracted and then
-    saved into a pre-defined directory system as .mat files.
-    Accordingly, in `fvcom.tbx`, the default function to load files into
-    `R` is `function(con) R.matlab::readMat(con)$data`, but this can be
-    changed by the user as necessary. In any given directory (e.g.,
-    ‘/temp’), all of the environmental arrays should be of the same
-    file type.
-  - File dimension. In any given directory, all arrays should have the
-    same dimension.
-  - File name. In each directory, each file is named by a 6 digit code
-    (hereafter termed the ‘date\_name’) which provides a unique
-    identifier of the date to which that file pertains in the format
-    YYMMDD. The function `date_name()` is used to flick between dates
-    and WeStCOMS file names.
+- File type. Environmental arrays can be saved in any format (e.g., as
+  .mat files), providing this format can be loaded into `R`. The
+  vignette provides a sample MATLAB® script in which full FVCOM files
+  are loaded into MATLAB®, environmental arrays extracted and then saved
+  into a pre-defined directory system as .mat files. Accordingly, in
+  `fvcom.tbx`, the default function to load files into `R` is
+  `function(con) R.matlab::readMat(con)$data`, but this can be changed
+  by the user as necessary. In any given directory (e.g., ‘/temp’), all
+  of the environmental arrays should be of the same file type.
+- File dimension. In any given directory, all arrays should have the
+  same dimension.
+- File name. In each directory, each file is named by a 6 digit code
+  (hereafter termed the ‘date_name’) which provides a unique identifier
+  of the date to which that file pertains in the format YYMMDD. The
+  function `date_name()` is used to flick between dates and WeStCOMS
+  file names.
 
 Armed with the necessary standard FVCOM objects and environmental
 arrays, we can now proceed to implement functions in `fvcom.tbx` to
@@ -161,13 +160,12 @@ observations.
 Several functions are designed to facilitate building and working with
 unstructured meshes. These include:
 
-  - `build_mesh()` - build an unstructured mesh (around nodes or
-    elements) from node coordinates and connections as a
-    `SpatialPolygonsDataFrame`;
-  - `find_cells()` - find the mesh cells (for nodes or elements) which
-    enclose inputted coordinates;
-  - `find_xy()` - find the coordinates of mesh cells (for nodes or
-    elements);
+- `build_mesh()` - build an unstructured mesh (around nodes or elements)
+  from node coordinates and connections as a `SpatialPolygonsDataFrame`;
+- `find_cells()` - find the mesh cells (for nodes or elements) which
+  enclose inputted coordinates;
+- `find_xy()` - find the coordinates of mesh cells (for nodes or
+  elements);
 
 ## Compute new fields
 
@@ -176,12 +174,12 @@ computation of new fields using existing hydrodynamic model outputs.
 This is supported by helper functions for commonly desirable fields such
 as:
 
-  - `calc_thermocline()` - calculate thermocline strength from
-    temperature predictions;
-  - `calc_direction()` - calculate wind/current direction from \(u\) and
-    \(v\) component vectors;
-  - `calc_speed()` - calculate wind/current speed from \(u\) and \(v\)
-    component vectors;
+- `calc_thermocline()` - calculate thermocline strength from temperature
+  predictions;
+- `calc_direction()` - calculate wind/current direction from $u$ and $v$
+  component vectors;
+- `calc_speed()` - calculate wind/current speed from $u$ and $v$
+  component vectors;
 
 There are also some functions for the computation of specific new fields
 from scratch (such as sun angle) in cases where it is helpful to express
@@ -189,49 +187,49 @@ variables which are not resolved by the hydrodynamic model across the
 same mesh (for instance, to investigate the extent of spatiotemporal
 variation over the same spatial domain). These include the following:
 
-  - `compute_sun_angle()` - compute sun angle as a new field;
-  - `compute_field_photoperiod()` - compute photoperiod as a new field;
+- `compute_sun_angle()` - compute sun angle as a new field;
+- `compute_field_photoperiod()` - compute photoperiod as a new field;
 
 ## Extract model predictions
 
 Some functions are designed to facilitate the extraction of model
 predictions from source files. These include the following:
 
-  - `exclude_corrupt()` and `exclude_unavailable()` - exclude corrupt
-    and unavailable files from file names vector;
-  - `expand_by_hour()` - expand a dataframe with times at non-integer
-    hours to include surrounding integer hours for extraction;
-  - `extract()` - extract model predictions for multiple
-    dates/hours/layers/mesh cells;
-  - `depth_from_known()` - calculate the depth of Sigma layers using
-    known parameters;
-  - `depth_from_unknown()` - compute the depth of Sigma layers using
-    unknown (i.e., extracted) parameters and/or assign the depths of
-    Sigma layers to a dataframe using nearest neighbour or bilinear
-    interpolation;
-  - `shrink_by_hour`, `interp_btw_hours()`, `interp_btw_depths()` and
-    `interp_layer()` - interpolate predictions between hours or layers
-    and fractional layer numbers;
+- `exclude_corrupt()` and `exclude_unavailable()` - exclude corrupt and
+  unavailable files from file names vector;
+- `expand_by_hour()` - expand a dataframe with times at non-integer
+  hours to include surrounding integer hours for extraction;
+- `extract()` - extract model predictions for multiple
+  dates/hours/layers/mesh cells;
+- `depth_from_known()` - calculate the depth of Sigma layers using known
+  parameters;
+- `depth_from_unknown()` - compute the depth of Sigma layers using
+  unknown (i.e., extracted) parameters and/or assign the depths of Sigma
+  layers to a dataframe using nearest neighbour or bilinear
+  interpolation;
+- `shrink_by_hour`, `interp_btw_hours()`, `interp_btw_depths()` and
+  `interp_layer()` - interpolate predictions between hours or layers and
+  fractional layer numbers;
 
 ## Explore environmental conditions
 
 Some functions are designed to facilitate exploration of environmental
 conditions through space and/or time. These include the following:
 
-  - `summarise_field_2d()` - compute statistical summaries of
-    environmental conditions across a Sigma layer (through time for a
-    given file, if applicable);
-  - `plot_field_2d()` - visualise environmental conditions across a
-    Sigma layer through space at a specified point in time;
-  - `explore_field_2d()` - implement `summarise_field_2d()` and
-    `plot_field_2d()` across multiple timepoints and/or model files;
-  - Additional plotting functions are available in the
-    [`prettyGraphics`](https://github.com/edwardlavender/prettyGraphics)
-    package, including `pretty_scape_3d()` and `vis_scape_3d()` which
-    produce interactive, 3-dimensional visualisations of
-    landscapes/seascapes and/or environmental conditions; for large
-    rasters, `crop_aggr_utm()` helps reduce raster dimensions for these
-    functions;
+- `summarise_field_2d()` - compute statistical summaries of
+  environmental conditions across a Sigma layer (through time for a
+  given file, if applicable);
+- `plot_field_2d()` - visualise environmental conditions across a Sigma
+  layer through space at a specified point in time;
+- `explore_field_2d()` - implement `summarise_field_2d()` and
+  `plot_field_2d()` across multiple timepoints and/or model files;
+- Additional plotting functions are available in the
+  [`prettyGraphics`](https://github.com/edwardlavender/prettyGraphics)
+  package, including `pretty_scape_3d()` and `vis_scape_3d()` which
+  produce interactive, 3-dimensional visualisations of
+  landscapes/seascapes and/or environmental conditions; for large
+  rasters, `crop_aggr_utm()` helps reduce raster dimensions for these
+  functions;
 
 ## Validate model predictions
 
@@ -244,17 +242,17 @@ conditions to evaluate model skill.
 Future developments to `fvcom.tbx` may include developing the following
 functionality:
 
-  - Relaxing file naming conventions;
-  - Acquiring specific environmental fields from thredds’ servers;
-  - Exploring temperature profiles through space and time;
-  - Exploring spatiotemporal variation in environmental conditions in
-    3-dimensions;
-  - Estimating bottom velocity from vertical profiles;
+- Relaxing file naming conventions;
+- Acquiring specific environmental fields from thredds’ servers;
+- Exploring temperature profiles through space and time;
+- Exploring spatiotemporal variation in environmental conditions in
+  3-dimensions;
+- Estimating bottom velocity from vertical profiles;
 
 ## Disclaimer
 
 `fvcom.tbx` is a new package at an early stage of evolution. Please
-report issues, comments or suggestions\!
+report issues, comments or suggestions!
 
 ## Links
 

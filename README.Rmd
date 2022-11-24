@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 
 # fvcom.tbx
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Project Status: Inactive – The project has reached a stable, usable state but is no longer being actively developed; support/maintenance will be provided as time allows.](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 
 `fvcom.tbx` is an `R` toolbox for the exploration of unstructured, prism-based hydrodynamic model outputs (i.e. from the Finite Coastal Ocean Volume Model, FVCOM) in `R`. The package has been designed specifically for the West Coast of Scotland Coastal Modelling System (WeStCOMS), which implements FVCOM. Package development has been motivated by the requirements of ecological research, and the need to link hydrodynamic model outputs with ecological analyses implemented in `R`. To this end, the package includes functions which facilitate the following operations: 
 
