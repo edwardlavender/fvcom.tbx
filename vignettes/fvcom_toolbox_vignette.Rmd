@@ -62,6 +62,7 @@ Let's begin by installing and loading the `fvcom.tbx` package:
 # devtools::install_github("https://github.com/edwardlavender/fvcom.tbx/")
 
 ## Load package
+library(raster)
 library(fvcom.tbx)
 
 ## View functions

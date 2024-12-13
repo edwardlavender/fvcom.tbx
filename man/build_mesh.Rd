@@ -34,29 +34,27 @@ This function is used to build an unstructured mesh (around nodes or elements) f
 }
 \examples{
 
+library(raster)
+
 # 1) Build a mesh around elements (based on nodes) on a single processor
 # You will receive a warning when you run this:
 # ...'In sp::Polygon(coords, hole) : less than 4 coordinates in polygon'.
 # This can be safely ignored. This is because each polygon is a prism;
 # ... i.e., only comprised of three coordinates.
-\donttest{
 mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
                                    trinodes = dat_trinodes,
                                    mesh_type = "node",
                                    cl = NULL,
                                    pass2varlist = NULL)
-}
 
 # 2) Build a mesh around nodes (based on elements) on a single processor
-\donttest{
 mesh_around_nodes <- build_mesh(nodexy = dat_nodexy,
                                 trinodes = dat_trinodes,
                                 mesh_type = "element",
                                 cl = NULL,
                                 pass2varlist = NULL)
-}
+
 # 3) Build a mesh around elements (based on nodes) using parallel processing
-\donttest{
 # Define cluster object:
 cl <- parallel::makeCluster(2L)
 # Run the build_mesh algorithm in parallel by supplying a cluster:
@@ -66,7 +64,6 @@ mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
                                    cl = cl,
                                    pass2varlist = c("dat_nodexy", "dat_trinodes"))
 # Note that the connection with the cluster is closed within the function.
-}
 
 }
 \seealso{

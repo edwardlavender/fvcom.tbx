@@ -12,29 +12,27 @@
 #'
 #' @examples
 #'
+#' library(raster)
+#'
 #' # 1) Build a mesh around elements (based on nodes) on a single processor
 #' # You will receive a warning when you run this:
 #' # ...'In sp::Polygon(coords, hole) : less than 4 coordinates in polygon'.
 #' # This can be safely ignored. This is because each polygon is a prism;
 #' # ... i.e., only comprised of three coordinates.
-#' \donttest{
 #' mesh_around_elements <- build_mesh(nodexy = dat_nodexy,
 #'                                    trinodes = dat_trinodes,
 #'                                    mesh_type = "node",
 #'                                    cl = NULL,
 #'                                    pass2varlist = NULL)
-#' }
 #'
 #' # 2) Build a mesh around nodes (based on elements) on a single processor
-#' \donttest{
 #' mesh_around_nodes <- build_mesh(nodexy = dat_nodexy,
 #'                                 trinodes = dat_trinodes,
 #'                                 mesh_type = "element",
 #'                                 cl = NULL,
 #'                                 pass2varlist = NULL)
-#' }
+#'
 #' # 3) Build a mesh around elements (based on nodes) using parallel processing
-#' \donttest{
 #' # Define cluster object:
 #' cl <- parallel::makeCluster(2L)
 #' # Run the build_mesh algorithm in parallel by supplying a cluster:
@@ -44,7 +42,6 @@
 #'                                    cl = cl,
 #'                                    pass2varlist = c("dat_nodexy", "dat_trinodes"))
 #' # Note that the connection with the cluster is closed within the function.
-#' }
 #'
 #' @seealso \code{\link[sp]{SpatialPolygonsDataFrame-class}} for the output class;
 #' \code{\link[fvcom.tbx]{dat_nodexy}} for an example nodexy dataframe;
@@ -184,10 +181,18 @@ build_mesh <-
           # define the mcp enclosing these elements, which will have the selected
           # ... node at its heart and provide a unique id for this polygon
           # ... BASED ON NODE...
-          poly <- rgeos::gConvexHull(element_xy_sp, id = node)
-
-          # return the polygon
-          # return(poly)
+          if (requireNamespace("rgeos", quietly = TRUE)) {
+            poly <- rgeos::gConvexHull(element_xy_sp, id = node)
+          } else {
+            if (!requireNamespace("terra", quietly = TRUE)) {
+              stop("Install {rgeos} or {terra} for this option (rgeos is faster).")
+            }
+            poly <- terra::vect(element_xy_sp)
+            poly <- terra::convHull(poly)
+            poly <- methods::as(poly, "Spatial")
+            poly@polygons[[1]]@ID <- as.character(node)
+          }
+          poly
         } # close if(nprisms > 2){
 
       },
